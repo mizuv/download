@@ -1,0 +1,20 @@
+# .editorconfig 파일 설정
+root = true
+
+[*.cs]
+charset = utf-8
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# C# 스타일 설정
+csharp_space_after_cast = false
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_new_line_between_query_expression_clauses = false
+
+
