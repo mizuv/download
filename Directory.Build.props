@@ -2,4 +2,10 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <!-- Cannot convert null literal to non-nullable reference type. -->
+  <!-- 저거 warning 말고 error 뜨게 -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>CS8625</WarningsAsErrors>
+  </PropertyGroup>
 </Project>
