@@ -16,16 +16,21 @@ namespace Download {
         }
 
         public void Draw() {
-            new FolderGameObject();
-            void DrawRecursively(Folder parent) {
+            new FolderGameObject(null);
+            var parentTransform = new GameObject(NodeSystem.Root.Name).transform;
+            DrawChildren(NodeSystem.Root, parentTransform);
+
+            void DrawChildren(Folder parent, Transform parentTransform) {
                 foreach (var child in parent.children) {
                     switch (child) {
                         case Folder folder:
-                            new FolderGameObject();
-                            DrawRecursively(folder);
+                            var folderGameObject = new FolderGameObject(parentTransform);
+                            var newParent = new GameObject(folder.Name).transform;
+                            newParent.SetParent(folderGameObject.gameObject.transform);
+                            DrawChildren(folder, newParent);
                             break;
                         case Forest forest:
-                            new ForestGameObject();
+                            new ForestGameObject(parentTransform);
                             break;
                     }
                 }

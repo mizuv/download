@@ -18,8 +18,8 @@ namespace Download {
 
         readonly GameObject gameObject;
 
-        public ForestGameObject() {
-            gameObject = Object.Instantiate(Prefab);
+        public ForestGameObject(Transform? parent) {
+            gameObject = Object.Instantiate(Prefab, parent);
         }
 
     }

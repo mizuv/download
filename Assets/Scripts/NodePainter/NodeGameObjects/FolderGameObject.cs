@@ -16,10 +16,10 @@ namespace Download {
             }
         }
 
-        readonly GameObject gameObject;
+        public readonly GameObject gameObject;
 
-        public FolderGameObject() {
-            gameObject = Object.Instantiate(Prefab);
+        public FolderGameObject(Transform? parent) {
+            gameObject = Object.Instantiate(Prefab, parent);
         }
 
     }
