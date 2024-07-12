@@ -1,7 +1,7 @@
 {
     "name": "Download",
     "rootNamespace": "",
-    "references": [],
+    "references": ["Unity.Addressables", "Unity.ResourceManager"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -12,5 +12,4 @@
     "versionDefines": [],
     "noEngineReferences": false,
     "internalsVisibleTo": [ "Tests" ]
-
 }
