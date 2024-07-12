@@ -6,8 +6,8 @@ namespace Download.NodeSystem {
         public readonly Folder Root = Folder.CreateRoot();
 
         public NodeSystem() {
-            new Tree(Root);
-            new Tree(Root);
+            new Tree(Root, "나무1");
+            new Tree(Root, "나무2");
         }
     }
 }

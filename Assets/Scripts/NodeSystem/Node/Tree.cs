@@ -5,7 +5,11 @@ using Mizuvt.Common;
 
 namespace Download.NodeSystem {
     public class Tree : Node {
-        public Tree(Folder parent) : base(parent) { }
+        public Tree(Folder parent, string name) : base(parent, name) { }
+
+        public override void Print(string indent) {
+            System.Console.WriteLine($"{indent}Tree: {Name}");
+        }
 
     }
 }
