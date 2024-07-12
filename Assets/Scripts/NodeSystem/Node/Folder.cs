@@ -22,12 +22,12 @@ namespace Download.NodeSystem {
             child.SetParent(this);
         }
 
-        public override void Print(string indent) {
-            Debug.Log($"{indent}Folder: {Name}");
+        public override string GetPrintString(string indent) {
+            string result = $"{indent}Folder: {Name}\n";
             foreach (var child in children) {
-                child.Print(indent + "  ");
+                result += child.GetPrintString(indent + "  ");
             }
+            return result;
         }
-
     }
 }

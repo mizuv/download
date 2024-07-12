@@ -8,8 +8,8 @@ namespace Download.NodeSystem {
     public class Tree : Node {
         public Tree(Folder parent, string name) : base(parent, name) { }
 
-        public override void Print(string indent) {
-            Debug.Log($"{indent}Tree: {Name}");
+        public override string GetPrintString(string indent) {
+            return $"{indent}Tree: {Name}\n";
         }
 
     }

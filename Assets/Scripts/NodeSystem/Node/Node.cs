@@ -16,6 +16,6 @@ namespace Download.NodeSystem {
             parent.AddChild(this);
         }
 
-        public abstract void Print(string indent);
+        public abstract string GetPrintString(string indent);
     }
 }
