@@ -4,9 +4,14 @@ namespace Download.NodeSystem {
         public Folder? Parent { get; private set; }
 
         public Node(Folder? parent) {
-            Parent = parent;
+            if (parent != null)
+                SetParent(parent);
         }
 
-
+        public void SetParent(Folder parent) {
+            if (parent == Parent) return;
+            Parent = parent;
+            parent.AddChild(this);
+        }
     }
 }

@@ -1,9 +1,11 @@
 
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using Mizuvt.Common;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
-        public readonly List<Node> children = new();
+        public readonly OrderedSet<Node> children = new();
 
         public Folder(Folder parent) : base(parent) { }
 
@@ -11,6 +13,12 @@ namespace Download.NodeSystem {
 
         public static Folder CreateRoot() {
             return new();
+        }
+
+        public void AddChild(Node child) {
+            if (children.Contains(child)) return;
+            children.Add(child);
+            child.SetParent(this);
         }
     }
 }
