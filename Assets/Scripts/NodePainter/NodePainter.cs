@@ -24,6 +24,9 @@ namespace Download {
                             new FolderGameObject();
                             DrawRecursively(folder);
                             break;
+                        case Forest forest:
+                            new ForestGameObject();
+                            break;
                     }
                 }
             }
