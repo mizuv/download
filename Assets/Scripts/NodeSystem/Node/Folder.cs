@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Mizuvt.Common;
+using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
@@ -22,7 +23,7 @@ namespace Download.NodeSystem {
         }
 
         public override void Print(string indent) {
-            System.Console.WriteLine($"{indent}Folder: {Name}");
+            Debug.Log($"{indent}Folder: {Name}");
             foreach (var child in children) {
                 child.Print(indent + "  ");
             }
