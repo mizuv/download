@@ -1,7 +1,7 @@
 using Download.NodeSystem;
 using NUnit.Framework;
 using UnityEngine;
-using Tree = Download.NodeSystem.Tree;
+using Forest = Download.NodeSystem.Forest;
 
 public class NodeSystemTests {
     [Test]
@@ -26,11 +26,11 @@ public class NodeSystemTests {
     public void TestTreeCreation() {
         // 루트 폴더 및 트리 생성
         Folder root = Folder.CreateRoot();
-        Tree tree = new Tree(root, "tree");
+        Forest forest = new Forest(root, "forest");
 
         Assert.AreEqual(1, root.children.Count);
-        Assert.AreSame(tree, root.children[0]);
-        Assert.AreSame(root, tree.Parent);
+        Assert.AreSame(forest, root.children[0]);
+        Assert.AreSame(root, forest.Parent);
     }
 
 }
