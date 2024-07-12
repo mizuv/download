@@ -7,20 +7,10 @@ using UnityEngine;
 
 
 namespace Download {
-    public class ForestGameObject {
-        public GameObject Prefab {
-            get {
-                var prefab = PrefabManager.Instance.GetPrefab("Node.Forest");
-                if (!prefab) throw new System.Exception("Prefab not found");
-                return prefab!;
-            }
+    public class ForestGameObject : NodeGameObject {
+        public ForestGameObject(Vector3 position, Transform parent) : base(position, parent) {
         }
 
-        readonly GameObject gameObject;
-
-        public ForestGameObject(Transform? parent) {
-            gameObject = Object.Instantiate(Prefab, parent);
-        }
-
+        protected override string PrefabKey => "Node.Forest";
     }
 }

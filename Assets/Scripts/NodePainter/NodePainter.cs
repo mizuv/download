@@ -1,9 +1,11 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Mizuvt.Common;
 using Download.NodeSystem;
 using UnityEngine;
+using System;
 
 
 namespace Download {
@@ -16,24 +18,32 @@ namespace Download {
         }
 
         public void Draw() {
-            new FolderGameObject(null);
+            const float verticalInterval = 1.3f;
+
+            var root = new FolderGameObject(new(), null);
             var parentTransform = new GameObject(NodeSystem.Root.Name).transform;
+            parentTransform.SetParent(root.gameObject.transform);
+            parentTransform.position += Vector3.down * verticalInterval;
             DrawChildren(NodeSystem.Root, parentTransform);
 
             void DrawChildren(Folder parent, Transform parentTransform) {
-                foreach (var child in parent.children) {
+
+                var xPositions = Utils.GenerateZeroMeanArray(parent.children.Count, 1.4f);
+
+                parent.children.ForEach((child, index) => {
                     switch (child) {
                         case Folder folder:
-                            var folderGameObject = new FolderGameObject(parentTransform);
+                            var folderGameObject = new FolderGameObject(new(xPositions[index], 0, 0), parentTransform);
                             var newParent = new GameObject(folder.Name).transform;
                             newParent.SetParent(folderGameObject.gameObject.transform);
+                            newParent.position += Vector3.down * verticalInterval;
                             DrawChildren(folder, newParent);
                             break;
                         case Forest forest:
-                            new ForestGameObject(parentTransform);
+                            var forestGameObject = new ForestGameObject(new(xPositions[index], 0, 0), parentTransform);
                             break;
                     }
-                }
+                });
             }
         }
     }

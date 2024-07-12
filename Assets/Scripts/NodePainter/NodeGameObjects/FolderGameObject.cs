@@ -4,23 +4,12 @@ using System.Collections.Specialized;
 using Mizuvt.Common;
 using Download.NodeSystem;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace Download {
-    public class FolderGameObject {
-        public GameObject Prefab {
-            get {
-                var prefab = PrefabManager.Instance.GetPrefab("Node.Folder");
-                if (!prefab) throw new System.Exception("Prefab not found");
-                return prefab!;
-            }
-        }
-
-        public readonly GameObject gameObject;
-
-        public FolderGameObject(Transform? parent) {
-            gameObject = Object.Instantiate(Prefab, parent);
-        }
-
+    public class FolderGameObject : NodeGameObject {
+        protected override string PrefabKey => "Node.Folder";
+        public FolderGameObject(Vector3 position, Transform? parent) : base(position, parent) { }
     }
 }
