@@ -313,7 +313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e829f4e179c4f6286fe8668f6337d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragSpeed: 2
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,9 +444,9 @@ MonoBehaviour:
   AutomaticallyUnparentOnAwake: 1
   prefabList:
   - key: Node.Folder
-    prefab: {fileID: 4978251984841426963, guid: 2bfc2f0f3b26a44d2baf72dbfad7a3b1, type: 3}
+    prefab: {fileID: 7924467234700525336, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
   - key: Node.Forest
-    prefab: {fileID: 4978251984841426963, guid: 87c155a0996c6497fad8f612b45eaf5c, type: 3}
+    prefab: {fileID: 4362334899826982415, guid: de8054d0801f1484dabb9bddf95e7b13, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
