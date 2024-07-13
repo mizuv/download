@@ -27,7 +27,7 @@ namespace Download
     ""name"": ""InputSystem_Actions"",
     ""maps"": [
         {
-            ""name"": ""Camera"",
+            ""name"": ""Cursor"",
             ""id"": ""b753854f-6db7-4f73-af75-b784cf9c620d"",
             ""actions"": [
                 {
@@ -40,7 +40,7 @@ namespace Download
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""CursorMove"",
+                    ""name"": ""Move"",
                     ""type"": ""Value"",
                     ""id"": ""434b93cd-1de2-46ce-8458-be510a6d2717"",
                     ""expectedControlType"": ""Vector2"",
@@ -79,7 +79,7 @@ namespace Download
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""CursorMove"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -149,15 +149,15 @@ namespace Download
         }
     ]
 }");
-            // Camera
-            m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
-            m_Camera_SubButtonClick = m_Camera.FindAction("SubButtonClick", throwIfNotFound: true);
-            m_Camera_CursorMove = m_Camera.FindAction("CursorMove", throwIfNotFound: true);
+            // Cursor
+            m_Cursor = asset.FindActionMap("Cursor", throwIfNotFound: true);
+            m_Cursor_SubButtonClick = m_Cursor.FindAction("SubButtonClick", throwIfNotFound: true);
+            m_Cursor_Move = m_Cursor.FindAction("Move", throwIfNotFound: true);
         }
 
         ~@InputSystem_Actions()
         {
-            Debug.Assert(!m_Camera.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Camera.Disable() has not been called.");
+            Debug.Assert(!m_Cursor.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Cursor.Disable() has not been called.");
         }
 
         public void Dispose()
@@ -216,59 +216,59 @@ namespace Download
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // Camera
-        private readonly InputActionMap m_Camera;
-        private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
-        private readonly InputAction m_Camera_SubButtonClick;
-        private readonly InputAction m_Camera_CursorMove;
-        public struct CameraActions
+        // Cursor
+        private readonly InputActionMap m_Cursor;
+        private List<ICursorActions> m_CursorActionsCallbackInterfaces = new List<ICursorActions>();
+        private readonly InputAction m_Cursor_SubButtonClick;
+        private readonly InputAction m_Cursor_Move;
+        public struct CursorActions
         {
             private @InputSystem_Actions m_Wrapper;
-            public CameraActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
-            public InputAction @SubButtonClick => m_Wrapper.m_Camera_SubButtonClick;
-            public InputAction @CursorMove => m_Wrapper.m_Camera_CursorMove;
-            public InputActionMap Get() { return m_Wrapper.m_Camera; }
+            public CursorActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+            public InputAction @SubButtonClick => m_Wrapper.m_Cursor_SubButtonClick;
+            public InputAction @Move => m_Wrapper.m_Cursor_Move;
+            public InputActionMap Get() { return m_Wrapper.m_Cursor; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
             public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(CameraActions set) { return set.Get(); }
-            public void AddCallbacks(ICameraActions instance)
+            public static implicit operator InputActionMap(CursorActions set) { return set.Get(); }
+            public void AddCallbacks(ICursorActions instance)
             {
-                if (instance == null || m_Wrapper.m_CameraActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_CameraActionsCallbackInterfaces.Add(instance);
+                if (instance == null || m_Wrapper.m_CursorActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_CursorActionsCallbackInterfaces.Add(instance);
                 @SubButtonClick.started += instance.OnSubButtonClick;
                 @SubButtonClick.performed += instance.OnSubButtonClick;
                 @SubButtonClick.canceled += instance.OnSubButtonClick;
-                @CursorMove.started += instance.OnCursorMove;
-                @CursorMove.performed += instance.OnCursorMove;
-                @CursorMove.canceled += instance.OnCursorMove;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
             }
 
-            private void UnregisterCallbacks(ICameraActions instance)
+            private void UnregisterCallbacks(ICursorActions instance)
             {
                 @SubButtonClick.started -= instance.OnSubButtonClick;
                 @SubButtonClick.performed -= instance.OnSubButtonClick;
                 @SubButtonClick.canceled -= instance.OnSubButtonClick;
-                @CursorMove.started -= instance.OnCursorMove;
-                @CursorMove.performed -= instance.OnCursorMove;
-                @CursorMove.canceled -= instance.OnCursorMove;
+                @Move.started -= instance.OnMove;
+                @Move.performed -= instance.OnMove;
+                @Move.canceled -= instance.OnMove;
             }
 
-            public void RemoveCallbacks(ICameraActions instance)
+            public void RemoveCallbacks(ICursorActions instance)
             {
-                if (m_Wrapper.m_CameraActionsCallbackInterfaces.Remove(instance))
+                if (m_Wrapper.m_CursorActionsCallbackInterfaces.Remove(instance))
                     UnregisterCallbacks(instance);
             }
 
-            public void SetCallbacks(ICameraActions instance)
+            public void SetCallbacks(ICursorActions instance)
             {
-                foreach (var item in m_Wrapper.m_CameraActionsCallbackInterfaces)
+                foreach (var item in m_Wrapper.m_CursorActionsCallbackInterfaces)
                     UnregisterCallbacks(item);
-                m_Wrapper.m_CameraActionsCallbackInterfaces.Clear();
+                m_Wrapper.m_CursorActionsCallbackInterfaces.Clear();
                 AddCallbacks(instance);
             }
         }
-        public CameraActions @Camera => new CameraActions(this);
+        public CursorActions @Cursor => new CursorActions(this);
         private int m_KeyboardMouseSchemeIndex = -1;
         public InputControlScheme KeyboardMouseScheme
         {
@@ -314,10 +314,10 @@ namespace Download
                 return asset.controlSchemes[m_XRSchemeIndex];
             }
         }
-        public interface ICameraActions
+        public interface ICursorActions
         {
             void OnSubButtonClick(InputAction.CallbackContext context);
-            void OnCursorMove(InputAction.CallbackContext context);
+            void OnMove(InputAction.CallbackContext context);
         }
     }
 }

@@ -2,7 +2,7 @@
     "name": "InputSystem_Actions",
     "maps": [
         {
-            "name": "Camera",
+            "name": "Cursor",
             "id": "b753854f-6db7-4f73-af75-b784cf9c620d",
             "actions": [
                 {
@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CursorMove",
+                    "name": "Move",
                     "type": "Value",
                     "id": "434b93cd-1de2-46ce-8458-be510a6d2717",
                     "expectedControlType": "Vector2",
@@ -54,7 +54,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CursorMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

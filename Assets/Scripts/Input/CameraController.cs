@@ -17,17 +17,17 @@ namespace Download {
         }
 
         private void OnEnable() {
-            inputActions.Camera.Enable();
-            inputActions.Camera.SubButtonClick.started += OnSubbuttonClickStarted;
-            inputActions.Camera.SubButtonClick.canceled += OnSubbuttonClickCanceled;
-            inputActions.Camera.CursorMove.performed += OnCursorMove;
+            inputActions.Cursor.Enable();
+            inputActions.Cursor.SubButtonClick.started += OnSubbuttonClickStarted;
+            inputActions.Cursor.SubButtonClick.canceled += OnSubbuttonClickCanceled;
+            inputActions.Cursor.Move.performed += OnCursorMove;
         }
 
         private void OnDisable() {
-            inputActions.Camera.SubButtonClick.started -= OnSubbuttonClickStarted;
-            inputActions.Camera.SubButtonClick.canceled -= OnSubbuttonClickCanceled;
-            inputActions.Camera.CursorMove.performed -= OnCursorMove;
-            inputActions.Camera.Disable();
+            inputActions.Cursor.SubButtonClick.started -= OnSubbuttonClickStarted;
+            inputActions.Cursor.SubButtonClick.canceled -= OnSubbuttonClickCanceled;
+            inputActions.Cursor.Move.performed -= OnCursorMove;
+            inputActions.Cursor.Disable();
         }
 
         private void OnCursorMove(InputAction.CallbackContext context) {
