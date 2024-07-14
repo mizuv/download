@@ -9,6 +9,7 @@ namespace Download {
 
         private CursorEventListener? hoveredObject = null;
         private CursorEventListener? subbuttonClickedObject = null;
+        private CursorEventListener? clickedObject = null;
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -17,12 +18,16 @@ namespace Download {
         private void OnEnable() {
             inputActions.Cursor.Enable();
             inputActions.Cursor.Move.performed += OnCursorMove;
+            inputActions.Cursor.Click.started += OnClickStarted;
+            inputActions.Cursor.Click.canceled += OnClickCanceled;
             inputActions.Cursor.SubButtonClick.started += OnSubbuttonClickStarted;
             inputActions.Cursor.SubButtonClick.canceled += OnSubbuttonClickCanceled;
         }
 
         private void OnDisable() {
             inputActions.Cursor.Move.performed -= OnCursorMove;
+            inputActions.Cursor.Click.started -= OnClickStarted;
+            inputActions.Cursor.Click.canceled -= OnClickCanceled;
             inputActions.Cursor.SubButtonClick.started -= OnSubbuttonClickStarted;
             inputActions.Cursor.SubButtonClick.canceled -= OnSubbuttonClickCanceled;
             inputActions.Cursor.Disable();
@@ -33,6 +38,24 @@ namespace Download {
             CheckHoverEvent(currentCursorPosition);
         }
 
+        private void OnClickStarted(InputAction.CallbackContext context) {
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+
+            clickedObject = GetCursorEventListenerHelper(hit);
+            if (clickedObject != null) {
+                clickedObject.OnClickEnter();
+            }
+        }
+
+        private void OnClickCanceled(InputAction.CallbackContext context) {
+            var prevClickedObject = clickedObject;
+            clickedObject = null;
+            if (prevClickedObject != null) {
+                prevClickedObject.OnClickExit();
+            }
+        }
+
         private void OnSubbuttonClickStarted(InputAction.CallbackContext context) {
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
@@ -41,7 +64,6 @@ namespace Download {
             if (subbuttonClickedObject != null) {
                 subbuttonClickedObject.OnSubbuttonClickEnter();
             }
-
         }
 
         private void OnSubbuttonClickCanceled(InputAction.CallbackContext context) {

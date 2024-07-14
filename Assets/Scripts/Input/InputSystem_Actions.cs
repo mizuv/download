@@ -47,6 +47,15 @@ namespace Download
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""8261a7a8-3f8a-4274-a9a3-ecee6984389c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -63,23 +72,34 @@ namespace Download
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a51a750f-b8d7-486d-ac1a-b37b01d1386c"",
-                    ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SubButtonClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9c757772-fbcd-4ce7-b1d8-d793b9703569"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82dbc77f-7e81-4f29-b49e-31662658a1f3"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a51a750f-b8d7-486d-ac1a-b37b01d1386c"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -153,6 +173,7 @@ namespace Download
             m_Cursor = asset.FindActionMap("Cursor", throwIfNotFound: true);
             m_Cursor_SubButtonClick = m_Cursor.FindAction("SubButtonClick", throwIfNotFound: true);
             m_Cursor_Move = m_Cursor.FindAction("Move", throwIfNotFound: true);
+            m_Cursor_Click = m_Cursor.FindAction("Click", throwIfNotFound: true);
         }
 
         ~@InputSystem_Actions()
@@ -221,12 +242,14 @@ namespace Download
         private List<ICursorActions> m_CursorActionsCallbackInterfaces = new List<ICursorActions>();
         private readonly InputAction m_Cursor_SubButtonClick;
         private readonly InputAction m_Cursor_Move;
+        private readonly InputAction m_Cursor_Click;
         public struct CursorActions
         {
             private @InputSystem_Actions m_Wrapper;
             public CursorActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
             public InputAction @SubButtonClick => m_Wrapper.m_Cursor_SubButtonClick;
             public InputAction @Move => m_Wrapper.m_Cursor_Move;
+            public InputAction @Click => m_Wrapper.m_Cursor_Click;
             public InputActionMap Get() { return m_Wrapper.m_Cursor; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -242,6 +265,9 @@ namespace Download
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Click.started += instance.OnClick;
+                @Click.performed += instance.OnClick;
+                @Click.canceled += instance.OnClick;
             }
 
             private void UnregisterCallbacks(ICursorActions instance)
@@ -252,6 +278,9 @@ namespace Download
                 @Move.started -= instance.OnMove;
                 @Move.performed -= instance.OnMove;
                 @Move.canceled -= instance.OnMove;
+                @Click.started -= instance.OnClick;
+                @Click.performed -= instance.OnClick;
+                @Click.canceled -= instance.OnClick;
             }
 
             public void RemoveCallbacks(ICursorActions instance)
@@ -318,6 +347,7 @@ namespace Download
         {
             void OnSubButtonClick(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
+            void OnClick(InputAction.CallbackContext context);
         }
     }
 }

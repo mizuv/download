@@ -8,6 +8,9 @@ namespace Download {
         public virtual void OnHoverEnter() { }
         public virtual void OnHoverExit() { }
 
+        public virtual void OnClickEnter() { }
+        public virtual void OnClickExit() { }
+
         public virtual void OnSubbuttonClickEnter() { }
         public virtual void OnSubbuttonClickExit() { }
     }
