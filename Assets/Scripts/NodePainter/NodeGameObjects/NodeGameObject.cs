@@ -9,21 +9,32 @@ using UnityEngine.UIElements;
 
 namespace Download {
     public abstract class NodeGameObject : CursorEventListener {
-        public SpriteRenderer hoverArea;
+        public SpriteRenderer HoverArea;
+        public Node? Node { get; private set; }
 
         public void Awake() {
-            if (hoverArea == null) throw new System.Exception("Hover area not set");
-            hoverArea.enabled = false;
+            if (HoverArea == null) throw new System.Exception("Hover area not set");
+            HoverArea.enabled = false;
 
         }
 
         public override void OnHoverEnter() {
             base.OnHoverEnter();
-            hoverArea.enabled = true;
+            HoverArea.enabled = true;
         }
         public override void OnHoverExit() {
             base.OnHoverExit();
-            hoverArea.enabled = false;
+            HoverArea.enabled = false;
         }
+
+        public override void OnClickEnter() {
+            base.OnClickEnter();
+            GameManager.Instance.SelectedNodeBS.Next(this);
+        }
+
+        public void Initialize(Node node) {
+            Node = node;
+        }
+
     }
 }

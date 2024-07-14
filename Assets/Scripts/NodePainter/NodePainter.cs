@@ -21,6 +21,7 @@ namespace Download {
             const float verticalInterval = 1.3f;
 
             var root = Instantiate(NodeGameObjectsPrefab.FolderPrefab);
+            root.GetComponent<NodeGameObject>().Initialize(NodeSystem.Root);
             var parentTransform = new GameObject(NodeSystem.Root.Name).transform;
             parentTransform.SetParent(root.gameObject.transform);
             parentTransform.position += Vector3.down * verticalInterval;
@@ -39,6 +40,7 @@ namespace Download {
                                 Quaternion.identity,
                                 parentTransform
                             );
+                            folderGameObject.GetComponent<NodeGameObject>().Initialize(child);
                             folderGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                             var newParent = new GameObject(folder.Name).transform;
                             newParent.SetParent(folderGameObject.gameObject.transform);
@@ -52,6 +54,7 @@ namespace Download {
                                 Quaternion.identity,
                                 parentTransform
                             );
+                            forestGameObject.GetComponent<NodeGameObject>().Initialize(child);
                             forestGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                             break;
                     }

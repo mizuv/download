@@ -9,6 +9,9 @@ using Download.NodeSystem;
 public class GameManager : PersistentSingleton<GameManager> {
     private NodeSystem nodeSystem;
     private NodePainter nodePainter;
+
+    public BehaviorSubject<NodeGameObject?> SelectedNodeBS = new BehaviorSubject<NodeGameObject?>(null);
+
     protected override void Awake() {
         base.Awake();
         nodeSystem = new NodeSystem();

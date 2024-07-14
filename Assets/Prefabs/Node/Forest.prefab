@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 209582ac8618d43c2ab674418eba6abb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverArea: {fileID: 9211775212302940850}
+  HoverArea: {fileID: 9211775212302940850}
 --- !u!212 &9211775212302940850 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 4134016296033413153, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}

@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4134016296033413153, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4978251984841426963, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
       propertyPath: m_Name
       value: Folder
@@ -106,4 +110,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756819b73470d4e56aa3d2a32565beb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverArea: {fileID: 1275056150327320362}
+  HoverArea: {fileID: 1275056150327320362}
