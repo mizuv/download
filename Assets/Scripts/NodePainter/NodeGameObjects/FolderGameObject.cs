@@ -9,7 +9,5 @@ using UnityEngine.UIElements;
 
 namespace Download {
     public class FolderGameObject : NodeGameObject {
-        protected override string PrefabKey => "Node.Folder";
-        public FolderGameObject(Vector3 position, Transform? parent) : base(position, parent) { }
     }
 }

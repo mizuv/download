@@ -491,7 +491,7 @@ MonoBehaviour:
   - key: Node.Folder
     prefab: {fileID: 7924467234700525336, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
   - key: Node.Forest
-    prefab: {fileID: 4362334899826982415, guid: de8054d0801f1484dabb9bddf95e7b13, type: 3}
+    prefab: {fileID: 260778427269028480, guid: 1949066094c2a479182871055aaf0555, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

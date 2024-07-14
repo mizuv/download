@@ -8,9 +8,5 @@ using UnityEngine;
 
 namespace Download {
     public class ForestGameObject : NodeGameObject {
-        public ForestGameObject(Vector3 position, Transform parent) : base(position, parent) {
-        }
-
-        protected override string PrefabKey => "Node.Forest";
     }
 }

@@ -20,7 +20,7 @@ namespace Download {
         public void Draw() {
             const float verticalInterval = 1.3f;
 
-            var root = new FolderGameObject(new(), null);
+            var root = Instantiate(NodeGameObjectsPrefab.FolderPrefab);
             var parentTransform = new GameObject(NodeSystem.Root.Name).transform;
             parentTransform.SetParent(root.gameObject.transform);
             parentTransform.position += Vector3.down * verticalInterval;
@@ -33,14 +33,26 @@ namespace Download {
                 parent.children.ForEach((child, index) => {
                     switch (child) {
                         case Folder folder:
-                            var folderGameObject = new FolderGameObject(new(xPositions[index], 0, 0), parentTransform);
+                            var folderGameObject = Instantiate(
+                                NodeGameObjectsPrefab.FolderPrefab,
+                                Vector3.zero,
+                                Quaternion.identity,
+                                parentTransform
+                            );
+                            folderGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                             var newParent = new GameObject(folder.Name).transform;
                             newParent.SetParent(folderGameObject.gameObject.transform);
                             newParent.position += Vector3.down * verticalInterval;
                             DrawChildren(folder, newParent);
                             break;
                         case Forest forest:
-                            var forestGameObject = new ForestGameObject(new(xPositions[index], 0, 0), parentTransform);
+                            var forestGameObject = Instantiate(
+                                NodeGameObjectsPrefab.ForestPrefab,
+                                Vector3.zero,
+                                Quaternion.identity,
+                                parentTransform
+                            );
+                            forestGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                             break;
                     }
                 });
