@@ -4,6 +4,8 @@ namespace Download.NodeSystem {
         public Folder? Parent { get; private set; }
         public string Name { get; private set; }
 
+        public abstract bool IsRunnable { get; }
+
         public Node(Folder? parent, string name) {
             if (parent != null)
                 SetParent(parent);

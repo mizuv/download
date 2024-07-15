@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Wood : Node {
+        public override bool IsRunnable => false;
+
         public Wood(Folder parent, string name) : base(parent, name) { }
 
         public override string GetPrintString(string indent) {
