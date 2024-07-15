@@ -5,10 +5,11 @@ using Mizuvt.Common;
 using UnityEngine;
 
 namespace Download.NodeSystem {
-    public class Forest : Node {
-        public override bool IsRunnable => true;
+    public class Forest : Runnable {
+        public override float RunDuration => 2000;
 
         public Forest(Folder parent, string name) : base(parent, name) { }
+
 
         public override string GetPrintString(string indent) {
             return $"{indent}Forest: {Name}\n";

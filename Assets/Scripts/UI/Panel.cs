@@ -26,7 +26,7 @@ namespace Download {
             Node node = selectedNode.Node!;
             FileName.text = node.Name ?? "Not Initialized";
 
-            if (node.IsRunnable)
+            if (node is Runnable runnable)
                 SidePanel.SetActive(true);
             else
                 SidePanel.SetActive(false);

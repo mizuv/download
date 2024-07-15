@@ -1,7 +1,7 @@
 {
     "name": "Download",
     "rootNamespace": "",
-    "references": ["Unity.Addressables", "Unity.ResourceManager", "Unity.InputSystem", "Unity.TextMeshPro"],
+    "references": ["Unity.Addressables", "Unity.ResourceManager", "Unity.InputSystem", "Unity.TextMeshPro", "UniRx"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

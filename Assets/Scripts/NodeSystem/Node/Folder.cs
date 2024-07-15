@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
-        public override bool IsRunnable => false;
 
         public readonly OrderedSet<Node> children = new();
 
