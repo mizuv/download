@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 namespace Download {
-    public class UnderPanel : MizuvtMonoBehavior {
+    public class UnderPanel : MizuvtMonoBehaviour {
         public TextMeshProUGUI FileName;
         public TextMeshProUGUI FileInfo;
 

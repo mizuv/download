@@ -24,4 +24,13 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     }
 
+    protected void OnEnable() {
+        SelectedNode.DistinctUntilChanged().Pairwise().Subscribe(pair => {
+            pair.Previous?.ShowSelectedSprite(false);
+            pair.Current?.ShowSelectedSprite(true);
+        }).AddTo(_disposables);
+    }
+
+
+
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 
 namespace Download {
-    public class SidePanel : MizuvtMonoBehavior {
+    public class SidePanel : MizuvtMonoBehaviour {
         public GameObject SidePanelObject;
 
         private IObservable<bool> isRunnable;

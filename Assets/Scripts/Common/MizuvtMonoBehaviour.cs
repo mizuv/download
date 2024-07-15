@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 
 namespace Mizuvt.Common {
-    public class MizuvtMonoBehavior : MonoBehaviour {
+    public class MizuvtMonoBehaviour : MonoBehaviour {
         protected CompositeDisposable _disposables = new();
 
         virtual protected void OnDisable() {

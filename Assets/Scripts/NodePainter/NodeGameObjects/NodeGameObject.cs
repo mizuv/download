@@ -8,14 +8,15 @@ using UnityEngine.UIElements;
 
 
 namespace Download {
-    public abstract class NodeGameObject : CursorEventListener {
+    public class NodeGameObject : CursorEventListener {
         public SpriteRenderer HoverArea;
+        public SpriteRenderer SelectedArea;
         public Node? Node { get; private set; }
 
         public void Awake() {
             if (HoverArea == null) throw new System.Exception("Hover area not set");
             HoverArea.enabled = false;
-
+            SelectedArea.enabled = false;
         }
 
         public override void OnHoverEnter() {
@@ -25,6 +26,10 @@ namespace Download {
         public override void OnHoverExit() {
             base.OnHoverExit();
             HoverArea.enabled = false;
+        }
+
+        public void ShowSelectedSprite(bool show) {
+            SelectedArea.enabled = show;
         }
 
         public override void OnClickEnter() {
