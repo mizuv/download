@@ -1,33 +1,47 @@
+using System;
+using System.Linq;
 using Download.NodeSystem;
 using Mizuvt.Common;
-using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 namespace Download {
     public class SidePanel : MizuvtMonoBehavior {
         public GameObject SidePanelObject;
-        public Button RunButton;
+
+        private IObservable<bool> isRunnable;
+        public GameObject RunButton;
+
+        private IObservable<bool> temp;
 
         private void Awake() {
             SidePanelObject.SetActive(false);
         }
 
         private void OnEnable() {
-            GameManager.Instance.SelectedNode.Subscribe(OnSelectedNodeChanged).AddTo(_disposables);
+            isRunnable = GameManager.Instance.SelectedNode
+                            .SelectMany(node => {
+                                if (node?.Node is not Runnable runnable)
+                                    return Observable.Return(false);
+                                return runnable.IsRunning.Select(isRunning => !isRunning);
+                            })
+                            .DistinctUntilChanged();
+
+            temp = Observable.Return(false);
+
+            Observable.CombineLatest(isRunnable, temp, (isRunnable, temp) => new { isRunnable, temp })
+                .Subscribe(options => {
+                    RunButton.SetActive(options.isRunnable);
+
+                    if (options.GetType().GetProperties().All(prop => !(bool)prop.GetValue(options))) {
+                        SidePanelObject.SetActive(false);
+                        return;
+                    }
+                    SidePanelObject.SetActive(true);
+                })
+                .AddTo(_disposables);
+
         }
-
-        private void OnSelectedNodeChanged(NodeGameObject? selectedNode) {
-            if (selectedNode == null) return;
-            Node node = selectedNode.Node!;
-
-            if (node is Runnable runnable)
-                SidePanelObject.SetActive(true);
-            else
-                SidePanelObject.SetActive(false);
-        }
-
     }
 }
