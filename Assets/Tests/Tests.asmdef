@@ -1,9 +1,9 @@
 {
     "name": "Tests",
     "rootNamespace": "",
-    "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "Download"],
+    "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "Download", "UniRx"],
     "optionalUnityReferences": [],
-    "includePlatforms": ["Editor"],
+    "includePlatforms": ["Editor", "macOSStandalone"],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
