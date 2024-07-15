@@ -29,7 +29,7 @@ namespace Download {
 
         public override void OnClickEnter() {
             base.OnClickEnter();
-            GameManager.Instance.SelectedNodeBS.Next(this);
+            GameManager.Instance.SelectedNode.Value = this;
         }
 
         public void Initialize(Node node) {

@@ -1,22 +1,24 @@
 using Download.NodeSystem;
+using Mizuvt.Common;
 using TMPro;
+using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Download {
-    public class SidePanel : MonoBehaviour {
+    public class SidePanel : MizuvtMonoBehavior {
         public GameObject SidePanelObject;
+        public Button RunButton;
 
         private void Awake() {
             SidePanelObject.SetActive(false);
         }
 
         private void OnEnable() {
-            GameManager.Instance.SelectedNodeBS.Subscribe(OnSelectedNodeChanged);
+            GameManager.Instance.SelectedNode.Subscribe(OnSelectedNodeChanged).AddTo(_disposables);
         }
-        private void OnDisable() {
-            GameManager.Instance.SelectedNodeBS.Unsuscribe(OnSelectedNodeChanged);
-        }
+
         private void OnSelectedNodeChanged(NodeGameObject? selectedNode) {
             if (selectedNode == null) return;
             Node node = selectedNode.Node!;

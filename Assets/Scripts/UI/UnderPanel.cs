@@ -1,17 +1,16 @@
 using Download.NodeSystem;
+using Mizuvt.Common;
 using TMPro;
+using UniRx;
 using UnityEngine;
 
 
 namespace Download {
-    public class UnderPanel : MonoBehaviour {
+    public class UnderPanel : MizuvtMonoBehavior {
         public TextMeshProUGUI FileName;
 
         private void OnEnable() {
-            GameManager.Instance.SelectedNodeBS.Subscribe(OnSelectedNodeChanged);
-        }
-        private void OnDisable() {
-            GameManager.Instance.SelectedNodeBS.Unsuscribe(OnSelectedNodeChanged);
+            GameManager.Instance.SelectedNode.Subscribe(OnSelectedNodeChanged).AddTo(_disposables);
         }
         private void OnSelectedNodeChanged(NodeGameObject? selectedNode) {
             if (selectedNode == null) {

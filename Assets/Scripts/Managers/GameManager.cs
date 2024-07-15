@@ -4,13 +4,14 @@ using UnityEngine;
 using System;
 using Download;
 using Download.NodeSystem;
+using UniRx;
 
 
 public class GameManager : PersistentSingleton<GameManager> {
     private NodeSystem nodeSystem;
     private NodePainter nodePainter;
 
-    public BehaviorSubject<NodeGameObject?> SelectedNodeBS = new BehaviorSubject<NodeGameObject?>(null);
+    public ReactiveProperty<NodeGameObject?> SelectedNode = new(null);
 
     protected override void Awake() {
         base.Awake();
