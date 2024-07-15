@@ -17,6 +17,7 @@ namespace Download.NodeSystem {
 
         public Runnable(Folder? parent, string name) : base(parent, name) {
             _isRunning
+                .DistinctUntilChanged()
                 .Where(isRunning => isRunning)
                 .Subscribe(_ => Run());
         }
@@ -36,6 +37,7 @@ namespace Download.NodeSystem {
                         .Select(_ => (float)stopwatch.Elapsed.TotalMilliseconds);
 
             })
+                .TakeUntil(_isRunning.Where(isRunning => !isRunning))
                 .Subscribe(timeElapsed => {
                     _runProgress.Value = timeElapsed / RunDuration;
                     if (_runProgress.Value >= 1f) {

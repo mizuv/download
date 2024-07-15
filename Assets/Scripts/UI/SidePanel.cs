@@ -4,6 +4,7 @@ using Download.NodeSystem;
 using Mizuvt.Common;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Download {
@@ -11,7 +12,7 @@ namespace Download {
         public GameObject SidePanelObject;
 
         private IObservable<bool> isRunnable;
-        public GameObject RunButton;
+        public Button RunButton;
 
         private IObservable<bool> temp;
 
@@ -30,9 +31,10 @@ namespace Download {
 
             temp = Observable.Return(false);
 
+            // 상태에 따라 사이드뷰 렌더
             Observable.CombineLatest(isRunnable, temp, (isRunnable, temp) => new { isRunnable, temp })
                 .Subscribe(options => {
-                    RunButton.SetActive(options.isRunnable);
+                    RunButton.gameObject.SetActive(options.isRunnable);
 
                     if (options.GetType().GetProperties().All(prop => !(bool)prop.GetValue(options))) {
                         SidePanelObject.SetActive(false);
@@ -41,6 +43,11 @@ namespace Download {
                     SidePanelObject.SetActive(true);
                 })
                 .AddTo(_disposables);
+
+            RunButton.OnClickAsObservable().Subscribe(_ => {
+                if (GameManager.Instance.SelectedNode.Value?.Node is not Runnable runnable) return;
+                runnable.StartRun();
+            }).AddTo(_disposables);
 
         }
     }
