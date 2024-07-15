@@ -34,7 +34,7 @@ namespace Download {
                         .Select(running => {
                             if (!running)
                                 return Observable.Return<float?>(null);
-                            return runnable.RunProgress.Select(progress => (float?)progress);
+                            return runnable.Runtime.Select(progress => (float?)progress);
                         })
                         .Switch();
                 })
@@ -45,7 +45,8 @@ namespace Download {
                         FileInfo.text = "";
                         return;
                     }
-                    FileInfo.text = runningProgress.ToString();
+                    var Runnable = (GameManager.Instance.SelectedNode.Value?.Node as Runnable)!;
+                    FileInfo.text = $"{((int)runningProgress).ToString()}/{Runnable.RunDuration}";
                 })
                 .AddTo(_disposables);
         }

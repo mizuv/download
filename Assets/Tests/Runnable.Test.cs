@@ -25,7 +25,7 @@ public class RunnableTests {
         var runnable = new TestRunnable(null, "TestRunnable", 1000f);
 
         // Act & Assert
-        Assert.AreEqual(0f, runnable.RunProgress.Value);
+        Assert.AreEqual(0f, runnable.Runtime.Value);
     }
 
     [Test]
@@ -49,7 +49,7 @@ public class RunnableTests {
         yield return new WaitForSeconds(0.2f);
 
         // Assert
-        Assert.Greater(runnable.RunProgress.Value, 0f);
+        Assert.Greater(runnable.Runtime.Value, 0f);
 
         // Cleanup
         runnable.StopRun();
@@ -66,7 +66,7 @@ public class RunnableTests {
         // Wait for a little longer than the run duration to ensure completion
         yield return new WaitForSeconds(0.8f);
         // Assert
-        Assert.AreEqual(0f, runnable.RunProgress.Value);
+        Assert.AreEqual(0f, runnable.Runtime.Value);
         Assert.IsFalse(runnable.IsRunning.Value);
     }
 

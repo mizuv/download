@@ -7,10 +7,10 @@ namespace Download.NodeSystem {
     public abstract class Runnable : Node {
         public abstract float RunDuration { get; }
 
-        private readonly ReactiveProperty<float> _runProgress = new(0f);
+        private readonly ReactiveProperty<float> _runtime = new(0f);
         private readonly ReactiveProperty<bool> _isRunning = new(false);
 
-        public IReadOnlyReactiveProperty<float> RunProgress => _runProgress;
+        public IReadOnlyReactiveProperty<float> Runtime => _runtime;
         public IReadOnlyReactiveProperty<bool> IsRunning => _isRunning;
 
         private readonly float RUN_UPDATE_SECOND = 0.1f;
@@ -39,9 +39,9 @@ namespace Download.NodeSystem {
             })
                 .TakeUntil(_isRunning.Where(isRunning => !isRunning))
                 .Subscribe(timeElapsed => {
-                    _runProgress.Value = timeElapsed / RunDuration;
-                    if (_runProgress.Value >= 1f) {
-                        _runProgress.Value = 0;
+                    _runtime.Value = timeElapsed;
+                    if (_runtime.Value >= RunDuration) {
+                        _runtime.Value = 0;
                         StopRun();
                     }
                 });
