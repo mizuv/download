@@ -4,12 +4,11 @@ using UnityEngine;
 
 
 namespace Download {
-    public class Panel : MonoBehaviour {
-        public TextMeshProUGUI FileName;
-        public GameObject SidePanel;
+    public class SidePanel : MonoBehaviour {
+        public GameObject SidePanelObject;
 
         private void Awake() {
-            SidePanel.SetActive(false);
+            SidePanelObject.SetActive(false);
         }
 
         private void OnEnable() {
@@ -19,17 +18,13 @@ namespace Download {
             GameManager.Instance.SelectedNodeBS.Unsuscribe(OnSelectedNodeChanged);
         }
         private void OnSelectedNodeChanged(NodeGameObject? selectedNode) {
-            if (selectedNode == null) {
-                FileName.text = "[No node selected]";
-                return;
-            }
+            if (selectedNode == null) return;
             Node node = selectedNode.Node!;
-            FileName.text = node.Name ?? "Not Initialized";
 
             if (node is Runnable runnable)
-                SidePanel.SetActive(true);
+                SidePanelObject.SetActive(true);
             else
-                SidePanel.SetActive(false);
+                SidePanelObject.SetActive(false);
         }
 
     }
