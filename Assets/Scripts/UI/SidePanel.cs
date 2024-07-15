@@ -22,11 +22,12 @@ namespace Download {
 
         private void OnEnable() {
             isRunnable = GameManager.Instance.SelectedNode
-                            .SelectMany(node => {
+                            .Select(node => {
                                 if (node?.Node is not Runnable runnable)
                                     return Observable.Return(false);
                                 return runnable.IsRunning.Select(isRunning => !isRunning);
                             })
+                            .Switch()
                             .DistinctUntilChanged();
 
             temp = Observable.Return(false);
