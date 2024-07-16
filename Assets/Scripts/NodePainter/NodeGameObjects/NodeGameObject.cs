@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 namespace Download {
-    public class NodeGameObject : MonoBehaviour, ICursorEventListener {
+    public class NodeGameObject : MonoBehaviour, ICursorEventListener, ISelectEventListener {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
         public Node? Node { get; private set; }
@@ -21,10 +21,6 @@ namespace Download {
             HoverArea.enabled = false;
         }
 
-        public void ShowSelectedSprite(bool show) {
-            SelectedArea.enabled = show;
-        }
-
         public void OnClickEnter() {
             GameManager.Instance.SelectedNode.Value = this;
         }
@@ -33,5 +29,12 @@ namespace Download {
             Node = node;
         }
 
+        public void OnSelect() {
+            SelectedArea.enabled = true;
+        }
+
+        public void OnUnselect() {
+            SelectedArea.enabled = false;
+        }
     }
 }
