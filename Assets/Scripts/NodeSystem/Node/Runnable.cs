@@ -18,7 +18,7 @@ namespace Download.NodeSystem {
 
         private readonly float RUN_UPDATE_SECOND = 0.0625f;
 
-        public Runnable(Folder? parent, string name) : base(parent, name) {
+        public Runnable(Folder parent, string name) : base(parent, name) {
             _isRunning
                 .DistinctUntilChanged()
                 .Where(isRunning => isRunning)

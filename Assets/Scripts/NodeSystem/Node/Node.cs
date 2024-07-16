@@ -7,10 +7,15 @@ namespace Download.NodeSystem {
         public string Name { get; private set; }
 
         protected CompositeDisposable _disposables = new();
+        protected Subject<NodeExistenceEvent> eventSubject;
 
-        public Node(Folder? parent, string name) {
-            if (parent != null)
-                SetParent(parent);
+        public Node(Folder parent, string name) {
+            SetParent(parent);
+            this.eventSubject = parent.eventSubject;
+            Name = name;
+        }
+        public Node(Subject<NodeExistenceEvent> eventSubject, string name) {
+            this.eventSubject = eventSubject;
             Name = name;
         }
 

@@ -1,8 +1,5 @@
-
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using Mizuvt.Common;
-using UnityEngine;
+using UniRx;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
@@ -12,10 +9,10 @@ namespace Download.NodeSystem {
 
         public Folder(Folder parent, string name) : base(parent, name) { }
 
-        private Folder() : base(null, "root") { }
+        private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 
-        public static Folder CreateRoot() {
-            return new();
+        public static Folder CreateRoot(Subject<NodeExistenceEvent> eventSubject) {
+            return new(eventSubject, "root");
         }
 
         public void AddChild(Node child) {
