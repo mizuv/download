@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 namespace Download {
-    public class UnderPanel : MizuvtMonoBehaviour {
+    public class UnderPanel : MonoBehaviour {
         public TextMeshProUGUI FileName;
         public TextMeshProUGUI FileInfo;
 
@@ -20,7 +20,7 @@ namespace Download {
                     Node node = selectedNode.Node!;
                     FileName.text = node.Name ?? "Not Initialized";
                 })
-                .AddTo(_disposables);
+                .AddTo(this);
 
             GameManager.Instance.SelectedNode
                 .Select(node => {
@@ -48,7 +48,7 @@ namespace Download {
                     var Runnable = (GameManager.Instance.SelectedNode.Value?.Node as Runnable)!;
                     FileInfo.text = $"{((int)runningProgress).ToString()}/{Runnable.RunDuration}";
                 })
-                .AddTo(_disposables);
+                .AddTo(this);
         }
 
     }

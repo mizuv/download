@@ -6,7 +6,7 @@ namespace Mizuvt.Common {
     /// <summary>
     /// Persistent singleton.
     /// </summary>
-    public class PersistentSingleton<T> : MizuvtMonoBehaviour where T : Component {
+    public class PersistentSingleton<T> : MonoBehaviour where T : Component {
         [Header("Persistent Singleton")]
         /// if this is true, this singleton will auto detach if it finds itself parented on awake
         [Tooltip("if this is true, this singleton will auto detach if it finds itself parented on awake")]

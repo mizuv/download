@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 
 namespace Download {
-    public class SidePanel : MizuvtMonoBehaviour {
+    public class SidePanel : MonoBehaviour {
         public GameObject SidePanelObject;
 
         private IObservable<bool> isRunnable;
@@ -43,12 +43,12 @@ namespace Download {
                     }
                     SidePanelObject.SetActive(true);
                 })
-                .AddTo(_disposables);
+                .AddTo(this);
 
             RunButton.OnClickAsObservable().Subscribe(_ => {
                 if (GameManager.Instance.SelectedNode.Value?.Node is not Runnable runnable) return;
                 runnable.StartRun();
-            }).AddTo(_disposables);
+            }).AddTo(this);
 
         }
     }
