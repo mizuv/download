@@ -104,6 +104,34 @@ namespace Download
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Keyboard"",
+            ""id"": ""1dd76c51-737a-4bb5-b6fd-8866974059d5"",
+            ""actions"": [
+                {
+                    ""name"": ""Shift"",
+                    ""type"": ""Button"",
+                    ""id"": ""c824faee-dd53-48a8-ad11-2b1bd10b7974"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8654afc6-9e4c-4080-b905-29b4ddc26f3f"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -174,11 +202,15 @@ namespace Download
             m_Cursor_SubButtonClick = m_Cursor.FindAction("SubButtonClick", throwIfNotFound: true);
             m_Cursor_Move = m_Cursor.FindAction("Move", throwIfNotFound: true);
             m_Cursor_Click = m_Cursor.FindAction("Click", throwIfNotFound: true);
+            // Keyboard
+            m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
+            m_Keyboard_Shift = m_Keyboard.FindAction("Shift", throwIfNotFound: true);
         }
 
         ~@InputSystem_Actions()
         {
             Debug.Assert(!m_Cursor.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Cursor.Disable() has not been called.");
+            Debug.Assert(!m_Keyboard.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Keyboard.Disable() has not been called.");
         }
 
         public void Dispose()
@@ -298,6 +330,52 @@ namespace Download
             }
         }
         public CursorActions @Cursor => new CursorActions(this);
+
+        // Keyboard
+        private readonly InputActionMap m_Keyboard;
+        private List<IKeyboardActions> m_KeyboardActionsCallbackInterfaces = new List<IKeyboardActions>();
+        private readonly InputAction m_Keyboard_Shift;
+        public struct KeyboardActions
+        {
+            private @InputSystem_Actions m_Wrapper;
+            public KeyboardActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Shift => m_Wrapper.m_Keyboard_Shift;
+            public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(KeyboardActions set) { return set.Get(); }
+            public void AddCallbacks(IKeyboardActions instance)
+            {
+                if (instance == null || m_Wrapper.m_KeyboardActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_KeyboardActionsCallbackInterfaces.Add(instance);
+                @Shift.started += instance.OnShift;
+                @Shift.performed += instance.OnShift;
+                @Shift.canceled += instance.OnShift;
+            }
+
+            private void UnregisterCallbacks(IKeyboardActions instance)
+            {
+                @Shift.started -= instance.OnShift;
+                @Shift.performed -= instance.OnShift;
+                @Shift.canceled -= instance.OnShift;
+            }
+
+            public void RemoveCallbacks(IKeyboardActions instance)
+            {
+                if (m_Wrapper.m_KeyboardActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IKeyboardActions instance)
+            {
+                foreach (var item in m_Wrapper.m_KeyboardActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_KeyboardActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public KeyboardActions @Keyboard => new KeyboardActions(this);
         private int m_KeyboardMouseSchemeIndex = -1;
         public InputControlScheme KeyboardMouseScheme
         {
@@ -348,6 +426,10 @@ namespace Download
             void OnSubButtonClick(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnClick(InputAction.CallbackContext context);
+        }
+        public interface IKeyboardActions
+        {
+            void OnShift(InputAction.CallbackContext context);
         }
     }
 }
