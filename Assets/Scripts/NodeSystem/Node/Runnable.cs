@@ -13,7 +13,7 @@ namespace Download.NodeSystem {
         public IReadOnlyReactiveProperty<float> Runtime => _runtime;
         public IReadOnlyReactiveProperty<bool> IsRunning => _isRunning;
 
-        private readonly float RUN_UPDATE_SECOND = 0.1f;
+        private readonly float RUN_UPDATE_SECOND = 0.625f;
 
         public Runnable(Folder? parent, string name) : base(parent, name) {
             _isRunning
