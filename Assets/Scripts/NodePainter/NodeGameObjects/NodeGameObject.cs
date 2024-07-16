@@ -8,6 +8,8 @@ namespace Download {
     public class NodeGameObject : MonoBehaviour, ICursorEventListener, ISelectEventListener {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
+        public ProgressBar ProgressBar;
+
         public Node? Node { get; private set; }
 
         public void Awake() {
