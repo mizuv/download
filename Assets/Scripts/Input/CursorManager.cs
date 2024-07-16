@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UniRx;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 namespace Download {
     public class CursorManager : PersistentSingleton<CursorManager> {
@@ -65,7 +66,7 @@ namespace Download {
         }
 
         private void OnClickStarted(InputAction.CallbackContext context) {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (IsPointerOverUIElement()) return;
 
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
@@ -134,6 +135,16 @@ namespace Download {
             if (hit.collider == null) return null;
             hit.collider.gameObject.TryGetComponent<ICursorEventListener>(out var cursorEventListener);
             return cursorEventListener;
+        }
+
+        private List<RaycastResult> raycastResults = new List<RaycastResult>();
+        private bool IsPointerOverUIElement() {
+            // 현재 커서 위치에서 레이캐스트하여 UI 요소를 감지
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = currentCursorPosition;
+            raycastResults.Clear();
+            EventSystem.current.RaycastAll(eventData, raycastResults);
+            return raycastResults.Count > 0;
         }
     }
 }
