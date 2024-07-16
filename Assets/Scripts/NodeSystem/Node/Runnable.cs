@@ -10,9 +10,11 @@ namespace Download.NodeSystem {
 
         private readonly ReactiveProperty<float> _runtime = new(0f);
         private readonly ReactiveProperty<bool> _isRunning = new(false);
+        private readonly Subject<Unit> _runCompleteSubject = new Subject<Unit>();
 
         public IReadOnlyReactiveProperty<float> Runtime => _runtime;
         public IReadOnlyReactiveProperty<bool> IsRunning => _isRunning;
+        public IObservable<Unit> RunComplete => _runCompleteSubject.AsObservable();
 
         private readonly float RUN_UPDATE_SECOND = 0.0625f;
 
@@ -20,7 +22,8 @@ namespace Download.NodeSystem {
             _isRunning
                 .DistinctUntilChanged()
                 .Where(isRunning => isRunning)
-                .Subscribe(_ => Run());
+                .Subscribe(_ => Run())
+                .AddTo(_disposables);
         }
 
         public void StartRun() {
@@ -43,9 +46,11 @@ namespace Download.NodeSystem {
                     _runtime.Value = timeElapsed;
                     if (_runtime.Value >= RunDuration) {
                         _runtime.Value = 0;
+                        _runCompleteSubject.OnNext(Unit.Default);
                         StopRun();
                     }
-                });
+                })
+                .AddTo(_disposables);
         }
     }
 }

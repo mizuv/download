@@ -6,6 +6,7 @@ namespace Download {
 
         public static GameObject ForestPrefab => GetPrefab("Node.Forest");
         public static GameObject FolderPrefab => GetPrefab("Node.Folder");
+        public static GameObject WoodPrefab => GetPrefab("Node.Wood");
 
         private static GameObject GetPrefab(string key) {
             var prefab = PrefabManager.Instance.GetPrefab(key);
