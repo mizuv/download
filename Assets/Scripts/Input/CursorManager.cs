@@ -8,9 +8,9 @@ namespace Download {
         private InputSystem_Actions inputActions;
         private Vector2 currentCursorPosition;
 
-        private CursorEventListener? hoveredObject = null;
-        private CursorEventListener? subbuttonClickedObject = null;
-        private CursorEventListener? clickedObject = null;
+        private ICursorEventListener? hoveredObject = null;
+        private ICursorEventListener? subbuttonClickedObject = null;
+        private ICursorEventListener? clickedObject = null;
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -121,9 +121,9 @@ namespace Download {
             hoveredObject.OnHoverEnter();
         }
 
-        static CursorEventListener? GetCursorEventListenerHelper(RaycastHit2D hit) {
+        static ICursorEventListener? GetCursorEventListenerHelper(RaycastHit2D hit) {
             if (hit.collider == null) return null;
-            hit.collider.gameObject.TryGetComponent<CursorEventListener>(out var cursorEventListener);
+            hit.collider.gameObject.TryGetComponent<ICursorEventListener>(out var cursorEventListener);
             return cursorEventListener;
         }
     }

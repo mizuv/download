@@ -1,14 +1,9 @@
-
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using Mizuvt.Common;
 using Download.NodeSystem;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 namespace Download {
-    public class NodeGameObject : CursorEventListener {
+    public class NodeGameObject : MonoBehaviour, ICursorEventListener {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
         public Node? Node { get; private set; }
@@ -19,12 +14,10 @@ namespace Download {
             SelectedArea.enabled = false;
         }
 
-        public override void OnHoverEnter() {
-            base.OnHoverEnter();
+        public void OnHoverEnter() {
             HoverArea.enabled = true;
         }
-        public override void OnHoverExit() {
-            base.OnHoverExit();
+        public void OnHoverExit() {
             HoverArea.enabled = false;
         }
 
@@ -32,8 +25,7 @@ namespace Download {
             SelectedArea.enabled = show;
         }
 
-        public override void OnClickEnter() {
-            base.OnClickEnter();
+        public void OnClickEnter() {
             GameManager.Instance.SelectedNode.Value = this;
         }
 
