@@ -1,6 +1,7 @@
 using Mizuvt.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UniRx;
 
 namespace Download {
     public class CursorManager : PersistentSingleton<CursorManager> {
@@ -17,25 +18,45 @@ namespace Download {
 
         private void OnEnable() {
             inputActions.Cursor.Enable();
-            inputActions.Cursor.Move.performed += OnCursorMove;
-            inputActions.Cursor.Click.started += OnClickStarted;
-            inputActions.Cursor.Click.canceled += OnClickCanceled;
-            inputActions.Cursor.SubButtonClick.started += OnSubbuttonClickStarted;
-            inputActions.Cursor.SubButtonClick.canceled += OnSubbuttonClickCanceled;
+
+            inputActions.Cursor.Move
+                .AsObservable()
+                .Select(context => context.ReadValue<Vector2>())
+                .DistinctUntilChanged()
+                .Subscribe((position) => {
+                    currentCursorPosition = position;
+                    CheckHoverEvent(currentCursorPosition);
+
+                })
+                .AddTo(this);
+
+            inputActions.Cursor.Click
+                .AsObservable()
+                .Where(context => context.phase == InputActionPhase.Started)
+                .Subscribe(OnClickStarted)
+                .AddTo(this);
+
+            inputActions.Cursor.Click
+                .AsObservable()
+                .Where(context => context.phase == InputActionPhase.Canceled)
+                .Subscribe(OnClickCanceled)
+                .AddTo(this);
+
+            inputActions.Cursor.SubButtonClick
+                .AsObservable()
+                .Where(context => context.phase == InputActionPhase.Started)
+                .Subscribe(OnSubbuttonClickStarted)
+                .AddTo(this);
+
+            inputActions.Cursor.SubButtonClick
+                .AsObservable()
+                .Where(context => context.phase == InputActionPhase.Canceled)
+                .Subscribe(OnSubbuttonClickCanceled)
+                .AddTo(this);
         }
 
         private void OnDisable() {
-            inputActions.Cursor.Move.performed -= OnCursorMove;
-            inputActions.Cursor.Click.started -= OnClickStarted;
-            inputActions.Cursor.Click.canceled -= OnClickCanceled;
-            inputActions.Cursor.SubButtonClick.started -= OnSubbuttonClickStarted;
-            inputActions.Cursor.SubButtonClick.canceled -= OnSubbuttonClickCanceled;
             inputActions.Cursor.Disable();
-        }
-
-        private void OnCursorMove(InputAction.CallbackContext context) {
-            currentCursorPosition = context.ReadValue<Vector2>();
-            CheckHoverEvent(currentCursorPosition);
         }
 
         private void OnClickStarted(InputAction.CallbackContext context) {
