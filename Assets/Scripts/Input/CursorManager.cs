@@ -2,6 +2,7 @@ using Mizuvt.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UniRx;
+using UnityEngine.EventSystems;
 
 namespace Download {
     public class CursorManager : PersistentSingleton<CursorManager> {
@@ -11,6 +12,10 @@ namespace Download {
         private ICursorEventListener? hoveredObject = null;
         private ICursorEventListener? subbuttonClickedObject = null;
         private ICursorEventListener? clickedObject = null;
+
+        private readonly Subject<Unit> nullClickSubject = new Subject<Unit>();
+        public System.IObservable<Unit> NullClick => nullClickSubject.AsObservable();
+
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -60,13 +65,17 @@ namespace Download {
         }
 
         private void OnClickStarted(InputAction.CallbackContext context) {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
 
             clickedObject = GetCursorEventListenerHelper(hit);
-            if (clickedObject != null) {
-                clickedObject.OnClickEnter();
+            if (clickedObject == null) {
+                nullClickSubject.OnNext(Unit.Default);
+                return;
             }
+            clickedObject.OnClickEnter();
         }
 
         private void OnClickCanceled(InputAction.CallbackContext context) {
