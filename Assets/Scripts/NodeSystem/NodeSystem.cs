@@ -1,18 +1,17 @@
 
 using System;
 using UniRx;
+using UnityEngine;
 
 namespace Download.NodeSystem {
     public class NodeSystem {
         private readonly Subject<NodeExistenceEvent> NodeExistenceEventSubject = new Subject<NodeExistenceEvent>();
         public IObservable<NodeExistenceEvent> NodeExistenceEvent => NodeExistenceEventSubject.AsObservable();
 
-        public readonly Folder Root;
-
-        public NodeSystem() {
-            Root = Folder.CreateRoot(NodeExistenceEventSubject);
-            new Forest(Root, "나무1");
-            new Forest(Root, "나무2");
+        public void Initialize() {
+            var root = Folder.CreateRoot(NodeExistenceEventSubject);
+            new Forest(root, "나무1");
+            new Forest(root, "나무2");
         }
     }
 }

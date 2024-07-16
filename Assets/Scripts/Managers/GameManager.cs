@@ -16,7 +16,7 @@ public class GameManager : PersistentSingleton<GameManager> {
     protected override void Awake() {
         base.Awake();
         nodeSystem = new NodeSystem();
-        nodePainter = new NodePainter();
+        nodePainter = this.gameObject.AddComponent<NodePainter>();
     }
 
     protected void Start() {

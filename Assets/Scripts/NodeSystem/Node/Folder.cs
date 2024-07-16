@@ -1,3 +1,4 @@
+using log4net.Util;
 using Mizuvt.Common;
 using UniRx;
 
@@ -5,7 +6,6 @@ namespace Download.NodeSystem {
     public class Folder : Node {
 
         public readonly OrderedSet<Node> children = new();
-
 
         public Folder(Folder parent, string name) : base(parent, name) { }
 

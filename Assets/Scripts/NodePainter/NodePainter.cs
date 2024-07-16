@@ -6,60 +6,69 @@ using Mizuvt.Common;
 using Download.NodeSystem;
 using UnityEngine;
 using System;
+using System.Collections;
+using UniRx;
 
 
 namespace Download {
     public class NodePainter : MonoBehaviour {
+        const float VERTICAL_INTERVAL = 1.3f;
+        const float HORIZONTAL_INTERVAL = 1.4f;
+
         public NodeSystem.NodeSystem NodeSystem;
+        public Dictionary<Node, NodeGameObject> nodeMap = new();
 
         public void Initialize(NodeSystem.NodeSystem nodeSystem) {
+
+            nodeSystem.NodeExistenceEvent.Subscribe(nodeEvent => {
+                var node = nodeEvent.Node;
+                switch (nodeEvent.Type) {
+                    case NodeExistenceEventType.Create:
+                        if (node.Parent == null) {
+                            if (node is not Folder folder) throw new Exception("only root folder can have null parent");
+                        }
+                        var prefab = GetPrefab(node);
+                        var gameObject = Instantiate(prefab);
+                        var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
+                        nodeGameObject.Initialize(node);
+                        if (nodeGameObject is FolderGameObject folderGameObject) {
+                            folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
+                        }
+                        nodeMap.Add(node, nodeGameObject);
+                        if (node.Parent != null) {
+                            // setParent
+                            var parent = nodeMap[node.Parent];
+                            if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
+                            gameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
+                            // reorder
+
+                            var parentNode = parent.Node;
+                            if (parentNode is not Folder folder) throw new Exception("only folder can be a parent");
+                            var xPositions = Utils.GenerateZeroMeanArray(folder.children.Count, HORIZONTAL_INTERVAL);
+                            folder.children.ForEach((child, index) => {
+
+                                var childGameObject = nodeMap[child].gameObject;
+                                childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
+                            });
+                        }
+                        break;
+                    case NodeExistenceEventType.Delete:
+                        // TODO
+                        break;
+                }
+            }).AddTo(this);
+
             NodeSystem = nodeSystem;
-            Draw();
+            NodeSystem.Initialize();
         }
 
-        public void Draw() {
-            const float verticalInterval = 1.3f;
-
-            var root = Instantiate(NodeGameObjectsPrefab.FolderPrefab);
-            root.GetComponent<NodeGameObject>().Initialize(NodeSystem.Root);
-            var parentTransform = new GameObject(NodeSystem.Root.Name).transform;
-            parentTransform.SetParent(root.gameObject.transform);
-            parentTransform.position += Vector3.down * verticalInterval;
-            DrawChildren(NodeSystem.Root, parentTransform);
-
-            void DrawChildren(Folder parent, Transform parentTransform) {
-
-                var xPositions = Utils.GenerateZeroMeanArray(parent.children.Count, 1.4f);
-
-                parent.children.ForEach((child, index) => {
-                    switch (child) {
-                        case Folder folder:
-                            var folderGameObject = Instantiate(
-                                NodeGameObjectsPrefab.FolderPrefab,
-                                Vector3.zero,
-                                Quaternion.identity,
-                                parentTransform
-                            );
-                            folderGameObject.GetComponent<NodeGameObject>().Initialize(child);
-                            folderGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
-                            var newParent = new GameObject(folder.Name).transform;
-                            newParent.SetParent(folderGameObject.gameObject.transform);
-                            newParent.position += Vector3.down * verticalInterval;
-                            DrawChildren(folder, newParent);
-                            break;
-                        case Forest forest:
-                            var forestGameObject = Instantiate(
-                                NodeGameObjectsPrefab.ForestPrefab,
-                                Vector3.zero,
-                                Quaternion.identity,
-                                parentTransform
-                            );
-                            forestGameObject.GetComponent<NodeGameObject>().Initialize(child);
-                            forestGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
-                            break;
-                    }
-                });
-            }
+        private GameObject GetPrefab(Node node) {
+            return node switch {
+                Folder => NodeGameObjectsPrefab.FolderPrefab,
+                Forest => NodeGameObjectsPrefab.ForestPrefab,
+                Wood => NodeGameObjectsPrefab.WoodPrefab,
+                _ => throw new Exception("invalid node type")
+            };
         }
     }
 }
