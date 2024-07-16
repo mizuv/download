@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Download.NodeSystem;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace Download {
         }
 
         public void OnClickEnter() {
-            GameManager.Instance.SelectedNode.Value = this;
+            GameManager.Instance.SelectedNode.Value = ImmutableList.Create(this);
         }
 
         public void Initialize(Node node) {

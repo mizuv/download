@@ -24,4 +24,7 @@ public static class EnumerableExtensions {
             index++;
         }
     }
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
+        source.ForEach((element, _) => action(element));
+    }
 }

@@ -11,7 +11,7 @@ namespace Download {
     public class SidePanel : MonoBehaviour {
         public GameObject SidePanelObject;
 
-        private IObservable<bool> isRunnable;
+        private ReactiveProperty<Runnable?> runnable = new(null);
         public Button RunButton;
 
         private IObservable<bool> temp;
@@ -21,19 +21,23 @@ namespace Download {
         }
 
         private void OnEnable() {
-            isRunnable = GameManager.Instance.SelectedNode
-                            .Select(node => {
+            GameManager.Instance.SelectedNode
+                            .Select(nodes => {
+                                if (nodes.Count != 1) return Observable.Return<Runnable?>(null);
+                                var node = nodes[0];
                                 if (node?.Node is not Runnable runnable)
-                                    return Observable.Return(false);
-                                return runnable.IsRunning.Select(isRunning => !isRunning);
+                                    return Observable.Return<Runnable?>(null);
+                                return runnable.IsRunning.Select(isRunning => { if (isRunning) return null; return runnable; });
                             })
                             .Switch()
-                            .DistinctUntilChanged();
+                            .DistinctUntilChanged()
+                            .Subscribe(runnable => this.runnable.Value = runnable)
+                            .AddTo(this);
 
             temp = Observable.Return(false);
 
             // 상태에 따라 사이드뷰 렌더
-            Observable.CombineLatest(isRunnable, temp, (isRunnable, temp) => new { isRunnable, temp })
+            Observable.CombineLatest(runnable, temp, (runnable, temp) => new { isRunnable = runnable != null, temp })
                 .Subscribe(options => {
                     RunButton.gameObject.SetActive(options.isRunnable);
 
@@ -45,9 +49,10 @@ namespace Download {
                 })
                 .AddTo(this);
 
+            // run button
             RunButton.OnClickAsObservable().Subscribe(_ => {
-                if (GameManager.Instance.SelectedNode.Value?.Node is not Runnable runnable) return;
-                runnable.StartRun();
+                if (runnable.Value == null) return;
+                runnable.Value.StartRun();
             }).AddTo(this);
 
         }

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Download.NodeSystem;
 using Mizuvt.Common;
 using TMPro;
@@ -11,22 +12,30 @@ namespace Download {
         public TextMeshProUGUI FileInfo;
 
         private void OnEnable() {
+            // name
             GameManager.Instance.SelectedNode.Subscribe(
-                (NodeGameObject? selectedNode) => {
-                    if (selectedNode == null) {
+                (ImmutableList<NodeGameObject> nodes) => {
+                    if (nodes.Count == 0) {
                         FileName.text = "";
                         return;
                     }
-                    Node node = selectedNode.Node!;
-                    FileName.text = node.Name ?? "Not Initialized";
+                    var node = nodes[0];
+                    if (nodes.Count == 1) {
+                        FileName.text = node.Node?.Name ?? "Not Initialized";
+                        return;
+                    }
+                    FileName.text = $"{node.Node?.Name} 외 {nodes.Count}개";
+
                 })
                 .AddTo(this);
 
+            // runnable
             GameManager.Instance.SelectedNode
-                .Select(node => {
+                .Select(nodes => {
                     var returnNull = Observable.Return<float?>(null);
 
-                    if (node == null) return returnNull;
+                    if (nodes.Count != 1) return returnNull;
+                    var node = nodes[0];
                     if (node.Node == null) return returnNull;
                     if (node.Node is not Runnable runnable) return returnNull;
 
@@ -45,7 +54,7 @@ namespace Download {
                         FileInfo.text = "";
                         return;
                     }
-                    var Runnable = (GameManager.Instance.SelectedNode.Value?.Node as Runnable)!;
+                    var Runnable = (GameManager.Instance.SelectedNode.Value[0].Node as Runnable)!;
                     FileInfo.text = $"{((int)runningProgress).ToString()}/{Runnable.RunDuration}";
                 })
                 .AddTo(this);
