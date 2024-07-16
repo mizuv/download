@@ -33,7 +33,7 @@ namespace Download {
             GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(this);
         }
 
-        public void Initialize(Node node) {
+        public virtual void Initialize(Node node) {
             Node = node;
         }
 
