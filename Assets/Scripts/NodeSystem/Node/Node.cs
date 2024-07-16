@@ -13,10 +13,12 @@ namespace Download.NodeSystem {
             SetParent(parent);
             this.eventSubject = parent.eventSubject;
             Name = name;
+            eventSubject.OnNext(new(NodeExistenceEventType.Create, this));
         }
         public Node(Subject<NodeExistenceEvent> eventSubject, string name) {
             this.eventSubject = eventSubject;
             Name = name;
+            eventSubject.OnNext(new(NodeExistenceEventType.Create, this));
         }
 
         public void SetParent(Folder parent) {
@@ -27,6 +29,7 @@ namespace Download.NodeSystem {
 
         public abstract string GetPrintString(string indent);
 
+        // TODO: not implemented yet
         public virtual void Destroy() {
             // Parent?.RemoveChild(this);
             _disposables.Clear();
