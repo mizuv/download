@@ -13,7 +13,7 @@ public class GameManager : PersistentSingleton<GameManager> {
     private NodeSystem nodeSystem;
     private NodePainter nodePainter;
 
-    public ReactiveProperty<ImmutableList<NodeGameObject>> SelectedNode = new(ImmutableList<NodeGameObject>.Empty);
+    public ReactiveProperty<ImmutableOrderedSet<NodeGameObject>> SelectedNode = new(ImmutableOrderedSet<NodeGameObject>.Empty);
 
     protected override void Awake() {
         base.Awake();

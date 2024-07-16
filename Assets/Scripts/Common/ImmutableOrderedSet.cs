@@ -58,5 +58,17 @@ namespace Mizuvt.Common {
                 return list[index];
             }
         }
+
+        public static ImmutableOrderedSet<T> Create(IEnumerable<T> items) {
+            var list = ImmutableList.CreateRange(items);
+            var set = ImmutableHashSet.CreateRange(items);
+            return new ImmutableOrderedSet<T>(list, set);
+        }
+
+        public static ImmutableOrderedSet<T> Create(params T[] items) {
+            var list = ImmutableList.CreateRange(items);
+            var set = ImmutableHashSet.CreateRange(items);
+            return new ImmutableOrderedSet<T>(list, set);
+        }
     }
 }

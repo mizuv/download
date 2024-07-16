@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using Download.NodeSystem;
+using Mizuvt.Common;
 using UnityEngine;
 
 
@@ -23,7 +24,11 @@ namespace Download {
         }
 
         public void OnClickEnter() {
-            GameManager.Instance.SelectedNode.Value = ImmutableList.Create(this);
+            if (ButtonManager.Instance.ShiftPressed.Value) {
+                GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(this);
+                return;
+            }
+            GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(this);
         }
 
         public void Initialize(Node node) {

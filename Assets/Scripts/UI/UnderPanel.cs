@@ -14,7 +14,7 @@ namespace Download {
         private void OnEnable() {
             // name
             GameManager.Instance.SelectedNode.Subscribe(
-                (ImmutableList<NodeGameObject> nodes) => {
+                (ImmutableOrderedSet<NodeGameObject> nodes) => {
                     if (nodes.Count == 0) {
                         FileName.text = "";
                         return;
