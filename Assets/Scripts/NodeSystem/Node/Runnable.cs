@@ -4,6 +4,7 @@ using UniRx;
 
 
 namespace Download.NodeSystem {
+    // TODO: destory 시점에 _disposables.Clear() 호출   
     public abstract class Runnable : Node {
         public abstract float RunDuration { get; }
 
