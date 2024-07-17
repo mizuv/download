@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using Download.NodeSystem;
 using Mizuvt.Common;
 using UnityEngine;
+using UniRx;
 
 
 namespace Download {
@@ -35,6 +36,12 @@ namespace Download {
 
         public virtual void Initialize(Node node) {
             Node = node;
+
+            node.DeleteStart
+                .Subscribe(_ => {
+                    GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Remove(this);
+                })
+                .AddTo(this);
         }
 
         public void OnSelect() {

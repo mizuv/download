@@ -71,4 +71,13 @@ namespace Mizuvt.Common {
             return new ImmutableOrderedSet<T>(list, set);
         }
     }
+
+    public static class ImmutableOrderedSetExtensions {
+        public static ImmutableOrderedSet<T> ToImmutableOrderedSet<T>(this IEnumerable<T> source) {
+            if (source == null) {
+                throw new ArgumentNullException(nameof(source));
+            }
+            return ImmutableOrderedSet<T>.Create(source);
+        }
+    }
 }

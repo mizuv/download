@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Download.NodeSystem;
 using Mizuvt.Common;
@@ -13,8 +14,9 @@ namespace Download {
 
         private ReactiveProperty<Runnable?> runnable = new(null);
         public Button RunButton;
+        public Button DeleteButton;
 
-        private IObservable<bool> temp;
+        private ReactiveProperty<ImmutableOrderedSet<Node>> deletables = new(ImmutableOrderedSet<Node>.Empty);
 
         private void Awake() {
             SidePanelObject.SetActive(false);
@@ -34,12 +36,22 @@ namespace Download {
                             .Subscribe(runnable => this.runnable.Value = runnable)
                             .AddTo(this);
 
-            temp = Observable.Return(false);
+            GameManager.Instance.SelectedNode
+                            .Select(nodes => {
+                                var empty = ImmutableOrderedSet<Node>.Empty;
+                                if (nodes.Count < 1) return empty;
+                                if (nodes.Any(node => node.Node?.Parent == null)) return empty;
+                                return nodes.Select(node => node.Node!).ToImmutableOrderedSet()!;
+                            })
+                            .DistinctUntilChanged()
+                            .Subscribe(deletables => this.deletables.Value = deletables)
+                            .AddTo(this);
 
             // 상태에 따라 사이드뷰 렌더
-            Observable.CombineLatest(runnable, temp, (runnable, temp) => new { isRunnable = runnable != null, temp })
+            Observable.CombineLatest(runnable, deletables, (runnable, deletables) => new { isRunnable = runnable != null, isDeletable = deletables.Count > 0 })
                 .Subscribe(options => {
                     RunButton.gameObject.SetActive(options.isRunnable);
+                    DeleteButton.gameObject.SetActive(options.isDeletable);
 
                     if (options.GetType().GetProperties().All(prop => !(bool)prop.GetValue(options))) {
                         SidePanelObject.SetActive(false);
@@ -55,6 +67,12 @@ namespace Download {
                 runnable.Value.StartRun();
             }).AddTo(this);
 
+            // delete button
+            DeleteButton.OnClickAsObservable().Subscribe(_ => {
+                deletables.Value.ForEach(node => {
+                    node.Delete();
+                });
+            }).AddTo(this);
         }
     }
 }

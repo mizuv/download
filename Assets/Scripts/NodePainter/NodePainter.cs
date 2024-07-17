@@ -16,14 +16,14 @@ namespace Download {
         const float HORIZONTAL_INTERVAL = 1.4f;
 
         public NodeSystem.NodeSystem NodeSystem;
-        public Dictionary<Node, NodeGameObject> nodeMap = new();
+        public Dictionary<Node, NodeGameObject> nodeObjectMap = new();
 
         public void Initialize(NodeSystem.NodeSystem nodeSystem) {
 
             nodeSystem.NodeExistenceEvent.Subscribe(nodeEvent => {
                 var node = nodeEvent.Node;
-                switch (nodeEvent.Type) {
-                    case NodeExistenceEventType.Create:
+                switch (nodeEvent) {
+                    case NodeExistenceEventCreate nodeEventCreate:
                         if (node.Parent == null) {
                             if (node is not Folder folder) throw new Exception("only root folder can have null parent");
                         }
@@ -34,32 +34,40 @@ namespace Download {
                         if (nodeGameObject is FolderGameObject folderGameObject) {
                             folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
                         }
-                        nodeMap.Add(node, nodeGameObject);
+                        nodeObjectMap.Add(node, nodeGameObject);
                         if (node.Parent != null) {
                             // setParent
-                            var parent = nodeMap[node.Parent];
+                            var parent = nodeObjectMap[node.Parent];
                             if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
                             gameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
                             // reorder
 
                             var parentNode = parent.Node;
                             if (parentNode is not Folder folder) throw new Exception("only folder can be a parent");
-                            var xPositions = Utils.GenerateZeroMeanArray(folder.children.Count, HORIZONTAL_INTERVAL);
-                            folder.children.ForEach((child, index) => {
-
-                                var childGameObject = nodeMap[child].gameObject;
-                                childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
-                            });
+                            Reorder(folder);
                         }
                         break;
-                    case NodeExistenceEventType.Delete:
-                        // TODO
+                    case NodeExistenceEventDelete nodeEventDelete:
+                        var nodeObject = nodeObjectMap.GetValueOrDefault(node);
+                        if (nodeObject == null) break;
+                        Destroy(nodeObject.gameObject);
+                        Reorder(nodeEventDelete.ParentRightBeforeDelete);
                         break;
+
                 }
             }).AddTo(this);
 
             NodeSystem = nodeSystem;
             NodeSystem.Initialize();
+
+            void Reorder(Folder folder) {
+                var xPositions = Utils.GenerateZeroMeanArray(folder.children.Count, HORIZONTAL_INTERVAL);
+                folder.children.ForEach((child, index) => {
+
+                    var childGameObject = nodeObjectMap[child].gameObject;
+                    childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
+                });
+            };
         }
 
         private GameObject GetPrefab(Node node) {

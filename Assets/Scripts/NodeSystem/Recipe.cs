@@ -26,7 +26,8 @@ namespace Download.NodeSystem {
 
             immutableHashSetBuilder.Add(new Recipe(
                 new Type[] { typeof(Tree), typeof(Tree), typeof(Forest) },
-                new Type[] { typeof(Folder) }
+                new Type[] { typeof(Folder) },
+                1400
             ));
 
             Recipes = immutableHashSetBuilder.ToImmutable();

@@ -1,4 +1,5 @@
 
+using System;
 using UniRx;
 
 namespace Download.NodeSystem {
@@ -8,17 +9,19 @@ namespace Download.NodeSystem {
 
         protected CompositeDisposable _disposables = new();
         protected Subject<NodeExistenceEvent> eventSubject;
+        private readonly Subject<Unit> _deleteStart = new();
+        public IObservable<Unit> DeleteStart => _deleteStart;
 
         public Node(Folder parent, string name) {
             SetParent(parent);
             this.eventSubject = parent.eventSubject;
             Name = name;
-            eventSubject.OnNext(new(NodeExistenceEventType.Create, this));
+            eventSubject.OnNext(new NodeExistenceEventCreate(this));
         }
         public Node(Subject<NodeExistenceEvent> eventSubject, string name) {
             this.eventSubject = eventSubject;
             Name = name;
-            eventSubject.OnNext(new(NodeExistenceEventType.Create, this));
+            eventSubject.OnNext(new NodeExistenceEventCreate(this));
         }
 
         public void SetParent(Folder parent) {
@@ -27,12 +30,26 @@ namespace Download.NodeSystem {
             parent.AddChild(this);
         }
 
+        public void FreeFromParent() {
+            if (Parent == null) return;
+            var prevParent = Parent;
+            Parent = null;
+            prevParent.RemoveChild(this);
+        }
+
         public abstract string GetPrintString(string indent);
 
         // TODO: not implemented yet
-        public virtual void Destroy() {
-            // Parent?.RemoveChild(this);
+        public virtual void Delete() {
+            if (Parent == null) {
+                // root cannot be destroyed
+                return;
+            }
+            var parentRightBeforeDelete = Parent;
+            _deleteStart.OnNext(Unit.Default);
             _disposables.Clear();
+            this.FreeFromParent();
+            eventSubject.OnNext(new NodeExistenceEventDelete(this, parentRightBeforeDelete));
         }
     }
 }

@@ -21,6 +21,12 @@ namespace Download.NodeSystem {
             child.SetParent(this);
         }
 
+        public void RemoveChild(Node child) {
+            if (!children.Contains(child)) return;
+            children.Remove(child);
+            child.FreeFromParent();
+        }
+
         public override string GetPrintString(string indent) {
             string result = $"{indent}Folder: {Name}\n";
             foreach (var child in children) {

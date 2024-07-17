@@ -4,17 +4,22 @@ using UniRx;
 using UnityEngine;
 
 namespace Download.NodeSystem {
-    public enum NodeExistenceEventType {
-        Delete,
-        Create,
-    }
-    public class NodeExistenceEvent {
-        public NodeExistenceEventType Type { get; }
+    public abstract class NodeExistenceEvent {
         public Node Node { get; }
 
-        public NodeExistenceEvent(NodeExistenceEventType type, Node node) {
-            Type = type;
+        public NodeExistenceEvent(Node node) {
             Node = node;
+        }
+    }
+
+    public class NodeExistenceEventCreate : NodeExistenceEvent {
+        public NodeExistenceEventCreate(Node node) : base(node) { }
+    }
+    public class NodeExistenceEventDelete : NodeExistenceEvent {
+        public Folder ParentRightBeforeDelete { get; }
+
+        public NodeExistenceEventDelete(Node node, Folder parentRightBeforeDelete) : base(node) {
+            ParentRightBeforeDelete = parentRightBeforeDelete;
         }
     }
 }
