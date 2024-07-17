@@ -1,11 +1,7 @@
-using System.Collections.Generic;
 using Mizuvt.Common;
-using UnityEngine;
-using System;
 using Download;
 using Download.NodeSystem;
 using UniRx;
-using System.Collections.Immutable;
 using System.Linq;
 
 
@@ -23,10 +19,10 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     protected void Start() {
         nodePainter.Initialize(nodeSystem);
-
     }
 
     protected void OnEnable() {
+        // 객체에 select 이벤트 전달하기
         SelectedNode.DistinctUntilChanged().Pairwise().Subscribe(pair => {
             var prev = pair.Previous;
             var curr = pair.Current;
@@ -38,7 +34,4 @@ public class GameManager : PersistentSingleton<GameManager> {
             UnselectedList.ForEach(node => node.OnUnselect());
         }).AddTo(this);
     }
-
-
-
 }

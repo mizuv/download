@@ -1,5 +1,8 @@
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 
@@ -13,5 +16,18 @@ namespace Download.NodeSystem {
             new Forest(root, "나무1");
             new Forest(root, "나무2");
         }
+
+        // public void MergeNode(IEnumerable<Node> nodes) {
+        //     var types = nodes.Select(n => n.GetType());
+        //     var recipe = Recipe.GetRecipe(types);
+        //     var parent = nodes.First().Parent;
+        //     var merge = recipe.GetMerge(parent);
+        //     foreach (Node node in nodes) {
+
+        //     }
+        //     merge.Start();
+        //     merge.
+
+        // }
     }
 }

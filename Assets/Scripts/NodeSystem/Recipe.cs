@@ -10,10 +10,12 @@ namespace Download.NodeSystem {
     public partial class Recipe {
         public readonly ImmutableList<Type> From;
         public readonly ImmutableList<Type> To;
+        public readonly int MergeTime;
 
-        private Recipe(IEnumerable<Type> from, IEnumerable<Type> to) {
+        private Recipe(IEnumerable<Type> from, IEnumerable<Type> to, int mergeTime) {
             From = OrderType(from).ToImmutableList();
             To = OrderType(to).ToImmutableList();
+            mergeTime = MergeTime;
         }
     }
     public partial class Recipe {
@@ -34,9 +36,9 @@ namespace Download.NodeSystem {
             return types.OrderBy(t => t.Namespace).ThenBy(t => t.Name);
         }
 
-        static public ImmutableList<Type> GetRecipe(IEnumerable<Type> from) {
+        static public Recipe? GetRecipe(IEnumerable<Type> from) {
             var recipe = Recipes.FirstOrDefault(r => r.From.SequenceEqual(OrderType(from)));
-            return recipe.To;
+            return recipe;
         }
     }
 }
