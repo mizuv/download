@@ -12,15 +12,21 @@ namespace Download.NodeSystem {
         private readonly Subject<Unit> _deleteStart = new();
         public IObservable<Unit> DeleteStart => _deleteStart;
 
+        public virtual RunOption RunOption => RunOption.GetEmptyRunOption();
+
+        protected readonly RunManager RunManager;
+
         public Node(Folder parent, string name) {
             SetParent(parent);
             this.eventSubject = parent.eventSubject;
             Name = name;
+            RunManager = new(new ReactiveProperty<bool>(true), _disposables, RunOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
         }
         public Node(Subject<NodeExistenceEvent> eventSubject, string name) {
             this.eventSubject = eventSubject;
             Name = name;
+            RunManager = new(new ReactiveProperty<bool>(true), _disposables, RunOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
         }
 
@@ -39,7 +45,6 @@ namespace Download.NodeSystem {
 
         public abstract string GetPrintString(string indent);
 
-        // TODO: not implemented yet
         public virtual void Delete() {
             if (Parent == null) {
                 // root cannot be destroyed

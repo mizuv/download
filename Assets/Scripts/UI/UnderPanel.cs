@@ -25,7 +25,6 @@ namespace Download {
                         return;
                     }
                     FileName.text = $"{node.Node?.Name} 외 {nodes.Count}개";
-
                 })
                 .AddTo(this);
 
@@ -37,15 +36,9 @@ namespace Download {
                     if (nodes.Count != 1) return returnNull;
                     var node = nodes[0];
                     if (node.Node == null) return returnNull;
-                    if (node.Node is not Runnable runnable) return returnNull;
+                    if (node.Node is not IRunnable runnable) return returnNull;
 
-                    return runnable.IsRunning
-                        .Select(running => {
-                            if (!running)
-                                return Observable.Return<float?>(null);
-                            return runnable.Runtime.Select(progress => (float?)progress);
-                        })
-                        .Switch();
+                    return runnable.Runtime;
                 })
                 .Switch()
                 .DistinctUntilChanged()
@@ -54,11 +47,10 @@ namespace Download {
                         FileInfo.text = "";
                         return;
                     }
-                    var Runnable = (GameManager.Instance.SelectedNode.Value[0].Node as Runnable)!;
-                    FileInfo.text = $"{((int)runningProgress).ToString()}/{Runnable.RunDuration}";
+                    var runnable = (GameManager.Instance.SelectedNode.Value[0].Node as IRunnable)!;
+                    FileInfo.text = $"{((int)runningProgress).ToString()}/{runnable.RunOption.RunDuration}";
                 })
                 .AddTo(this);
         }
-
     }
 }

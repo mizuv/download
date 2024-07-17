@@ -12,7 +12,7 @@ namespace Download {
     public class SidePanel : MonoBehaviour {
         public GameObject SidePanelObject;
 
-        private ReactiveProperty<Runnable?> runnable = new(null);
+        private ReactiveProperty<IRunnable?> runnable = new(null);
         public Button RunButton;
         public Button DeleteButton;
 
@@ -25,11 +25,14 @@ namespace Download {
         private void OnEnable() {
             GameManager.Instance.SelectedNode
                             .Select(nodes => {
-                                if (nodes.Count != 1) return Observable.Return<Runnable?>(null);
+                                if (nodes.Count != 1) return Observable.Return<IRunnable?>(null);
                                 var node = nodes[0];
-                                if (node?.Node is not Runnable runnable)
-                                    return Observable.Return<Runnable?>(null);
-                                return runnable.IsRunning.Select(isRunning => { if (isRunning) return null; return runnable; });
+                                if (node?.Node is not IRunnable runnable)
+                                    return Observable.Return<IRunnable?>(null);
+                                return runnable.Runtime.Select(runtime => {
+                                    if (runtime != null) return null;
+                                    return runnable;
+                                });
                             })
                             .Switch()
                             .DistinctUntilChanged()

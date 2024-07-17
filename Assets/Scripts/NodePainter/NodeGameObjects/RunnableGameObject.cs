@@ -7,15 +7,23 @@ namespace Download {
     public class RunnableGameObject : NodeGameObject {
         public override void Initialize(Node node) {
             base.Initialize(node);
-            if (node is not Runnable runnable) {
+            if (node is not IRunnable runnable) {
                 throw new System.Exception("Node is not a runnable");
             }
-            runnable.IsRunning.Subscribe(isRunning => {
-                ProgressBar.SetVisible(isRunning);
-            }).AddTo(this);
+            runnable.Runtime
+                .Select(runtime => runtime != null)
+                .DistinctUntilChanged()
+                .Subscribe(isRunning => {
+                    ProgressBar.SetVisible(isRunning);
+                }).AddTo(this);
 
             runnable.Runtime.Subscribe(runtime => {
-                ProgressBar.SetProgress(runtime / runnable.RunDuration);
+                if (runtime == null) {
+                    ProgressBar.SetProgress(0);
+                    return;
+                }
+
+                ProgressBar.SetProgress(runtime.Value / runnable.RunOption.RunDuration);
             }).AddTo(this);
         }
 
