@@ -17,7 +17,7 @@ namespace Download.NodeSystem {
             new Forest(root, "나무2");
         }
 
-        public void MergeNode(IEnumerable<Node> nodes) {
+        public void MergeNode(IEnumerable<IMergeable> nodes) {
             var types = nodes.Select(n => n.GetType());
             var recipe = Recipe.GetRecipe(types);
             if (recipe == null) return;

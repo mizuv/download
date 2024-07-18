@@ -6,7 +6,7 @@ using System.Linq;
 
 
 public class GameManager : PersistentSingleton<GameManager> {
-    private NodeSystem nodeSystem;
+    public NodeSystem nodeSystem;
     private NodePainter nodePainter;
 
     public ReactiveProperty<ImmutableOrderedSet<NodeGameObject>> SelectedNode = new(ImmutableOrderedSet<NodeGameObject>.Empty);

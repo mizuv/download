@@ -15,7 +15,7 @@ namespace Download.NodeSystem {
         private Recipe(IEnumerable<Type> from, IEnumerable<Type> to, int mergeTime) {
             From = OrderType(from).ToImmutableList();
             To = OrderType(to).ToImmutableList();
-            mergeTime = MergeTime;
+            MergeTime = mergeTime;
         }
     }
     public partial class Recipe {
@@ -25,7 +25,7 @@ namespace Download.NodeSystem {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
             immutableHashSetBuilder.Add(new Recipe(
-                new Type[] { typeof(Tree), typeof(Tree), typeof(Forest) },
+                new Type[] { typeof(Wood), typeof(Wood), typeof(Forest) },
                 new Type[] { typeof(Folder) },
                 1400
             ));

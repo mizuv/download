@@ -1,5 +1,6 @@
 
 using System;
+using System.Diagnostics;
 using UniRx;
 
 namespace Download.NodeSystem {
@@ -21,7 +22,7 @@ namespace Download.NodeSystem {
 
         protected readonly RunManager RunManager;
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
-        protected IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
+        public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
         private readonly ReactiveProperty<NodeActionState> _actionState = new(Download.NodeSystem.NodeActionState.Idle);
         protected IReadOnlyReactiveProperty<NodeActionState> ActionState => _actionState;
@@ -39,7 +40,10 @@ namespace Download.NodeSystem {
             Name = name;
 
             var isRunActive = ActionState.Select(state => state == NodeActionState.Idle || state == NodeActionState.Running).DistinctUntilChanged().ToReactiveProperty();
-            _isMergeActive = ActionState.Select(state => state == NodeActionState.Idle || state == NodeActionState.Merging).DistinctUntilChanged().ToReactiveProperty();
+            _isMergeActive = ActionState.Select(state => {
+                var isProperState = state == NodeActionState.Idle || state == NodeActionState.Merging;
+                return isProperState && Parent != null;
+            }).DistinctUntilChanged().ToReactiveProperty();
             RunManager = new(isRunActive, _disposables, RunOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
 
@@ -87,6 +91,7 @@ namespace Download.NodeSystem {
             if (mergeManager == null) return;
             // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
             mergeManager.MergeComplete.Subscribe(_ => {
+                UnityEngine.Debug.Log("MergeComplete detected on  Node");
                 _mergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
