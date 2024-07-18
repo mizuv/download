@@ -1824,6 +1824,8 @@ MonoBehaviour:
     prefab: {fileID: 260778427269028480, guid: 1949066094c2a479182871055aaf0555, type: 3}
   - key: Node.Wood
     prefab: {fileID: 260778427269028480, guid: a0c3faa0758684bde901b0dfcff766ac, type: 3}
+  - key: Node.WoodPlatter
+    prefab: {fileID: 260778427269028480, guid: a2fc1a4221dcb494f89cd78c8e71c656, type: 3}
 --- !u!1 &2067070747
 GameObject:
   m_ObjectHideFlags: 0

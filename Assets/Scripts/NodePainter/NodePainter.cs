@@ -27,7 +27,7 @@ namespace Download {
                         if (node.Parent == null) {
                             if (node is not Folder folder) throw new Exception("only root folder can have null parent");
                         }
-                        var prefab = GetPrefab(node);
+                        var prefab = NodeGameObjectsPrefab.GetPrefabByNode(node);
                         var gameObject = Instantiate(prefab);
                         var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
                         nodeGameObject.Initialize(node);
@@ -70,13 +70,5 @@ namespace Download {
             };
         }
 
-        private GameObject GetPrefab(Node node) {
-            return node switch {
-                Folder => NodeGameObjectsPrefab.FolderPrefab,
-                Forest => NodeGameObjectsPrefab.ForestPrefab,
-                Wood => NodeGameObjectsPrefab.WoodPrefab,
-                _ => throw new Exception("invalid node type")
-            };
-        }
     }
 }
