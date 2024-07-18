@@ -26,6 +26,8 @@ namespace Download {
             HoverArea.enabled = false;
         }
 
+        public bool IsDestoryed => this == null;
+
         public void OnClickEnter() {
             if (ButtonManager.Instance.ShiftPressed.Value) {
                 GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(this);

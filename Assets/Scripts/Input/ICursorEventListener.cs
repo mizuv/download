@@ -8,5 +8,7 @@ namespace Download {
 
         public void OnSubbuttonClickEnter() { }
         public void OnSubbuttonClickExit() { }
+
+        public bool IsDestoryed { get; }
     }
 }

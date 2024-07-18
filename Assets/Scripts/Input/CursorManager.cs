@@ -118,12 +118,14 @@ namespace Download {
                 return;
             }
 
-            // if (prevHoveredObject == hoveredObject) {
-            //     prevHoveredObject.OnHover();
-            //     return;
-            // }
+            if (prevHoveredObject == hoveredObject) {
+                //     prevHoveredObject.OnHover();
+                return;
+            }
 
-            if (prevHoveredObject != null) {
+            // 이유는 모르겠으나 ICursorEventListener타입인 prevHoveredObject를 여기서 nullcheck하면 통과가 되는데
+            // 실제구현체인 monoBehavior에서 nullcheck하면 통과가 안되는 경우가 있었음.
+            if (prevHoveredObject != null && !prevHoveredObject.IsDestoryed) {
                 // 이전에 호버했던 오브젝트에서 나감
                 prevHoveredObject.OnHoverExit();
             }
