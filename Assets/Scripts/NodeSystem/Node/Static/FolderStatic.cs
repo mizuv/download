@@ -3,9 +3,11 @@ using Mizuvt.Common;
 using UniRx;
 
 namespace Download.NodeSystem {
-    public class ForestStatic : PureSingleton<ForestStatic>, IStaticNode {
+    public class FolderStatic : PureSingleton<FolderStatic>, IStaticNode {
+        public string Name => "폴더";
+
         public Node CreateInstance(Folder parent, string name) {
-            return new Forest(parent, name);
+            return new Folder(parent, name);
         }
     }
 }
