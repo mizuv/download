@@ -6,13 +6,13 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public partial class Recipe {
-        public readonly ImmutableList<Type> From;
-        public readonly ImmutableList<Type> To;
+        public readonly ImmutableList<IStaticNode> From;
+        public readonly ImmutableList<IStaticNode> To;
         public readonly int MergeTime;
 
-        private Recipe(IEnumerable<Type> from, IEnumerable<Type> to, int mergeTime) {
-            From = OrderType(from).ToImmutableList();
-            To = OrderType(to).ToImmutableList();
+        private Recipe(IEnumerable<IStaticNode> from, IEnumerable<IStaticNode> to, int mergeTime) {
+            From = OrderByType(from).ToImmutableList();
+            To = OrderByType(to).ToImmutableList();
             MergeTime = mergeTime;
         }
     }
@@ -23,30 +23,30 @@ namespace Download.NodeSystem {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
             immutableHashSetBuilder.Add(new Recipe(
-                new Type[] { typeof(Wood), typeof(WoodPlatter), typeof(Forest) },
-                new Type[] { typeof(Folder) },
+                new IStaticNode[] { Wood.StaticNode, WoodPlatter.StaticNode, Forest.StaticNode },
+                new IStaticNode[] { Folder.StaticNode },
                 2400
             ));
             immutableHashSetBuilder.Add(new Recipe(
-                new Type[] { typeof(Wood), typeof(Wood) },
-                new Type[] { typeof(WoodPlatter) },
+                new IStaticNode[] { Wood.StaticNode, Wood.StaticNode },
+                new IStaticNode[] { WoodPlatter.StaticNode },
                 1000
             ));
             immutableHashSetBuilder.Add(new Recipe(
-                new Type[] { typeof(Wood), typeof(Wood), typeof(Wood), typeof(Wood) },
-                new Type[] { typeof(Forest) },
+                new IStaticNode[] { Wood.StaticNode, Wood.StaticNode, Wood.StaticNode, Wood.StaticNode },
+                new IStaticNode[] { Forest.StaticNode },
                 3400
             ));
 
             Recipes = immutableHashSetBuilder.ToImmutable();
         }
 
-        static private IEnumerable<Type> OrderType(IEnumerable<Type> types) {
-            return types.OrderBy(t => t.Namespace).ThenBy(t => t.Name);
+        static private IEnumerable<IStaticNode> OrderByType(IEnumerable<IStaticNode> types) {
+            return types.OrderBy(t => { var type = t.GetType(); return $"{type.Namespace}#{type.Name}"; });
         }
 
-        static public Recipe? GetRecipe(IEnumerable<Type> from) {
-            var recipe = Recipes.FirstOrDefault(r => r.From.SequenceEqual(OrderType(from)));
+        static public Recipe? GetRecipe(IEnumerable<IStaticNode> from) {
+            var recipe = Recipes.FirstOrDefault(r => r.From.SequenceEqual(OrderByType(from)));
             return recipe;
         }
     }

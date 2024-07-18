@@ -35,5 +35,9 @@ namespace Download.NodeSystem {
         public void StopRun() {
             RunManager.StopRun();
         }
+        public static IStaticNode StaticNode => ForestStatic.Instance;
+        public override IStaticNode GetStaticNode() {
+            return StaticNode;
+        }
     }
 }

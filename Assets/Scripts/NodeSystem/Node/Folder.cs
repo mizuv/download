@@ -34,5 +34,9 @@ namespace Download.NodeSystem {
             }
             return result;
         }
+        public static IStaticNode StaticNode => FolderStatic.Instance;
+        public override IStaticNode GetStaticNode() {
+            return StaticNode;
+        }
     }
 }

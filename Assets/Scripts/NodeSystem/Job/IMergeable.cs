@@ -9,7 +9,9 @@ namespace Download.NodeSystem {
 
         public CompositeDisposable GetDisposable();
 
-        // 빼면 좋지
+        public void Delete();
+        // 빼면 좋지 (그런가)
         public Folder? Parent { get; }
+        public IStaticNode GetStaticNode();
     }
 }

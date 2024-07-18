@@ -82,8 +82,8 @@ namespace Download {
                             .Switch()
                             .Select(nodes => {
                                 var empty = ImmutableOrderedSet<IMergeable>.Empty;
-                                var nodeTypes = nodes.Select(node => node.GetType());
-                                var recipe = Recipe.GetRecipe(nodeTypes);
+                                var staticNodes = nodes.Select(node => node.GetStaticNode());
+                                var recipe = Recipe.GetRecipe(staticNodes);
                                 if (recipe == null) return empty;
                                 return nodes;
                             })

@@ -18,8 +18,8 @@ namespace Download.NodeSystem {
         }
 
         public void MergeNode(IEnumerable<IMergeable> nodes) {
-            var types = nodes.Select(n => n.GetType());
-            var recipe = Recipe.GetRecipe(types);
+            var staticNodes = nodes.Select(n => n.GetStaticNode());
+            var recipe = Recipe.GetRecipe(staticNodes);
             if (recipe == null) return;
             var parent = nodes.First().Parent;
             var mergeManager = new MergeManager(nodes, recipe);
@@ -27,6 +27,16 @@ namespace Download.NodeSystem {
                 node.SetMergeManager(mergeManager);
             }
             mergeManager.StartMerge();
+            // mergeManager.MergeComplete
+            //     .Subscribe(_ => {
+            //         nodes.ForEach(n => n.Delete());
+            //         recipe.To.ForEach(nodeType => {
+            //             var node = (Node)Activator.CreateInstance(nodeType, parent, "Merged",);
+            //             node.RunManager.StartRun();
+            //         });
+            //         parent.MergeComplete(mergeManager);
+            //         NodeExistenceEventSubject.OnNext(new NodeExistenceEvent(parent, NodeExistenceEventType.MergeComplete));
+            //     });
         }
     }
 }

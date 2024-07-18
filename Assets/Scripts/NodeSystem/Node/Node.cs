@@ -91,7 +91,6 @@ namespace Download.NodeSystem {
             if (mergeManager == null) return;
             // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
             mergeManager.MergeComplete.Subscribe(_ => {
-                UnityEngine.Debug.Log("MergeComplete detected on  Node");
                 _mergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
@@ -120,5 +119,6 @@ namespace Download.NodeSystem {
         public CompositeDisposable GetDisposable() {
             return this._disposables;
         }
+        public abstract IStaticNode GetStaticNode();
     }
 }

@@ -11,6 +11,9 @@ namespace Download.NodeSystem {
         public override string GetPrintString(string indent) {
             return $"{indent}WoodPlatter: {Name}\n";
         }
-
+        public static IStaticNode StaticNode => WoodPlatterStatic.Instance;
+        public override IStaticNode GetStaticNode() {
+            return StaticNode;
+        }
     }
 }
