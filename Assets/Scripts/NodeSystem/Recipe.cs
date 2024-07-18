@@ -1,10 +1,8 @@
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using UniRx;
-using UnityEngine;
 
 namespace Download.NodeSystem {
     public partial class Recipe {
@@ -25,9 +23,19 @@ namespace Download.NodeSystem {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
             immutableHashSetBuilder.Add(new Recipe(
-                new Type[] { typeof(Wood), typeof(Wood), typeof(Forest) },
+                new Type[] { typeof(Wood), typeof(WoodPlatter), typeof(Forest) },
                 new Type[] { typeof(Folder) },
-                1400
+                2400
+            ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new Type[] { typeof(Wood), typeof(Wood) },
+                new Type[] { typeof(WoodPlatter) },
+                1000
+            ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new Type[] { typeof(Wood), typeof(Wood), typeof(Wood), typeof(Wood) },
+                new Type[] { typeof(Forest) },
+                3400
             ));
 
             Recipes = immutableHashSetBuilder.ToImmutable();
