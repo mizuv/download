@@ -17,17 +17,16 @@ namespace Download.NodeSystem {
             new Forest(root, "나무2");
         }
 
-        // public void MergeNode(IEnumerable<Node> nodes) {
-        //     var types = nodes.Select(n => n.GetType());
-        //     var recipe = Recipe.GetRecipe(types);
-        //     var parent = nodes.First().Parent;
-        //     var merge = recipe.GetMerge(parent);
-        //     foreach (Node node in nodes) {
-
-        //     }
-        //     merge.Start();
-        //     merge.
-
-        // }
+        public void MergeNode(IEnumerable<Node> nodes) {
+            var types = nodes.Select(n => n.GetType());
+            var recipe = Recipe.GetRecipe(types);
+            if (recipe == null) return;
+            var parent = nodes.First().Parent;
+            var mergeManager = new MergeManager(nodes, recipe);
+            foreach (Node node in nodes) {
+                node.SetMergeManager(mergeManager);
+            }
+            mergeManager.StartMerge();
+        }
     }
 }

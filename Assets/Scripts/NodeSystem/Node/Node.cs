@@ -3,7 +3,12 @@ using System;
 using UniRx;
 
 namespace Download.NodeSystem {
-    public abstract class Node {
+    public enum NodeActionState {
+        Idle,
+        Running,
+        Merging,
+    }
+    public abstract class Node : IMergeable {
         public Folder? Parent { get; private set; }
         public string Name { get; private set; }
 
@@ -15,25 +20,75 @@ namespace Download.NodeSystem {
         public virtual RunOption RunOption => RunOption.GetEmptyRunOption();
 
         protected readonly RunManager RunManager;
+        private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
+        protected IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
-        public Node(Folder parent, string name) {
-            SetParent(parent);
-            this.eventSubject = parent.eventSubject;
-            Name = name;
-            RunManager = new(new ReactiveProperty<bool>(true), _disposables, RunOption);
-            eventSubject.OnNext(new NodeExistenceEventCreate(this));
-        }
-        public Node(Subject<NodeExistenceEvent> eventSubject, string name) {
+        private readonly ReactiveProperty<NodeActionState> _actionState = new(Download.NodeSystem.NodeActionState.Idle);
+        protected IReadOnlyReactiveProperty<NodeActionState> ActionState => _actionState;
+
+        private readonly IReadOnlyReactiveProperty<bool> _isMergeActive;
+        public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
+
+        public Node(Folder parent, string name) : this(parent, name, parent.eventSubject) { }
+        public Node(Subject<NodeExistenceEvent> eventSubject, string name) : this(null, name, eventSubject) { }
+
+        private Node(Folder? parent, string name, Subject<NodeExistenceEvent> eventSubject) {
+            if (parent != null)
+                SetParent(parent);
             this.eventSubject = eventSubject;
             Name = name;
-            RunManager = new(new ReactiveProperty<bool>(true), _disposables, RunOption);
+
+            var isRunActive = ActionState.Select(state => state == NodeActionState.Idle || state == NodeActionState.Running).DistinctUntilChanged().ToReactiveProperty();
+            _isMergeActive = ActionState.Select(state => state == NodeActionState.Idle || state == NodeActionState.Merging).DistinctUntilChanged().ToReactiveProperty();
+            RunManager = new(isRunActive, _disposables, RunOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
+
+            RunManager.Runtime
+                .Select(runtime => runtime != null)
+                .DistinctUntilChanged()
+                .Subscribe(isRunning => {
+                    if (isRunning) {
+                        _actionState.Value = NodeActionState.Running;
+                        return;
+                    }
+                    _actionState.Value = NodeActionState.Idle;
+                })
+                .AddTo(_disposables);
+
+            MergeManagerReactive
+                .Select(mergeManager => {
+                    if (mergeManager == null) return Observable.Return<float?>(null);
+                    return mergeManager.MergeTime;
+                })
+                .Switch()
+                .Select(runtime => runtime != null)
+                .DistinctUntilChanged()
+                .Subscribe(isMerging => {
+                    if (isMerging) {
+                        _actionState.Value = NodeActionState.Merging;
+                        return;
+                    }
+                    _actionState.Value = NodeActionState.Idle;
+                })
+                .AddTo(_disposables);
         }
 
         public void SetParent(Folder parent) {
             if (parent == Parent) return;
             Parent = parent;
             parent.AddChild(this);
+        }
+
+        public void SetMergeManager(MergeManager? mergeManager) {
+            if (mergeManager != null && _mergeManagerReactive.Value != null) {
+                return;
+            }
+            _mergeManagerReactive.Value = mergeManager;
+            if (mergeManager == null) return;
+            // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
+            mergeManager.MergeComplete.Subscribe(_ => {
+                _mergeManagerReactive.Value = null;
+            }).AddTo(_disposables);
         }
 
         public void FreeFromParent() {
@@ -55,6 +110,10 @@ namespace Download.NodeSystem {
             _disposables.Clear();
             this.FreeFromParent();
             eventSubject.OnNext(new NodeExistenceEventDelete(this, parentRightBeforeDelete));
+        }
+
+        public CompositeDisposable GetDisposable() {
+            return this._disposables;
         }
     }
 }
