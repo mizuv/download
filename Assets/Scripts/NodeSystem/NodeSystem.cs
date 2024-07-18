@@ -21,22 +21,19 @@ namespace Download.NodeSystem {
             var staticNodes = nodes.Select(n => n.GetStaticNode());
             var recipe = Recipe.GetRecipe(staticNodes);
             if (recipe == null) return;
-            var parent = nodes.First().Parent;
+            var parent = nodes.First().Parent ?? throw new Exception("root can't be merged");
             var mergeManager = new MergeManager(nodes, recipe);
             foreach (Node node in nodes) {
                 node.SetMergeManager(mergeManager);
             }
             mergeManager.StartMerge();
-            // mergeManager.MergeComplete
-            //     .Subscribe(_ => {
-            //         nodes.ForEach(n => n.Delete());
-            //         recipe.To.ForEach(nodeType => {
-            //             var node = (Node)Activator.CreateInstance(nodeType, parent, "Merged",);
-            //             node.RunManager.StartRun();
-            //         });
-            //         parent.MergeComplete(mergeManager);
-            //         NodeExistenceEventSubject.OnNext(new NodeExistenceEvent(parent, NodeExistenceEventType.MergeComplete));
-            //     });
+            mergeManager.MergeComplete
+                .Subscribe(_ => {
+                    nodes.ForEach(n => n.Delete());
+                    recipe.To.ForEach(staticNode => {
+                        var node = staticNode.CreateInstance(parent, staticNode.Name);
+                    });
+                });
         }
     }
 }
