@@ -15,6 +15,7 @@ namespace Download {
                 .DistinctUntilChanged()
                 .Subscribe(isRunning => {
                     ProgressBar.SetVisible(isRunning);
+                    ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.White);
                 }).AddTo(this);
 
             runnable.Runtime.Subscribe(runtime => {

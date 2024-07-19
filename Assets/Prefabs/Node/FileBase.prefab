@@ -733,3 +733,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressBar: {fileID: 552301164685440382}
   SpriteParent: {fileID: 5460030048146687328}
+  BackgroundSquareRenderer: {fileID: 8097580691791029842}
+  ForegroundSquareRenderer: {fileID: 4772373694733127412}
