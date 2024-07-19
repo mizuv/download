@@ -44,6 +44,30 @@ namespace Download {
                     GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Remove(this);
                 })
                 .AddTo(this);
+
+            var mergeTime = node.MergeManagerReactive
+                .Select(mergeManager => mergeManager?.MergeTime.AsObservable() ?? Observable.Return<float?>(null))
+                .Switch()
+                .DistinctUntilChanged();
+            var recipe = node.MergeManagerReactive
+                .Select(mergeManager => mergeManager?.Recipe);
+
+            mergeTime
+                .Select(mergeTime => mergeTime != null)
+                .DistinctUntilChanged()
+                .Subscribe(isMerging => {
+                    ProgressBar.SetVisible(isMerging);
+                    ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.Blue);
+                }).AddTo(this);
+
+            Observable.CombineLatest(mergeTime, recipe, (mergeTime, recipe) => new { mergeTime, recipe }).Subscribe(v => {
+                if (v.mergeTime == null || v.recipe == null) {
+                    ProgressBar.SetProgress(0);
+                    return;
+                }
+
+                ProgressBar.SetProgress(v.mergeTime.Value / v.recipe.MergeTime);
+            }).AddTo(this);
         }
 
         public void OnSelect() {
