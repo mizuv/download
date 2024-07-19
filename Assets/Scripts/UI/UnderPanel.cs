@@ -59,8 +59,9 @@ namespace Download {
 
                     var runningMergeManager = nodeGameObjects
                                     .Select(obj => obj.Node!.MergeManagerReactive)
-                                    .CombineLatest()
+                                    .CombineLatestButEmitNullOnEmpty()
                                     .Select(mergeManagers => {
+                                        if (mergeManagers == null) return Observable.Return<MergeManager?>(null);
                                         bool allEqual = mergeManagers.Distinct().Count() == 1;
                                         if (!allEqual) return Observable.Return<MergeManager?>(null);
                                         var mergeManager = mergeManagers.First();

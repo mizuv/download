@@ -24,8 +24,8 @@ namespace Download.NodeSystem {
             Recipe = recipe;
             IsActive = mergeables
                 .Select(m => m.IsMergeActive)
-                .CombineLatest()
-                .Select(values => values.All(active => active))
+                .CombineLatestButEmitNullOnEmpty()
+                .Select(values => values?.All(active => active) ?? false)
                 .ToReactiveProperty();
             _disposablesList = mergeables.Select(m => m.GetDisposable());
         }
