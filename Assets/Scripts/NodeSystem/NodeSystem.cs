@@ -29,10 +29,14 @@ namespace Download.NodeSystem {
             mergeManager.StartMerge();
             mergeManager.MergeComplete
                 .Subscribe(_ => {
-                    nodes.ForEach(n => n.Delete());
+                    List<Node> createdNodes = new();
                     recipe.To.ForEach(staticNode => {
+                        // Select에서 상태 변경하면 아주 큰일난단다. 자체적 최적화 때문에 몇번 호출될지 알 수 없음.
                         var node = staticNode.CreateInstance(parent, staticNode.Name);
+                        createdNodes.Add(node);
                     });
+                    NodeExistenceEventSubject.OnNext(new NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted(createdNodes, nodes));
+                    nodes.ForEach(n => n.Delete());
                 });
         }
     }

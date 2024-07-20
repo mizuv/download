@@ -21,38 +21,55 @@ namespace Download {
         public void Initialize(NodeSystem.NodeSystem nodeSystem) {
 
             nodeSystem.NodeExistenceEvent.Subscribe(nodeEvent => {
-                var node = nodeEvent.Node;
                 switch (nodeEvent) {
-                    case NodeExistenceEventCreate nodeEventCreate:
-                        if (node.Parent == null) {
-                            if (node is not Folder folder) throw new Exception("only root folder can have null parent");
-                        }
-                        var prefab = NodeGameObjectsPrefab.GetPrefabByNode(node);
-                        var gameObject = Instantiate(prefab);
-                        var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
-                        nodeGameObject.Initialize(node);
-                        if (nodeGameObject is FolderGameObject folderGameObject) {
-                            folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
-                        }
-                        nodeObjectMap.Add(node, nodeGameObject);
-                        if (node.Parent != null) {
-                            // setParent
-                            var parent = nodeObjectMap[node.Parent];
-                            if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
-                            gameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
-                            // reorder
+                    case NodeExistenceEventCreate nodeEventCreate: {
+                            var node = nodeEventCreate.Node;
+                            if (node.Parent == null) {
+                                if (node is not Folder folder) throw new Exception("only root folder can have null parent");
+                            }
+                            var prefab = NodeGameObjectsPrefab.GetPrefabByNode(node);
+                            var gameObject = Instantiate(prefab);
+                            var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
+                            nodeGameObject.Initialize(node);
+                            if (nodeGameObject is FolderGameObject folderGameObject) {
+                                folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
+                            }
+                            nodeObjectMap.Add(node, nodeGameObject);
+                            if (node.Parent != null) {
+                                // setParent
+                                var parent = nodeObjectMap[node.Parent];
+                                if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
+                                gameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
+                                // reorder
 
-                            var parentNode = parent.Node;
-                            if (parentNode is not Folder folder) throw new Exception("only folder can be a parent");
-                            Reorder(folder);
+                                var parentNode = parent.Node;
+                                if (parentNode is not Folder folder) throw new Exception("only folder can be a parent");
+                                Reorder(folder);
+                            }
+                            break;
                         }
-                        break;
-                    case NodeExistenceEventDelete nodeEventDelete:
-                        var nodeObject = nodeObjectMap.GetValueOrDefault(node);
-                        if (nodeObject == null) break;
-                        Destroy(nodeObject.gameObject);
-                        Reorder(nodeEventDelete.ParentRightBeforeDelete);
-                        break;
+                    case NodeExistenceEventDelete nodeEventDelete: {
+                            var node = nodeEventDelete.Node;
+                            var nodeObject = nodeObjectMap.GetValueOrDefault(node);
+                            if (nodeObject == null) break;
+                            Destroy(nodeObject.gameObject);
+                            Reorder(nodeEventDelete.ParentRightBeforeDelete);
+                            break;
+                        }
+                    case NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted mergeToItemCreated: {
+                            var mergedToItem = mergeToItemCreated.MergedToItem;
+                            var mergeables = mergeToItemCreated.Mergeables;
+                            var currentSelectedNode = GameManager.Instance.SelectedNode.Value.Select(nodeObject => (IMergeable)nodeObject.Node!);
+                            var isAllSelectedItemIsMergeFrom = currentSelectedNode.ToHashSet().IsSubsetOf(mergeables);
+                            if (!isAllSelectedItemIsMergeFrom) return;
+
+                            GameManager.Instance.SelectedNode.Value = mergedToItem
+                                                                        .Select(node => nodeObjectMap
+                                                                        .TryGetValue(node, out var nodeObject) ? nodeObject : null)
+                                                                        .Compact()
+                                                                        .ToImmutableOrderedSet();
+                            break;
+                        }
 
                 }
             }).AddTo(this);

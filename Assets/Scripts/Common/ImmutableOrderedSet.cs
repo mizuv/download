@@ -22,6 +22,10 @@ namespace Mizuvt.Common {
             return set.Contains(item);
         }
 
+        public bool IsSubsetOf(IEnumerable<T> other) {
+            return set.IsSubsetOf(other);
+        }
+
         public ImmutableOrderedSet<T> Add(T item) {
             if (set.Contains(item)) {
                 return this;
