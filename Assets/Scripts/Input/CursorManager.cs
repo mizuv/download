@@ -64,11 +64,11 @@ namespace Download {
                 .Subscribe(pair => {
                     var previousClickedObject = pair.listenerPair.Previous;
                     var currentClickedObject = pair.listenerPair.Current;
-                    var positoin = pair.position;
+                    var position = pair.position;
 
                     if (previousClickedObject == currentClickedObject) {
                         if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                            // currentClickedObject.OnClickHold();
+                            currentClickedObject.OnClickHold(new ClickHoldContext(position));
                         }
                         return;
                     }
@@ -124,8 +124,8 @@ namespace Download {
             var prevHoveredObject = hoveredObject;
             hoveredObject = GetCursorEventListenerHelper(hit);
 
-            if (hoveredObject == null) {
-                if (prevHoveredObject == null) return;
+            if (hoveredObject == null || hoveredObject.IsDestoryed) {
+                if (prevHoveredObject == null || prevHoveredObject.IsDestoryed) return;
                 prevHoveredObject.OnHoverExit();
                 return;
             }
