@@ -28,7 +28,8 @@ namespace Download {
 
         public bool IsDestoryed => this == null;
 
-        public void OnClickEnter() {
+        public void OnClickEnter(Vector2 screenPosition) {
+            // selectedNode 설정하는건 만들때 컬백으로 넣어주는게 좋을까 싶기도 하고..
             if (ButtonManager.Instance.ShiftPressed.Value) {
                 GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(this);
                 return;

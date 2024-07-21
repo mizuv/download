@@ -6,9 +6,9 @@ namespace Download {
         public void OnHoverEnter() { }
         public void OnHoverExit() { }
 
-        public void OnClickEnter() { }
+        public void OnClickEnter(Vector2 screenPosition) { }
         public void OnClickHold(ClickHoldContext context) { }
-        public void OnClickExit() { }
+        public void OnClickExit(Vector2 screenPosition) { }
 
         public void OnSubbuttonClickEnter() { }
         public void OnSubbuttonClickExit() { }

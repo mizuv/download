@@ -74,10 +74,10 @@ namespace Download {
                     }
 
                     if (previousClickedObject != null && !previousClickedObject.IsDestoryed) {
-                        previousClickedObject.OnClickExit();
+                        previousClickedObject.OnClickExit(position);
                     }
                     if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                        currentClickedObject.OnClickEnter();
+                        currentClickedObject.OnClickEnter(position);
                     }
                 })
                 .AddTo(this);
