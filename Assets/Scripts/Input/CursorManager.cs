@@ -4,15 +4,15 @@ using UnityEngine.InputSystem;
 using UniRx;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System;
 
 namespace Download {
     public class CursorManager : PersistentSingleton<CursorManager> {
         private InputSystem_Actions inputActions;
-        private Vector2 currentCursorPosition;
+        private IReadOnlyReactiveProperty<Vector2> currentCursorPosition;
 
         private ICursorEventListener? hoveredObject = null;
         private ICursorEventListener? subbuttonClickedObject = null;
-        private ICursorEventListener? clickedObject = null;
 
         private readonly Subject<Unit> nullClickSubject = new Subject<Unit>();
         public System.IObservable<Unit> NullClick => nullClickSubject.AsObservable();
@@ -25,27 +25,61 @@ namespace Download {
         private void OnEnable() {
             inputActions.Cursor.Enable();
 
-            inputActions.Cursor.Move
+            currentCursorPosition = inputActions.Cursor.Move
                 .AsObservable()
                 .Select(context => context.ReadValue<Vector2>())
                 .DistinctUntilChanged()
-                .Subscribe((position) => {
-                    currentCursorPosition = position;
-                    CheckHoverEvent(currentCursorPosition);
+                .ToReactiveProperty();
 
+            currentCursorPosition
+                .Subscribe((position) => {
+                    CheckHoverEvent(position);
                 })
                 .AddTo(this);
 
-            inputActions.Cursor.Click
+            var nullCilckEventListener = new NullCursorEventListener(() => { nullClickSubject.OnNext(Unit.Default); });
+            var clickedObject = inputActions.Cursor.Click
                 .AsObservable()
-                .Where(context => context.phase == InputActionPhase.Started)
-                .Subscribe(OnClickStarted)
-                .AddTo(this);
+                .Where(context => context.phase == InputActionPhase.Started || context.phase == InputActionPhase.Canceled)
+                .Select(context => {
+                    if (context.phase != InputActionPhase.Started) return null;
 
-            inputActions.Cursor.Click
-                .AsObservable()
-                .Where(context => context.phase == InputActionPhase.Canceled)
-                .Subscribe(OnClickCanceled)
+                    if (IsPointerOverUIElement()) return null;
+
+                    Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition.Value);
+                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+
+                    var clickedObject = GetCursorEventListenerHelper(hit);
+                    if (clickedObject == null) {
+                        return nullCilckEventListener;
+                    }
+                    return clickedObject;
+                })
+                .DistinctUntilChanged();
+
+            clickedObject
+                .StartWith((ICursorEventListener?)null)
+                .Pairwise()
+                .CombineLatest(currentCursorPosition, (listenerPair, position) => (listenerPair, position))
+                .Subscribe(pair => {
+                    var previousClickedObject = pair.listenerPair.Previous;
+                    var currentClickedObject = pair.listenerPair.Current;
+                    var positoin = pair.position;
+
+                    if (previousClickedObject == currentClickedObject) {
+                        if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
+                            // currentClickedObject.OnClickHold();
+                        }
+                        return;
+                    }
+
+                    if (previousClickedObject != null && !previousClickedObject.IsDestoryed) {
+                        previousClickedObject.OnClickExit();
+                    }
+                    if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
+                        currentClickedObject.OnClickEnter();
+                    }
+                })
                 .AddTo(this);
 
             inputActions.Cursor.SubButtonClick
@@ -65,30 +99,8 @@ namespace Download {
             inputActions.Cursor.Disable();
         }
 
-        private void OnClickStarted(InputAction.CallbackContext context) {
-            if (IsPointerOverUIElement()) return;
-
-            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
-            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
-
-            clickedObject = GetCursorEventListenerHelper(hit);
-            if (clickedObject == null) {
-                nullClickSubject.OnNext(Unit.Default);
-                return;
-            }
-            clickedObject.OnClickEnter();
-        }
-
-        private void OnClickCanceled(InputAction.CallbackContext context) {
-            var prevClickedObject = clickedObject;
-            clickedObject = null;
-            if (prevClickedObject != null) {
-                prevClickedObject.OnClickExit();
-            }
-        }
-
         private void OnSubbuttonClickStarted(InputAction.CallbackContext context) {
-            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition.Value);
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
 
             subbuttonClickedObject = GetCursorEventListenerHelper(hit);
@@ -123,7 +135,7 @@ namespace Download {
                 return;
             }
 
-            // 이유는 모르겠으나 ICursorEventListener타입인 prevHoveredObject를 여기서 nullcheck하면 통과가 되는데
+            // 이유는 모르겠으나 ICursorEventListener타입인 prevHoveredObject를 여기서 nullcheck하면 통과가 되는데(ICursorEventListenerInstance == null 의 결과가 false)
             // 실제구현체인 monoBehavior에서 nullcheck하면 통과가 안되는 경우가 있었음.
             if (prevHoveredObject != null && !prevHoveredObject.IsDestoryed) {
                 // 이전에 호버했던 오브젝트에서 나감
@@ -143,10 +155,24 @@ namespace Download {
         private bool IsPointerOverUIElement() {
             // 현재 커서 위치에서 레이캐스트하여 UI 요소를 감지
             PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = currentCursorPosition;
+            eventData.position = currentCursorPosition.Value;
             raycastResults.Clear();
             EventSystem.current.RaycastAll(eventData, raycastResults);
             return raycastResults.Count > 0;
+        }
+
+        private class NullCursorEventListener : ICursorEventListener {
+            public bool IsDestoryed => false;
+
+            public Action OnClickEnterAction;
+            public NullCursorEventListener(Action onClickEnter) {
+                this.OnClickEnterAction = onClickEnter;
+            }
+
+            public void OnClickEnter() {
+                OnClickEnterAction();
+            }
+
         }
     }
 }
