@@ -1,4 +1,5 @@
 namespace Download {
+    // monobehavior와 이것을 달고있으면 감지됩니다. 
     public interface ICursorEventListener {
         public void OnHoverEnter() { }
         public void OnHoverExit() { }
