@@ -169,10 +169,16 @@ namespace Download {
                 this.OnClickEnterAction = onClickEnter;
             }
 
-            public void OnClickEnter() {
+            public void OnClickEnter(Vector2 _) {
                 OnClickEnterAction();
             }
 
+            public void OnHoverEnter() { }
+            public void OnHoverExit() { }
+            public void OnClickHold(ClickHoldContext context) { }
+            public void OnClickExit(Vector2 screenPosition) { }
+            public void OnSubbuttonClickEnter() { }
+            public void OnSubbuttonClickExit() { }
         }
     }
 }

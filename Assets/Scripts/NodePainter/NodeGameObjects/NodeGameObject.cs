@@ -76,5 +76,10 @@ namespace Download {
         public void OnUnselect() {
             SelectedArea.enabled = false;
         }
+
+        public void OnClickHold(ClickHoldContext context) { }
+        public void OnClickExit(Vector2 screenPosition) { }
+        public void OnSubbuttonClickEnter() { }
+        public void OnSubbuttonClickExit() { }
     }
 }
