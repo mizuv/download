@@ -25,6 +25,7 @@ namespace Download {
         private void OnEnable() {
             inputActions.Cursor.Enable();
 
+            // TODO:STart로 옮길까
             currentCursorPosition = inputActions.Cursor.Move
                 .AsObservable()
                 .Select(context => context.ReadValue<Vector2>())
@@ -37,7 +38,7 @@ namespace Download {
                 })
                 .AddTo(this);
 
-            var nullCilckEventListener = new NullCursorEventListener(() => { nullClickSubject.OnNext(Unit.Default); });
+            var nullCilckEventListener = new NullCursorEventListener(() => { nullClickSubject.OnNext(Unit.Default); }, this);
             var clickedObject = inputActions.Cursor.Click
                 .AsObservable()
                 .Where(context => context.phase == InputActionPhase.Started || context.phase == InputActionPhase.Canceled)
@@ -68,16 +69,16 @@ namespace Download {
 
                     if (previousClickedObject == currentClickedObject) {
                         if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                            currentClickedObject.OnClickHold(new ClickHoldContext(position));
+                            currentClickedObject.Click.OnNext(new ClickHoldContext(position));
                         }
                         return;
                     }
 
                     if (previousClickedObject != null && !previousClickedObject.IsDestoryed) {
-                        previousClickedObject.OnClickExit(position);
+                        previousClickedObject.Click.OnNext(new ClickExitContext(position));
                     }
                     if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                        currentClickedObject.OnClickEnter(position);
+                        currentClickedObject.Click.OnNext(new ClickEnterContext(position));
                     }
                 })
                 .AddTo(this);
@@ -105,7 +106,7 @@ namespace Download {
 
             subbuttonClickedObject = GetCursorEventListenerHelper(hit);
             if (subbuttonClickedObject != null) {
-                subbuttonClickedObject.OnSubbuttonClickEnter();
+                subbuttonClickedObject.SubbuttonClick.OnNext(new SubbuttonClickEnterContext());
             }
         }
 
@@ -113,7 +114,7 @@ namespace Download {
             var prevSubbuttonClickedObject = subbuttonClickedObject;
             subbuttonClickedObject = null;
             if (prevSubbuttonClickedObject != null) {
-                prevSubbuttonClickedObject.OnSubbuttonClickExit();
+                prevSubbuttonClickedObject.SubbuttonClick.OnNext(new SubbuttonClickExitContext());
             }
         }
 
@@ -126,7 +127,7 @@ namespace Download {
 
             if (hoveredObject == null || hoveredObject.IsDestoryed) {
                 if (prevHoveredObject == null || prevHoveredObject.IsDestoryed) return;
-                prevHoveredObject.OnHoverExit();
+                prevHoveredObject.Hover.OnNext(new HoverExitContext());
                 return;
             }
 
@@ -139,10 +140,10 @@ namespace Download {
             // 실제구현체인 monoBehavior에서 nullcheck하면 통과가 안되는 경우가 있었음.
             if (prevHoveredObject != null && !prevHoveredObject.IsDestoryed) {
                 // 이전에 호버했던 오브젝트에서 나감
-                prevHoveredObject.OnHoverExit();
+                prevHoveredObject.Hover.OnNext(new HoverExitContext());
             }
             // 새 오브젝트로 호버
-            hoveredObject.OnHoverEnter();
+            hoveredObject.Hover.OnNext(new HoverEnterContext());
         }
 
         static ICursorEventListener? GetCursorEventListenerHelper(RaycastHit2D hit) {
@@ -164,21 +165,15 @@ namespace Download {
         private class NullCursorEventListener : ICursorEventListener {
             public bool IsDestoryed => false;
 
-            public Action OnClickEnterAction;
-            public NullCursorEventListener(Action onClickEnter) {
-                this.OnClickEnterAction = onClickEnter;
-            }
+            public Subject<ClickContext> Click { get; } = new();
+            public Subject<HoverContext> Hover { get; } = new();
+            public Subject<SubbuttonClickContext> SubbuttonClick { get; } = new();
 
-            public void OnClickEnter(Vector2 _) {
-                OnClickEnterAction();
+            public NullCursorEventListener(Action onClickEnter, Component disposable) {
+                Click.Subscribe(context => {
+                    if (context is ClickEnterContext) onClickEnter();
+                }).AddTo(disposable);
             }
-
-            public void OnHoverEnter() { }
-            public void OnHoverExit() { }
-            public void OnClickHold(ClickHoldContext context) { }
-            public void OnClickExit(Vector2 screenPosition) { }
-            public void OnSubbuttonClickEnter() { }
-            public void OnSubbuttonClickExit() { }
         }
     }
 }

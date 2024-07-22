@@ -7,7 +7,7 @@ using System;
 
 
 namespace Download {
-    public class NodeGameObject : MonoBehaviour, ICursorEventListener, ISelectEventListener {
+    public class NodeGameObject : CursorEventListenerMonoBehaviour, ISelectEventListener {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
         public ProgressBar ProgressBar;
@@ -20,19 +20,29 @@ namespace Download {
             SelectedArea.enabled = false;
         }
 
-        public void OnHoverEnter() {
-            HoverArea.enabled = true;
-        }
-        public void OnHoverExit() {
-            HoverArea.enabled = false;
-        }
+        public void Start() {
+            Hover.Subscribe(context => {
+                if (context is HoverEnterContext) {
+                    HoverArea.enabled = true;
+                    return;
+                }
+                if (context is HoverExitContext) {
+                    HoverArea.enabled = false;
+                    return;
+                }
+            })
+            .AddTo(this);
 
-        public bool IsDestoryed => this == null;
+            Click.Subscribe(context => {
+                if (context is ClickEnterContext clickEnterContext) {
+                    onClickEnter?.Invoke(this);
+                    return;
+                }
+            })
+            .AddTo(this);
+        }
 
         private event Action<NodeGameObject>? onClickEnter;
-        public void OnClickEnter(Vector2 screenPosition) {
-            onClickEnter?.Invoke(this);
-        }
 
         public virtual void Initialize(Node node, Action<NodeGameObject> onClickEnter) {
             Node = node;
@@ -76,10 +86,5 @@ namespace Download {
         public void OnUnselect() {
             SelectedArea.enabled = false;
         }
-
-        public void OnClickHold(ClickHoldContext context) { }
-        public void OnClickExit(Vector2 screenPosition) { }
-        public void OnSubbuttonClickEnter() { }
-        public void OnSubbuttonClickExit() { }
     }
 }
