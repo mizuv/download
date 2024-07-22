@@ -60,7 +60,7 @@ namespace Download {
 
             clickedObject
                 .CombineLatest(currentCursorPosition, (listener, position) => (listener, position))
-                // 첫 마우스 move 씹힐걸 근데 별 문제가없었음 실제플레이했을때
+                .StartWith((null, Vector2.zero))
                 .Pairwise()
                 .Select(pair => {
                     var previousClickedObject = pair.Previous.listener;
