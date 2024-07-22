@@ -15,6 +15,7 @@ namespace Download.NodeSystem {
             var root = Folder.CreateRoot(NodeExistenceEventSubject);
             new Forest(root, "나무1");
             new Forest(root, "나무2");
+            new Folder(root, "루트가 아닌 폴더");
         }
 
         public void MergeNode(IEnumerable<IMergeable> nodes) {

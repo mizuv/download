@@ -21,6 +21,14 @@ namespace Download.NodeSystem {
             ParentRightBeforeDelete = parentRightBeforeDelete;
         }
     }
+    public class NodeExistenceEventParentChange : NodeExistenceEvent {
+        public Node Node { get; }
+        public Folder ParentPrevious { get; }
+        public NodeExistenceEventParentChange(Node node, Folder parentPrevious) {
+            Node = node;
+            ParentPrevious = parentPrevious;
+        }
+    }
     // ExistenceEvent가 아닌 일반 이벤트이긴 해. 귀찮아서 일단 병합 이벤트로 넣어둠
     public class NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted : NodeExistenceEvent {
         public IEnumerable<Node> MergedToItem { get; }

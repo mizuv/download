@@ -79,8 +79,12 @@ namespace Download.NodeSystem {
 
         public void SetParent(Folder parent) {
             if (parent == Parent) return;
+            var previousParent = this.Parent;
             Parent = parent;
+            previousParent?.RemoveChild(this);
             parent.AddChild(this);
+            if (previousParent != null && previousParent != parent)
+                this.eventSubject.OnNext(new NodeExistenceEventParentChange(this, previousParent));
         }
 
         public void SetMergeManager(MergeManager? mergeManager) {
