@@ -90,6 +90,7 @@ MonoBehaviour:
   HoverArea: {fileID: 8440838859477586}
   SelectedArea: {fileID: 1247309793345789986}
   ProgressBar: {fileID: 411888650650524968}
+  SpriteGameObject: {fileID: 6875635699878071371}
 --- !u!114 &411888650650524968 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4845705932919132091, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
@@ -104,5 +105,10 @@ MonoBehaviour:
 --- !u!212 &1247309793345789986 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 6325130798216393393, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+  m_PrefabInstance: {fileID: 5082370818486293139}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6875635699878071371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1865369208583741144, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
   m_PrefabInstance: {fileID: 5082370818486293139}
   m_PrefabAsset: {fileID: 0}

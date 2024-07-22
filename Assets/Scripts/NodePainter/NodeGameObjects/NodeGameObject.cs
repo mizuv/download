@@ -11,6 +11,7 @@ namespace Download {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
         public ProgressBar ProgressBar;
+        public GameObject SpriteGameObject;
 
         public Node? Node { get; private set; }
 

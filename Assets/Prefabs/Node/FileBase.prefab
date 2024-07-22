@@ -447,6 +447,7 @@ MonoBehaviour:
   HoverArea: {fileID: 5086193116323283137}
   SelectedArea: {fileID: 6325130798216393393}
   ProgressBar: {fileID: 4845705932919132091}
+  SpriteGameObject: {fileID: 1865369208583741144}
 --- !u!1 &5460030048146687328
 GameObject:
   m_ObjectHideFlags: 0

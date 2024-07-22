@@ -128,6 +128,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 310139587331312349, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
   m_PrefabInstance: {fileID: 2949595226996520715}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3534215554082892243 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1865369208583741144, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+  m_PrefabInstance: {fileID: 2949595226996520715}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7768840080616421552 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4845705932919132091, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
@@ -159,6 +164,7 @@ MonoBehaviour:
   HoverArea: {fileID: 7960913379574167498}
   SelectedArea: {fileID: 9162698553372607930}
   ProgressBar: {fileID: 7768840080616421552}
+  SpriteGameObject: {fileID: 3534215554082892243}
   ChildrenContainer: {fileID: 8485831087871999180}
 --- !u!212 &7960913379574167498 stripped
 SpriteRenderer:
