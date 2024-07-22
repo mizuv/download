@@ -17,6 +17,7 @@ namespace Download {
         private readonly Subject<Unit> nullClickSubject = new Subject<Unit>();
         public System.IObservable<Unit> NullClick => nullClickSubject.AsObservable();
 
+        public IObservable<ClickContext> Click { get; private set; }
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -55,30 +56,34 @@ namespace Download {
                 })
                 .DistinctUntilChanged();
 
-            clickedObject
+            Click = clickedObject
                 .StartWith((ICursorEventListener?)null)
                 .Pairwise()
                 .CombineLatest(currentCursorPosition, (listenerPair, position) => (listenerPair, position))
-                .Subscribe(pair => {
+                .Select(pair => {
                     var previousClickedObject = pair.listenerPair.Previous;
                     var currentClickedObject = pair.listenerPair.Current;
                     var position = pair.position;
 
                     if (previousClickedObject == currentClickedObject) {
                         if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                            currentClickedObject.Click.OnNext(new ClickHoldContext(position, currentClickedObject));
+                            return new ClickHoldContext(position, currentClickedObject);
                         }
-                        return;
+                        return (ClickContext?)null;
                     }
 
                     if (previousClickedObject != null && !previousClickedObject.IsDestoryed) {
-                        previousClickedObject.Click.OnNext(new ClickExitContext(position, previousClickedObject));
+                        return new ClickExitContext(position, previousClickedObject);
                     }
                     if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                        currentClickedObject.Click.OnNext(new ClickEnterContext(position, currentClickedObject));
+                        return new ClickEnterContext(position, currentClickedObject);
                     }
+                    return null;
                 })
-                .AddTo(this);
+                .Where(context => context != null)
+                .Select(context => context!);
+
+            Click.Subscribe(context => context.CursorEventListener.Click.OnNext(context)).AddTo(this);
 
             inputActions.Cursor.SubButtonClick
                 .AsObservable()
