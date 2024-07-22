@@ -19,12 +19,12 @@ namespace Download {
     }
 
     public abstract class ClickContext {
-        public readonly Vector2 screenPosition;
+        public readonly Vector2 ScreenPosition;
 
         public ClickContext(Vector2 screenPosition) {
-            this.screenPosition = screenPosition;
+            this.ScreenPosition = screenPosition;
         }
-        public Vector2 GetWorldPosition() { return Camera.main.ScreenToWorldPoint(this.screenPosition); }
+        public Vector2 GetWorldPosition() { return Camera.main.ScreenToWorldPoint(this.ScreenPosition); }
     }
     public class ClickEnterContext : ClickContext {
         public ClickEnterContext(Vector2 screenPosition) : base(screenPosition) { }
