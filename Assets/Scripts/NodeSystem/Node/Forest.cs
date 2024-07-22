@@ -19,7 +19,8 @@ namespace Download.NodeSystem {
         public Forest(Folder parent, string name) : base(parent, name) {
             RunComplete
                 .Subscribe(_ => {
-                    new Wood(parent, $"{name}에서 나온 목재");
+                    if (Parent == null) return;
+                    new Wood(this.Parent, $"{name}에서 나온 목재");
                 })
                 .AddTo(_disposables);
         }
