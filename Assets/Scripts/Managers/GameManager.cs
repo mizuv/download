@@ -19,9 +19,7 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     protected void Start() {
         nodePainter.Initialize(nodeSystem);
-    }
 
-    protected void OnEnable() {
         // 객체에 select 이벤트 전달하기
         SelectedNode.DistinctUntilChanged().Pairwise().Subscribe(pair => {
             var prev = pair.Previous;
