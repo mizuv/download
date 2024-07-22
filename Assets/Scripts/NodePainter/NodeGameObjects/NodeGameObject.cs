@@ -3,6 +3,7 @@ using Download.NodeSystem;
 using Mizuvt.Common;
 using UnityEngine;
 using UniRx;
+using System;
 
 
 namespace Download {
@@ -28,17 +29,14 @@ namespace Download {
 
         public bool IsDestoryed => this == null;
 
+        private event Action<NodeGameObject>? onClickEnter;
         public void OnClickEnter(Vector2 screenPosition) {
-            // selectedNode 설정하는건 만들때 컬백으로 넣어주는게 좋을까 싶기도 하고..
-            if (ButtonManager.Instance.ShiftPressed.Value) {
-                GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(this);
-                return;
-            }
-            GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(this);
+            onClickEnter?.Invoke(this);
         }
 
-        public virtual void Initialize(Node node) {
+        public virtual void Initialize(Node node, Action<NodeGameObject> onClickEnter) {
             Node = node;
+            this.onClickEnter = onClickEnter;
 
             node.DeleteStart
                 .Subscribe(_ => {

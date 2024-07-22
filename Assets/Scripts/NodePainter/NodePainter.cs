@@ -30,7 +30,15 @@ namespace Download {
                             var prefab = NodeGameObjectsPrefab.GetPrefabByNode(node);
                             var gameObject = Instantiate(prefab);
                             var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
-                            nodeGameObject.Initialize(node);
+
+                            var onClickEnter = new Action<NodeGameObject>((nodeGameObject) => {
+                                if (ButtonManager.Instance.ShiftPressed.Value) {
+                                    GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(nodeGameObject);
+                                    return;
+                                }
+                                GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
+                            });
+                            nodeGameObject.Initialize(node, onClickEnter);
                             if (nodeGameObject is FolderGameObject folderGameObject) {
                                 folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
                             }
