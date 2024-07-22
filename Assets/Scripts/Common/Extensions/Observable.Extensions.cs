@@ -15,18 +15,4 @@ public static class ObservableExtensions {
             return sourceList.CombineLatest();
         }
     }
-    // 테스트 안해봄 
-    public static IObservable<(T Previous, T Current)> PairwiseEvenStart<T>(this IObservable<T> source, T initialValue) {
-        return Observable.Create<(T Previous, T Current)>(observer => {
-            T previous = initialValue;
-
-            return source.Subscribe(
-                current => {
-                    observer.OnNext((previous, current));
-                    previous = current;
-                },
-                observer.OnError,
-                observer.OnCompleted);
-        });
-    }
 }
