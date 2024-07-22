@@ -66,16 +66,16 @@ namespace Download {
 
                     if (previousClickedObject == currentClickedObject) {
                         if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                            currentClickedObject.Click.OnNext(new ClickHoldContext(position));
+                            currentClickedObject.Click.OnNext(new ClickHoldContext(position, currentClickedObject));
                         }
                         return;
                     }
 
                     if (previousClickedObject != null && !previousClickedObject.IsDestoryed) {
-                        previousClickedObject.Click.OnNext(new ClickExitContext(position));
+                        previousClickedObject.Click.OnNext(new ClickExitContext(position, previousClickedObject));
                     }
                     if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
-                        currentClickedObject.Click.OnNext(new ClickEnterContext(position));
+                        currentClickedObject.Click.OnNext(new ClickEnterContext(position, currentClickedObject));
                     }
                 })
                 .AddTo(this);

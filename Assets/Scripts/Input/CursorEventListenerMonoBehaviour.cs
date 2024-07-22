@@ -20,21 +20,23 @@ namespace Download {
 
     public abstract class ClickContext {
         public readonly Vector2 ScreenPosition;
+        public readonly ICursorEventListener CursorEventListener;
 
-        public ClickContext(Vector2 screenPosition) {
+        public ClickContext(Vector2 screenPosition, ICursorEventListener cursorEventListener) {
             this.ScreenPosition = screenPosition;
+            this.CursorEventListener = cursorEventListener;
         }
         public Vector2 GetWorldPosition() { return Camera.main.ScreenToWorldPoint(this.ScreenPosition); }
     }
+
     public class ClickEnterContext : ClickContext {
-        public ClickEnterContext(Vector2 screenPosition) : base(screenPosition) { }
+        public ClickEnterContext(Vector2 screenPosition, ICursorEventListener cursorEventListener) : base(screenPosition, cursorEventListener) { }
     }
     public class ClickHoldContext : ClickContext {
-        public ClickHoldContext(Vector2 screenPosition) : base(screenPosition) {
-        }
+        public ClickHoldContext(Vector2 screenPosition, ICursorEventListener cursorEventListener) : base(screenPosition, cursorEventListener) { }
     }
     public class ClickExitContext : ClickContext {
-        public ClickExitContext(Vector2 screenPosition) : base(screenPosition) { }
+        public ClickExitContext(Vector2 screenPosition, ICursorEventListener cursorEventListener) : base(screenPosition, cursorEventListener) { }
     }
 
     public abstract class HoverContext { }
