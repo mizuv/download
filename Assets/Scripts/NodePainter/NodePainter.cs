@@ -14,9 +14,63 @@ namespace Download {
     public class NodePainter : MonoBehaviour {
         const float VERTICAL_INTERVAL = 1.3f;
         const float HORIZONTAL_INTERVAL = 1.4f;
+        const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
 
         public NodeSystem.NodeSystem NodeSystem;
         public Dictionary<Node, NodeGameObject> nodeObjectMap = new();
+
+        public void Start() {
+            #region Drag
+            var click = CursorManager.Instance.Click;
+            var selectedNode = GameManager.Instance.SelectedNode;
+            Vector2? latestClickEnterScreenPosition = null;
+            click.Where(context => context is ClickEnterContext)
+                .Subscribe(context => {
+                    latestClickEnterScreenPosition = context.ScreenPosition;
+                })
+                .AddTo(this);
+
+            GameObject? copiedSelectedSpriteParent = null;
+            selectedNode.Subscribe((selectedNode) => {
+                // ROOM FOR OPTIMALIZATION
+                Destroy(copiedSelectedSpriteParent);
+                copiedSelectedSpriteParent = new GameObject("DragParent");
+                copiedSelectedSpriteParent.SetActive(false);
+
+                selectedNode.ForEach((nodeGameObject) => {
+                    var clonedSprite = Instantiate(nodeGameObject.SpriteGameObject, copiedSelectedSpriteParent.transform);
+                    clonedSprite.transform.position = nodeGameObject.SpriteGameObject.transform.position;
+
+                });
+
+            }).AddTo(this);
+
+            var dragContext = click
+                .Select(context => {
+                    if (latestClickEnterScreenPosition == null) return null;
+                    if (!selectedNode.Value.Contains(context.CursorEventListener)) return null;
+                    if (Vector2.SqrMagnitude(latestClickEnterScreenPosition.Value - context.ScreenPosition) < DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE)
+                        return null;
+                    return context;
+                })
+                .DistinctUntilChanged();
+
+            dragContext.Subscribe(context => {
+                if (context == null || context is ClickExitContext) {
+                    if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
+                    return;
+
+                }
+                if (latestClickEnterScreenPosition == null) return;
+                if (copiedSelectedSpriteParent != null) {
+                    copiedSelectedSpriteParent.transform.position =
+                        context.GetWorldPosition() - (Vector2)Camera.main.ScreenToWorldPoint(latestClickEnterScreenPosition.Value);
+                    copiedSelectedSpriteParent.SetActive(true);
+                }
+            }).AddTo(this);
+
+            #endregion Drag 
+        }
 
         public void Initialize(NodeSystem.NodeSystem nodeSystem) {
 
