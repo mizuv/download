@@ -22,10 +22,7 @@ namespace Download {
             inputActions = new InputSystem_Actions();
         }
 
-        private void OnEnable() {
-            inputActions.Cursor.Enable();
-
-            // TODO:STart로 옮길까
+        protected void Start() {
             currentCursorPosition = inputActions.Cursor.Move
                 .AsObservable()
                 .Select(context => context.ReadValue<Vector2>())
@@ -94,6 +91,10 @@ namespace Download {
                 .Where(context => context.phase == InputActionPhase.Canceled)
                 .Subscribe(OnSubbuttonClickCanceled)
                 .AddTo(this);
+        }
+
+        private void OnEnable() {
+            inputActions.Cursor.Enable();
         }
 
         private void OnDisable() {
