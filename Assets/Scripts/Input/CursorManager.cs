@@ -17,7 +17,9 @@ namespace Download {
         private readonly Subject<Unit> nullClickSubject = new Subject<Unit>();
         public System.IObservable<Unit> NullClick => nullClickSubject.AsObservable();
 
-        public IObservable<ClickContext> Click { get; private set; }
+        // 초기화순서이슈로 직접할당 하지 않았음.
+        private Subject<ClickContext> _click = new();
+        public IObservable<ClickContext> Click { get { return _click; } }
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -56,14 +58,14 @@ namespace Download {
                 })
                 .DistinctUntilChanged();
 
-            Click = clickedObject
-                .StartWith((ICursorEventListener?)null)
+            clickedObject
+                .CombineLatest(currentCursorPosition, (listener, position) => (listener, position))
+                // 첫 마우스 move 씹힐걸 근데 별 문제가없었음 실제플레이했을때
                 .Pairwise()
-                .CombineLatest(currentCursorPosition, (listenerPair, position) => (listenerPair, position))
                 .Select(pair => {
-                    var previousClickedObject = pair.listenerPair.Previous;
-                    var currentClickedObject = pair.listenerPair.Current;
-                    var position = pair.position;
+                    var previousClickedObject = pair.Previous.listener;
+                    var currentClickedObject = pair.Current.listener;
+                    var position = pair.Current.position;
 
                     if (previousClickedObject == currentClickedObject) {
                         if (currentClickedObject != null && !currentClickedObject.IsDestoryed) {
@@ -81,7 +83,8 @@ namespace Download {
                     return null;
                 })
                 .Where(context => context != null)
-                .Select(context => context!);
+                .Select(context => context!)
+                .Subscribe(context => { _click.OnNext(context); });
 
             Click.Subscribe(context => context.CursorEventListener.Click.OnNext(context)).AddTo(this);
 
