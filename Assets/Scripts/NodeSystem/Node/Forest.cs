@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Forest : Node, IRunnable {
-        private RunOption _runOption = new RunOption(2000);
+        private RunOption _runOption = new RunOption(4300);
 
         public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
         public IObservable<Unit> RunComplete => RunManager.RunComplete;
