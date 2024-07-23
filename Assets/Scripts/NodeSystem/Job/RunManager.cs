@@ -63,8 +63,8 @@ namespace Download.NodeSystem {
                 .Subscribe(timeElapsed => {
                     _runtime.Value = timeElapsed;
                     if (_runtime.Value >= RunOption.RunDuration) {
-                        _runCompleteSubject.OnNext(Unit.Default);
                         StopRun();
+                        _runCompleteSubject.OnNext(Unit.Default);
                     }
                 })
                 .AddTo(_disposables);

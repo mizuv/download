@@ -14,7 +14,7 @@ namespace Download.NodeSystem {
             return new(eventSubject, "root");
         }
 
-        public void AddChild(Node child) {
+        public virtual void AddChild(Node child) {
             if (Children.Contains(child)) return;
             if (this == child) {
                 UnityEngine.Debug.LogWarning("Cannot be child of myself");
@@ -24,7 +24,7 @@ namespace Download.NodeSystem {
             child.SetParent(this);
         }
 
-        public void RemoveChild(Node child) {
+        public virtual void RemoveChild(Node child) {
             if (!Children.Contains(child)) return;
             children.Remove(child);
             child.FreeFromParent();
