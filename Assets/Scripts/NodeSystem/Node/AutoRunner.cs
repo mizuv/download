@@ -3,6 +3,8 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class AutoRunner : Folder {
+        public override Folder ChildRunResultTarget => this.Parent ?? this;
+
         public AutoRunner(Folder parent, string name) : base(parent, name) {
             childChanged.Subscribe(_ => {
                 var children = this.Children;

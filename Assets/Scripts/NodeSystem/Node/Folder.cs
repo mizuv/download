@@ -10,6 +10,8 @@ namespace Download.NodeSystem {
         public Folder(Folder parent, string name) : base(parent, name) { }
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 
+        public virtual Folder ChildRunResultTarget => this;
+
         public static Folder CreateRoot(Subject<NodeExistenceEvent> eventSubject) {
             return new(eventSubject, "root");
         }

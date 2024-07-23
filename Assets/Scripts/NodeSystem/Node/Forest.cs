@@ -20,7 +20,7 @@ namespace Download.NodeSystem {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
-                    new Wood(this.Parent, $"{name}에서 나온 목재");
+                    new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
                 })
                 .AddTo(_disposables);
         }
