@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Mizuvt.Common {
-    public class OrderedSet<T> : ICollection<T> {
+    public interface IReadonlyOrderedSet<T> : IReadOnlyCollection<T> {
+        T this[int index] { get; }
+        public bool Contains(T item);
+    }
+    public class OrderedSet<T> : ICollection<T>, IReadonlyOrderedSet<T> {
         private readonly Dictionary<T, LinkedListNode<T>> dictionary;
         private readonly LinkedList<T> list;
 

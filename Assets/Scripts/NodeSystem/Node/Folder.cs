@@ -4,7 +4,8 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
-        public readonly OrderedSet<Node> Children = new();
+        protected readonly OrderedSet<Node> children = new OrderedSet<Node>();
+        public IReadonlyOrderedSet<Node> Children => children;
 
         public Folder(Folder parent, string name) : base(parent, name) { }
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
@@ -19,13 +20,13 @@ namespace Download.NodeSystem {
                 UnityEngine.Debug.LogWarning("Cannot be child of myself");
                 return;
             }
-            Children.Add(child);
+            children.Add(child);
             child.SetParent(this);
         }
 
         public void RemoveChild(Node child) {
             if (!Children.Contains(child)) return;
-            Children.Remove(child);
+            children.Remove(child);
             child.FreeFromParent();
         }
 
