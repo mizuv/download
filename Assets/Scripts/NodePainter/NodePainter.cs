@@ -32,21 +32,6 @@ namespace Download {
                 })
                 .AddTo(this);
 
-            GameObject? copiedSelectedSpriteParent = null;
-            selectedNode.Subscribe((selectedNode) => {
-                // ROOM FOR OPTIMALIZATION
-                Destroy(copiedSelectedSpriteParent);
-                copiedSelectedSpriteParent = new GameObject("DragParent");
-                copiedSelectedSpriteParent.SetActive(false);
-
-                selectedNode.ForEach((nodeGameObject) => {
-                    var clonedSprite = Instantiate(nodeGameObject.SpriteGameObject, copiedSelectedSpriteParent.transform);
-                    clonedSprite.transform.position = nodeGameObject.SpriteGameObject.transform.position;
-
-                });
-
-            }).AddTo(this);
-
             var dragContext = click
                 .Select(context => {
                     if (latestClickEnterScreenPosition == null) return null;
@@ -58,6 +43,23 @@ namespace Download {
                 .DistinctUntilChanged();
 
             dragContextReactive = dragContext.ToReactiveProperty();
+
+            GameObject? copiedSelectedSpriteParent = null;
+            var emitOnExit = dragContext.Select(context => context is ClickExitContext).DistinctUntilChanged();
+            emitOnExit
+                .WithLatestFrom(selectedNode, (_, lastValue) => lastValue)
+                .Merge(selectedNode)
+                .Subscribe((selectedNode) => {
+                    // ROOM FOR OPTIMALIZATION
+                    Destroy(copiedSelectedSpriteParent);
+                    copiedSelectedSpriteParent = new GameObject("DragParent");
+                    copiedSelectedSpriteParent.SetActive(false);
+
+                    selectedNode.ForEach((nodeGameObject) => {
+                        var clonedSprite = Instantiate(nodeGameObject.SpriteGameObject, copiedSelectedSpriteParent.transform);
+                        clonedSprite.transform.position = nodeGameObject.SpriteGameObject.transform.position;
+                    });
+                }).AddTo(this);
 
             dragContext.Subscribe(context => {
                 if (context == null) {
