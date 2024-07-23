@@ -17,7 +17,9 @@ namespace Download {
         const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
 
         public NodeSystem.NodeSystem NodeSystem;
-        public Dictionary<Node, NodeGameObject> nodeObjectMap = new();
+        public Dictionary<Node, NodeGameObject> NodeObjectMap = new();
+
+        private IReadOnlyReactiveProperty<ClickContext?> dragContextReactive;
 
         public void Start() {
             #region Drag
@@ -48,12 +50,14 @@ namespace Download {
             var dragContext = click
                 .Select(context => {
                     if (latestClickEnterScreenPosition == null) return null;
-                    if (!selectedNode.Value.Contains(context.CursorEventListener)) return null;
+                    // if (!selectedNode.Value.Contains(context.CursorEventListener)) return null;
                     if (Vector2.SqrMagnitude(latestClickEnterScreenPosition.Value - context.ScreenPosition) < DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE)
                         return null;
                     return context;
                 })
                 .DistinctUntilChanged();
+
+            dragContextReactive = dragContext.ToReactiveProperty();
 
             dragContext.Subscribe(context => {
                 if (context == null) {
@@ -74,6 +78,10 @@ namespace Download {
                     return;
                 }
                 if (latestClickEnterScreenPosition == null) return;
+                // 아래 1줄은 맨 처음 드래그 시작시에만 호출하는게 맞지 않나. (귀찮아서 패스함)
+                if (!selectedNode.Value.Contains(context.CursorEventListener)) {
+                    if (context.CursorEventListener is NodeGameObject nodeGameObject) Select(nodeGameObject);
+                }
                 if (copiedSelectedSpriteParent != null) {
                     copiedSelectedSpriteParent.transform.position =
                         context.GetWorldPosition() - (Vector2)Camera.main.ScreenToWorldPoint(latestClickEnterScreenPosition.Value);
@@ -99,22 +107,19 @@ namespace Download {
 
                             nodeGameObject.Initialize(node);
                             nodeGameObject.Click.Subscribe(context => {
-                                if (context is ClickEnterContext) {
-                                    if (ButtonManager.Instance.ShiftPressed.Value) {
-                                        GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(nodeGameObject);
-                                        return;
-                                    }
-                                    GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
+                                if (context is ClickExitContext) {
+                                    if (dragContextReactive.Value != null) return;
+                                    this.Select(nodeGameObject);
                                 }
                             }).AddTo(nodeGameObject);
-                            nodeObjectMap.Add(node, nodeGameObject);
+                            NodeObjectMap.Add(node, nodeGameObject);
 
                             SetTransform(nodeGameObject);
                             break;
                         }
                     case NodeExistenceEventDelete nodeEventDelete: {
                             var node = nodeEventDelete.Node;
-                            var nodeObject = nodeObjectMap.GetValueOrDefault(node);
+                            var nodeObject = NodeObjectMap.GetValueOrDefault(node);
                             if (nodeObject == null) break;
                             Destroy(nodeObject.gameObject);
                             Reorder(nodeEventDelete.ParentRightBeforeDelete);
@@ -122,7 +127,7 @@ namespace Download {
                         }
                     case NodeExistenceEventParentChange nodeExistenceEventParentChange: {
                             var node = nodeExistenceEventParentChange.Node;
-                            var nodeObject = nodeObjectMap[node];
+                            var nodeObject = NodeObjectMap[node];
                             SetTransform(nodeObject);
                             var previousParent = nodeExistenceEventParentChange.ParentPrevious;
                             Reorder(previousParent);
@@ -136,7 +141,7 @@ namespace Download {
                             if (!isAllSelectedItemIsMergeFrom) return;
 
                             GameManager.Instance.SelectedNode.Value = mergedToItem
-                                                                        .Select(node => nodeObjectMap
+                                                                        .Select(node => NodeObjectMap
                                                                         .TryGetValue(node, out var nodeObject) ? nodeObject : null)
                                                                         .Compact()
                                                                         .ToImmutableOrderedSet();
@@ -156,7 +161,7 @@ namespace Download {
                 var node = nodeGameObject.Node!;
                 if (node.Parent != null) {
                     // setParent
-                    var parent = nodeObjectMap[node.Parent];
+                    var parent = NodeObjectMap[node.Parent];
                     if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
                     nodeGameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
                     // reorder on sibilings
@@ -169,10 +174,18 @@ namespace Download {
                 var xPositions = Utils.GenerateZeroMeanArray(folder.children.Count, HORIZONTAL_INTERVAL);
                 folder.children.ForEach((child, index) => {
 
-                    var childGameObject = nodeObjectMap[child].gameObject;
+                    var childGameObject = NodeObjectMap[child].gameObject;
                     childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                 });
             };
+        }
+
+        void Select(NodeGameObject nodeGameObject) {
+            if (ButtonManager.Instance.ShiftPressed.Value) {
+                GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(nodeGameObject);
+                return;
+            }
+            GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
         }
     }
 }
