@@ -8,6 +8,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2037573034810239114, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037573034810239114, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2443614701324639099, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_Size.x
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2443614701324639099, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_Size.y
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2443614701324639099, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 62569874e8b4c40a194cdb9033d50e16, type: 3}
+    - target: {fileID: 2443614701324639099, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3216352387173973462, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -50,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7924467234700525336, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
       propertyPath: m_Name
-      value: Folder Variant
+      value: AutoRunner
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
