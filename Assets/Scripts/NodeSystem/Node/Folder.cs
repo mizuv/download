@@ -17,6 +17,10 @@ namespace Download.NodeSystem {
 
         public void AddChild(Node child) {
             if (children.Contains(child)) return;
+            if (this == child) {
+                UnityEngine.Debug.LogWarning("Cannot be child of myself");
+                return;
+            }
             children.Add(child);
             child.SetParent(this);
         }

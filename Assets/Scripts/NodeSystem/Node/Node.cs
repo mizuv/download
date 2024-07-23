@@ -79,6 +79,10 @@ namespace Download.NodeSystem {
 
         public void SetParent(Folder parent) {
             if (parent == Parent) return;
+            if (this == parent) {
+                UnityEngine.Debug.LogWarning("Cannot be parent of myself");
+                return;
+            }
             var previousParent = this.Parent;
             Parent = parent;
             previousParent?.RemoveChild(this);

@@ -76,7 +76,10 @@ namespace Download {
                     hit.collider.gameObject.TryGetComponent<ICursorEventListener>(out var cursorEventListener);
                     if (cursorEventListener is not NodeGameObject nodeGameObject) return;
                     if (nodeGameObject.Node is not Folder folder) return;
-                    selectedNode.Value.ForEach((node) => { node.Node?.SetParent(folder); });
+                    selectedNode.Value.ForEach((node) => {
+                        if (node.Node == folder) return;
+                        node.Node?.SetParent(folder);
+                    });
                     return;
                 }
                 if (latestClickEnterScreenPosition == null) return;
