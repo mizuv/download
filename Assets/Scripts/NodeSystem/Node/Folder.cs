@@ -4,11 +4,9 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Folder : Node {
-
-        public readonly OrderedSet<Node> children = new();
+        public readonly OrderedSet<Node> Children = new();
 
         public Folder(Folder parent, string name) : base(parent, name) { }
-
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 
         public static Folder CreateRoot(Subject<NodeExistenceEvent> eventSubject) {
@@ -16,24 +14,24 @@ namespace Download.NodeSystem {
         }
 
         public void AddChild(Node child) {
-            if (children.Contains(child)) return;
+            if (Children.Contains(child)) return;
             if (this == child) {
                 UnityEngine.Debug.LogWarning("Cannot be child of myself");
                 return;
             }
-            children.Add(child);
+            Children.Add(child);
             child.SetParent(this);
         }
 
         public void RemoveChild(Node child) {
-            if (!children.Contains(child)) return;
-            children.Remove(child);
+            if (!Children.Contains(child)) return;
+            Children.Remove(child);
             child.FreeFromParent();
         }
 
         public override string GetPrintString(string indent) {
             string result = $"{indent}Folder: {Name}\n";
-            foreach (var child in children) {
+            foreach (var child in Children) {
                 result += child.GetPrintString(indent + "  ");
             }
             return result;

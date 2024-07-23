@@ -176,8 +176,8 @@ namespace Download {
                 }
             }
             void Reorder(Folder folder) {
-                var xPositions = Utils.GenerateZeroMeanArray(folder.children.Count, HORIZONTAL_INTERVAL);
-                folder.children.ForEach((child, index) => {
+                var xPositions = Utils.GenerateZeroMeanArray(folder.Children.Count, HORIZONTAL_INTERVAL);
+                folder.Children.ForEach((child, index) => {
 
                     var childGameObject = NodeObjectMap[child].gameObject;
                     childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
