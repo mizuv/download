@@ -97,14 +97,16 @@ namespace Download {
                             var gameObject = Instantiate(prefab);
                             var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
 
-                            var onClickEnter = new Action<NodeGameObject>((nodeGameObject) => {
-                                if (ButtonManager.Instance.ShiftPressed.Value) {
-                                    GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(nodeGameObject);
-                                    return;
+                            nodeGameObject.Initialize(node);
+                            nodeGameObject.Click.Subscribe(context => {
+                                if (context is ClickEnterContext) {
+                                    if (ButtonManager.Instance.ShiftPressed.Value) {
+                                        GameManager.Instance.SelectedNode.Value = GameManager.Instance.SelectedNode.Value.Add(nodeGameObject);
+                                        return;
+                                    }
+                                    GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
                                 }
-                                GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
-                            });
-                            nodeGameObject.Initialize(node, onClickEnter);
+                            }).AddTo(nodeGameObject);
                             nodeObjectMap.Add(node, nodeGameObject);
 
                             SetTransform(nodeGameObject);

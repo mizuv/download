@@ -33,21 +33,10 @@ namespace Download {
                 }
             })
             .AddTo(this);
-
-            Click.Subscribe(context => {
-                if (context is ClickEnterContext clickEnterContext) {
-                    onClickEnter?.Invoke(this);
-                    return;
-                }
-            })
-            .AddTo(this);
         }
 
-        private event Action<NodeGameObject>? onClickEnter;
-
-        public virtual void Initialize(Node node, Action<NodeGameObject> onClickEnter) {
+        public virtual void Initialize(Node node) {
             Node = node;
-            this.onClickEnter = onClickEnter;
 
             node.DeleteStart
                 .Subscribe(_ => {
