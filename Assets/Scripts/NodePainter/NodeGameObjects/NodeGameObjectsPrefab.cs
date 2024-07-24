@@ -12,10 +12,12 @@ namespace Download {
         public static GameObject WoodPlatterPrefab => GetPrefab("Node.WoodPlatter");
         public static GameObject AutoRunnerPrefab => GetPrefab("Node.AutoRunner");
         public static GameObject PersonPrefab => GetPrefab("Node.Person");
+        public static GameObject ZipPrefab => GetPrefab("Node.Zip");
 
         public static GameObject GetPrefabByNode(Node node) {
             return node switch {
                 AutoRunner => NodeGameObjectsPrefab.AutoRunnerPrefab,
+                Zip => ZipPrefab,
                 Person => PersonPrefab,
                 Forest => NodeGameObjectsPrefab.ForestPrefab,
                 Wood => NodeGameObjectsPrefab.WoodPrefab,
