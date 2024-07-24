@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using log4net.Util;
 using Mizuvt.Common;
@@ -15,6 +16,9 @@ namespace Download.NodeSystem {
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 
         public virtual Folder ChildRunResultTarget => this;
+
+        private readonly Subject<Unit> _childChanged = new();
+        public IObservable<Unit> ChildChanged => _childChanged;
 
         public float ChildrenVolume {
             get {
@@ -34,12 +38,14 @@ namespace Download.NodeSystem {
             }
             children.Add(child);
             child.SetParent(this);
+            _childChanged.OnNext(Unit.Default);
         }
 
         public virtual void RemoveChild(Node child) {
             if (!Children.Contains(child)) return;
             children.Remove(child);
             child.FreeFromParent();
+            _childChanged.OnNext(Unit.Default);
         }
 
         public override string GetPrintString(string indent) {

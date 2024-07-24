@@ -18,6 +18,7 @@ namespace Download.NodeSystem {
             new Forest(root, "나무2");
             new Folder(root, "루트가 아닌 폴더");
             new Person(root, "사람");
+            new AutoRunner(root, "자동 실행기");
         }
 
         public void MergeNode(IEnumerable<IMergeable> nodes) {
