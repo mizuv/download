@@ -161,7 +161,7 @@ namespace Download {
 
             void SetTransform(NodeGameObject nodeGameObject) {
                 if (nodeGameObject is FolderGameObject folderGameObject) {
-                    folderGameObject.ChildrenContainer.position += Vector3.down * VERTICAL_INTERVAL;
+                    folderGameObject.ChildrenContainer.localPosition = Vector3.down * VERTICAL_INTERVAL;
                 }
                 var node = nodeGameObject.Node!;
                 if (node.Parent != null) {
