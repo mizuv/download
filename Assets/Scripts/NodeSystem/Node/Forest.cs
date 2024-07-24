@@ -7,7 +7,7 @@ using UniRx;
 using UnityEngine;
 
 namespace Download.NodeSystem {
-    public class Forest : Node, IRunnable {
+    public class Forest : Folder, IRunnable {
         private RunOption _runOption = new RunOption(4300);
 
         public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
@@ -16,6 +16,7 @@ namespace Download.NodeSystem {
         public override RunOption RunOption => _runOption;
 
         public override float Volume => 4;
+        public override float VolumeForChildren => 0;
 
         public Forest(Folder parent, string name) : base(parent, name) {
             RunComplete
@@ -37,7 +38,7 @@ namespace Download.NodeSystem {
         public void StopRun() {
             RunManager.StopRun();
         }
-        public static IStaticNode StaticNode => ForestStatic.Instance;
+        public static new IStaticNode StaticNode => ForestStatic.Instance;
 
 
         public override IStaticNode GetStaticNode() {

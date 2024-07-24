@@ -17,10 +17,10 @@ namespace Download {
             return node switch {
                 AutoRunner => NodeGameObjectsPrefab.AutoRunnerPrefab,
                 Person => PersonPrefab,
-                Folder => NodeGameObjectsPrefab.FolderPrefab,
                 Forest => NodeGameObjectsPrefab.ForestPrefab,
                 Wood => NodeGameObjectsPrefab.WoodPrefab,
                 WoodPlatter => NodeGameObjectsPrefab.WoodPlatterPrefab,
+                Folder => NodeGameObjectsPrefab.FolderPrefab,
                 _ => throw new Exception("invalid node type")
             };
         }
