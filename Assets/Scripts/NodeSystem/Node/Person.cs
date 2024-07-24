@@ -1,9 +1,9 @@
-using System.Linq;
-using UniRx;
-
 namespace Download.NodeSystem {
     public class Person : Folder {
         public override Folder ChildRunResultTarget => this;
+
+        public override float Volume => 0;
+        public override float VolumeForChildren => 5;
 
         public Person(Folder parent, string name) : base(parent, name) {
         }

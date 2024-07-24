@@ -20,6 +20,8 @@ namespace Download.NodeSystem {
 
         public virtual RunOption RunOption => RunOption.GetEmptyRunOption();
 
+        public abstract float Volume { get; }
+
         protected readonly RunManager RunManager;
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;

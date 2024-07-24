@@ -7,6 +7,9 @@ namespace Download.NodeSystem {
         protected readonly OrderedSet<Node> children = new OrderedSet<Node>();
         public IReadonlyOrderedSet<Node> Children => children;
 
+        public override float Volume => 0;
+        public virtual float VolumeForChildren => 20;
+
         public Folder(Folder parent, string name) : base(parent, name) { }
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 

@@ -5,6 +5,9 @@ namespace Download.NodeSystem {
     public class AutoRunner : Folder {
         public override Folder ChildRunResultTarget => this.Parent ?? this;
 
+        public override float Volume => 2;
+        public override float VolumeForChildren => 5;
+
         public AutoRunner(Folder parent, string name) : base(parent, name) {
             childChanged.Subscribe(_ => {
                 var children = this.Children;

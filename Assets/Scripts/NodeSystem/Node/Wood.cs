@@ -8,6 +8,7 @@ namespace Download.NodeSystem {
     public class Wood : Node {
         public Wood(Folder parent, string name) : base(parent, name) { }
 
+        public override float Volume => 0.5f;
         public override string GetPrintString(string indent) {
             return $"{indent}Wood: {Name}\n";
         }
