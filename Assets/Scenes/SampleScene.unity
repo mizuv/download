@@ -1862,6 +1862,8 @@ MonoBehaviour:
     prefab: {fileID: 260778427269028480, guid: a2fc1a4221dcb494f89cd78c8e71c656, type: 3}
   - key: Node.AutoRunner
     prefab: {fileID: 1955907880825239146, guid: 0e8a2ad4e0c75495ba4ae5958902a255, type: 3}
+  - key: Node.Person
+    prefab: {fileID: 8093986068929455350, guid: a131e5d7f3ee4457f8a1aca86b9c35e5, type: 3}
 --- !u!1 &2067070747
 GameObject:
   m_ObjectHideFlags: 0
