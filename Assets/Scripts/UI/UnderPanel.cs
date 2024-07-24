@@ -11,6 +11,7 @@ namespace Download {
     public class UnderPanel : MonoBehaviour {
         public TextMeshProUGUI FileName;
         public TextMeshProUGUI FileInfo;
+        public TextMeshProUGUI FileVolume;
 
         private void OnEnable() {
             // name
