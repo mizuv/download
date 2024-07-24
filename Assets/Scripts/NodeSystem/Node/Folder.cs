@@ -1,3 +1,4 @@
+using System.Linq;
 using log4net.Util;
 using Mizuvt.Common;
 using UniRx;
@@ -14,6 +15,12 @@ namespace Download.NodeSystem {
         private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
 
         public virtual Folder ChildRunResultTarget => this;
+
+        public float ChildrenVolume {
+            get {
+                return children.Select(child => child.Volume).Sum();
+            }
+        }
 
         public static Folder CreateRoot(Subject<NodeExistenceEvent> eventSubject) {
             return new(eventSubject, "root");

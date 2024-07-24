@@ -23,10 +23,14 @@ namespace Download {
                     }
                     var node = nodes[0];
                     if (nodes.Count == 1) {
-                        FileName.text = node.Node?.Name ?? "Not Initialized";
+                        if (node.Node is not Folder folder) {
+                            FileName.text = node.Node?.Name ?? "Not Initialized";
+                            return;
+                        }
+                        FileName.text = $"{node.Node?.Name} (용량: {folder.ChildrenVolume}/{folder.VolumeForChildren})";
                         return;
                     }
-                    FileName.text = $"{node.Node?.Name} 외 {nodes.Count}개";
+                    FileName.text = $"{node.Node?.Name} 외 {nodes.Count - 1}개";
                 })
                 .AddTo(this);
 
@@ -117,6 +121,23 @@ namespace Download {
                 .DistinctUntilChanged()
                 .Subscribe((string str) => {
                     FileInfo.text = str;
+                })
+                .AddTo(this);
+
+            // volume
+            GameManager.Instance.SelectedNode.Subscribe(
+                (ImmutableOrderedSet<NodeGameObject> nodes) => {
+                    if (nodes.Count == 0) {
+                        FileVolume.text = "";
+                        return;
+                    }
+                    var node = nodes[0];
+                    if (nodes.Count == 1) {
+                        FileVolume.text = $"용량: {node.Node?.Volume}";
+                        return;
+                    }
+                    var volumeSum = nodes.Select(node => node.Node!.Volume).Sum();
+                    FileName.text = $"총 용량: {volumeSum}";
                 })
                 .AddTo(this);
         }
