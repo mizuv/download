@@ -137,7 +137,7 @@ namespace Download {
                         return;
                     }
                     var volumeSum = nodes.Select(node => node.Node!.Volume).Sum();
-                    FileName.text = $"총 용량: {volumeSum}";
+                    FileVolume.text = $"총 용량: {volumeSum}";
                 })
                 .AddTo(this);
         }
