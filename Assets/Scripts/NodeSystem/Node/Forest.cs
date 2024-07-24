@@ -20,7 +20,13 @@ namespace Download.NodeSystem {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
-                    new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
+                    float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
+                    if (randomFloat < 0.7f) {
+                        new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
+                        return;
+                    }
+                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이");
+                    return;
                 })
                 .AddTo(_disposables);
 
