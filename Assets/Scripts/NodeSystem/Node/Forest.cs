@@ -1,10 +1,7 @@
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using Mizuvt.Common;
+using System.Linq;
 using UniRx;
-using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Forest : Folder, IRunnable {
@@ -26,6 +23,23 @@ namespace Download.NodeSystem {
                     new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
                 })
                 .AddTo(_disposables);
+
+            ChildChanged.Subscribe(_ => {
+                var children = this.Children;
+                var isPersonInChildren = children.Any(child => child is Person);
+                if (isPersonInChildren) {
+
+                    this.RunComplete
+                        .TakeUntil(ChildChanged)
+                        .Subscribe(_ => {
+                            this.StartRun();
+                        })
+                        .AddTo(this._disposables);
+                    this.StartRun();
+                    return;
+                }
+                this.StopRun();
+            });
         }
 
         public override string GetPrintString(string indent) {
