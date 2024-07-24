@@ -67,6 +67,27 @@ namespace Download {
 
                 ProgressBar.SetProgress(v.mergeTime.Value / v.recipe.MergeTime);
             }).AddTo(this);
+
+            #region Runnable
+            if (node is IRunnable runnable) {
+                runnable.Runtime
+                    .Select(runtime => runtime != null)
+                    .DistinctUntilChanged()
+                    .Subscribe(isRunning => {
+                        ProgressBar.SetVisible(isRunning);
+                        ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.White);
+                    }).AddTo(this);
+
+                runnable.Runtime.Subscribe(runtime => {
+                    if (runtime == null) {
+                        ProgressBar.SetProgress(0);
+                        return;
+                    }
+
+                    ProgressBar.SetProgress(runtime.Value / runnable.RunOption.RunDuration);
+                }).AddTo(this);
+            }
+            #endregion Runnable
         }
 
         public void OnSelect() {

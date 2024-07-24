@@ -56,59 +56,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Forest
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7784983264149219863, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4978251984841426963, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 874840400973962501}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
---- !u!212 &8440838859477586 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 5086193116323283137, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-  m_PrefabInstance: {fileID: 5082370818486293139}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &260778427269028480 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4978251984841426963, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-  m_PrefabInstance: {fileID: 5082370818486293139}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &874840400973962501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 260778427269028480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b1db72f74a654926a973a1b99f5c6f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HoverArea: {fileID: 8440838859477586}
-  SelectedArea: {fileID: 1247309793345789986}
-  ProgressBar: {fileID: 411888650650524968}
-  SpriteGameObject: {fileID: 6875635699878071371}
---- !u!114 &411888650650524968 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4845705932919132091, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-  m_PrefabInstance: {fileID: 5082370818486293139}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc47cc26bdd9b419089716db649a2ecb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!212 &1247309793345789986 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 6325130798216393393, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-  m_PrefabInstance: {fileID: 5082370818486293139}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6875635699878071371 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1865369208583741144, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
-  m_PrefabInstance: {fileID: 5082370818486293139}
-  m_PrefabAsset: {fileID: 0}
