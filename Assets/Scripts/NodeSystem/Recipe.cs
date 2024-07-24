@@ -42,6 +42,11 @@ namespace Download.NodeSystem {
                 new IStaticNode[] { AutoRunner.StaticNode },
                 3400
             ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new IStaticNode[] { Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode },
+                new IStaticNode[] { Cave.StaticNode },
+                6300
+            ));
 
             Recipes = immutableHashSetBuilder.ToImmutable();
         }

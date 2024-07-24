@@ -44,7 +44,7 @@ namespace Download.NodeSystem {
                     this.StartRun();
                     return;
                 }
-                this.StopRun();
+                // this.StopRun();
             });
         }
 

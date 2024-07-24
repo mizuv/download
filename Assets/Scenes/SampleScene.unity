@@ -2006,6 +2006,8 @@ MonoBehaviour:
     prefab: {fileID: 7589766052403746191, guid: 04e2019b92ac64950aa726ca89beb1b8, type: 3}
   - key: Node.Stone
     prefab: {fileID: 1587593244719988146, guid: 2c5a40ff262f04951afdb2bb90056af4, type: 3}
+  - key: Node.Cave
+    prefab: {fileID: 7376686307544598633, guid: f1f7bdab0b9864672b4f0faade6d30f7, type: 3}
 --- !u!1 &2067070747
 GameObject:
   m_ObjectHideFlags: 0

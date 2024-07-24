@@ -14,9 +14,16 @@ namespace Download {
         public static GameObject PersonPrefab => GetPrefab("Node.Person");
         public static GameObject ZipPrefab => GetPrefab("Node.Zip");
         public static GameObject StonePrefab => GetPrefab("Node.Stone");
+        public static GameObject CavePrefab => GetPrefab("Node.Cave");
+        // public static GameObject IronOrePrefab => GetPrefab("Node.IronOre");
+        // public static GameObject CooperOrePrefab => GetPrefab("Node.CooperOre");
+        // public static GameObject StoneFurnacePrefab => GetPrefab("Node.StoneFurnace");
+        // public static GameObject IronPrefab => GetPrefab("Node.Iron");
+        // public static GameObject CooperPrefab => GetPrefab("Node.Cooper");
 
         public static GameObject GetPrefabByNode(Node node) {
             return node switch {
+                Cave => CavePrefab,
                 Stone => StonePrefab,
                 AutoRunner => NodeGameObjectsPrefab.AutoRunnerPrefab,
                 Zip => ZipPrefab,
