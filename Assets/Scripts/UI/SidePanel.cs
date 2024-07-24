@@ -32,6 +32,7 @@ namespace Download {
                                 var node = nodes[0];
                                 if (node?.Node is not IRunnable runnable)
                                     return returnNull;
+                                if (!runnable.RunByPanel) return returnNull;
                                 return runnable.IsRunActive.Select(isActive => {
                                     if (!isActive) return null;
                                     return runnable;

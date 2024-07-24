@@ -14,6 +14,7 @@ namespace Download.NodeSystem {
         public IObservable<Unit> RunComplete => RunManager.RunComplete;
         public IReadOnlyReactiveProperty<bool> IsRunActive => RunManager.IsActive;
         public override RunOption RunOption => _runOption;
+        public bool RunByPanel => true;
 
         public override float Volume => 4;
 
