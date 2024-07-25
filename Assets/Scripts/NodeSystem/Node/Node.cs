@@ -19,11 +19,13 @@ namespace Download.NodeSystem {
         private readonly Subject<Unit> _deleteStart = new();
         public IObservable<Unit> DeleteStart => _deleteStart;
 
-        public virtual RunOption RunOption => RunOption.GetEmptyRunOption();
+        public virtual RunOption RunJobOption => RunOption.GetEmptyRunOption();
+        public virtual AsyncJobOption MoveJobOption => new AsyncJobOption(this.Volume * 1000 * 0.5f);
 
         public abstract float Volume { get; }
 
         protected readonly RunManager RunManager;
+        protected readonly MoveManager MoveManager;
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
@@ -49,12 +51,13 @@ namespace Download.NodeSystem {
                 var isProperState = job == null || job is MergeManager;
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
-            RunManager = new(isRunActive, _disposables, RunOption);
+            RunManager = new(isRunActive, _disposables, RunJobOption);
+            MoveManager = new(_disposables, MoveJobOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
 
             #region AsyncJob
             var asyncJobs = _mergeManagerReactive
-                    .Select(mergeManager => new AsyncJobManager?[] { mergeManager, RunManager }.Compact())
+                    .Select(mergeManager => new AsyncJobManager?[] { mergeManager, RunManager, MoveManager }.Compact())
                     .ToReactiveProperty();
             var runningJobs = asyncJobs
                 .SelectMany(jobs =>

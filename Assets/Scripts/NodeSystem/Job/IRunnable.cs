@@ -4,7 +4,7 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public interface IRunnable {
-        public RunOption RunOption { get; }
+        public RunOption RunJobOption { get; }
 
         public bool RunByPanel { get; }
 

@@ -84,7 +84,7 @@ namespace Download {
                         return;
                     }
 
-                    ProgressBar.SetProgress(runtime.Value / runnable.RunOption.RunDuration);
+                    ProgressBar.SetProgress(runtime.Value / runnable.RunJobOption.RunDuration);
                 }).AddTo(this);
             }
             #endregion Runnable
