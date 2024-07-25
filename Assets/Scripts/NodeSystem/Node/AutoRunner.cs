@@ -13,14 +13,11 @@ namespace Download.NodeSystem {
                 var children = this.Children;
                 var runnableChildren = children.Select(child => child as IRunnable).Where(child => child != null);
                 runnableChildren.ForEach(runnable => {
-                    // 일케 하면 사이드바 flickering 일어남
-                    runnable?.RunComplete
-                        .TakeUntil(ChildChanged)
-                        .Subscribe(_ => {
-                            runnable.StartRun();
-                        })
-                        .AddTo(this._disposables);
+                    runnable?.SetAutoRun(true);
                     runnable?.StartRun();
+                    ChildChanged.Take(1).Subscribe(_ => {
+                        runnable?.SetAutoRun(false);
+                    });
                 });
             });
         }

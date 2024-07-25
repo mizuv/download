@@ -14,6 +14,7 @@ namespace Download.NodeSystem {
     public class AsyncJobManager {
         private readonly float JOB_UPDATE_SECOND = 0.0625f;
 
+        private ReactiveProperty<bool> autoRun = new ReactiveProperty<bool>(false);
         private readonly ReactiveProperty<float?> _runtime = new(null);
         private readonly Subject<Unit> _runCompleteSubject = new Subject<Unit>();
         private readonly Subject<Unit> _runCancelSubject = new Subject<Unit>();
@@ -49,9 +50,16 @@ namespace Download.NodeSystem {
                     if (_runtime.Value >= AsyncJobOption.RunDuration) {
                         StopRun();
                         _runCompleteSubject.OnNext(Unit.Default);
+                        if (autoRun.Value) {
+                            Run();
+                        }
                     }
                 });
             _disposablesList.ForEach(disposables => disposables.Add(subscription));
+        }
+
+        public void SetAuto(bool enable) {
+            autoRun.Value = enable;
         }
     }
 }

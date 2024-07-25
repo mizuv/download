@@ -34,18 +34,13 @@ namespace Download.NodeSystem {
                 var children = this.Children;
                 var isPersonInChildren = children.Any(child => child is Person);
                 if (isPersonInChildren) {
-
-                    this.RunComplete
-                        .TakeUntil(ChildChanged)
-                        .Subscribe(_ => {
-                            this.StartRun();
-                        })
-                        .AddTo(this._disposables);
-                    this.StartRun();
+                    RunManager.SetAuto(true);
+                    RunManager.Run();
                     return;
                 }
-                // this.StopRun();
-            });
+                RunManager.SetAuto(false);
+            })
+            .AddTo(this._disposables);
         }
 
         public override string GetPrintString(string indent) {
@@ -58,6 +53,9 @@ namespace Download.NodeSystem {
 
         public void StopRun() {
             RunManager.StopRun();
+        }
+        public void SetAutoRun(bool active) {
+            RunManager.SetAuto(active);
         }
         public static new IStaticNode StaticNode => ForestStatic.Instance;
 

@@ -54,6 +54,9 @@ namespace Download.NodeSystem {
         public void StopRun() {
             RunManager.StopRun();
         }
+        public void SetAutoRun(bool active) {
+            RunManager.SetAuto(active);
+        }
         public static new IStaticNode StaticNode => CaveStatic.Instance;
 
 

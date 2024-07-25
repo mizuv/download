@@ -14,5 +14,6 @@ namespace Download.NodeSystem {
 
         public void StartRun();
         public void StopRun();
+        public void SetAutoRun(bool enable);
     }
 }
