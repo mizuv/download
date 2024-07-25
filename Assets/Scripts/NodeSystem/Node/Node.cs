@@ -1,6 +1,7 @@
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 namespace Download.NodeSystem {
@@ -26,8 +27,8 @@ namespace Download.NodeSystem {
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
-        private readonly ReactiveProperty<NodeActionState> _actionState = new(Download.NodeSystem.NodeActionState.Idle);
-        protected IReadOnlyReactiveProperty<NodeActionState> ActionState => _actionState;
+        // private readonly ReactiveProperty<NodeActionState> _actionState = new(Download.NodeSystem.NodeActionState.Idle);
+        // protected IReadOnlyReactiveProperty<NodeActionState> ActionState => _actionState;
 
         private readonly IReadOnlyReactiveProperty<bool> _isMergeActive;
         public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
@@ -35,8 +36,9 @@ namespace Download.NodeSystem {
         public Node(Folder parent, string name) : this(parent, name, parent.eventSubject) { }
         public Node(Subject<NodeExistenceEvent> eventSubject, string name) : this(null, name, eventSubject) { }
 
-
-        // merging, moving, running 중 상태 하나만 갖게 어떻게 할거야
+        // TODO: remove
+        private readonly ReactiveProperty<AsyncJobManager?> _currentAsyncJob = new(null);
+        public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
         private Node(Folder? parent, string name, Subject<NodeExistenceEvent> eventSubject) {
             if (parent != null)
@@ -44,42 +46,56 @@ namespace Download.NodeSystem {
             this.eventSubject = eventSubject;
             Name = name;
 
-            var isRunActive = ActionState.Select(state => state == NodeActionState.Idle || state == NodeActionState.Running).DistinctUntilChanged().ToReactiveProperty();
-            _isMergeActive = ActionState.Select(state => {
-                var isProperState = state == NodeActionState.Idle || state == NodeActionState.Merging;
+            // TODO: remove **Active state
+            var isRunActive = CurrentAsyncJob.Select(job => job == null || job is RunManager).DistinctUntilChanged().ToReactiveProperty();
+            _isMergeActive = CurrentAsyncJob.Select(job => {
+                var isProperState = job == null || job is MergeManager;
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
             RunManager = new(isRunActive, _disposables, RunOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
 
-            RunManager.Runtime
-                .Select(runtime => runtime != null)
+            #region AsyncJob
+            var asyncJobs = _mergeManagerReactive
+                    .Select(mergeManager => new AsyncJobManager?[] { mergeManager, RunManager }.Compact())
+                    .ToReactiveProperty();
+            var runningJobs = asyncJobs
+                .SelectMany(jobs =>
+                    jobs.Select(job =>
+                        job.Runtime.Select(runtime => new { Job = job, Runtime = runtime })
+                    ).CombineLatest()
+                )
+                .Select(latestStates =>
+                    latestStates
+                        .Where(state => state.Runtime != null) // Runtime이 null이 아닌 상태 필터링
+                        .Select(state => state.Job)           // Job 객체로 변환
+                )
+                .DistinctUntilChanged(new SequenceComparer<AsyncJobManager>())
+                .ToReactiveProperty();
+            // CurrentAsyncJob = 
+            runningJobs
+                .StartWith((IEnumerable<AsyncJobManager>?)null)
                 .DistinctUntilChanged()
-                .Subscribe(isRunning => {
-                    if (isRunning) {
-                        _actionState.Value = NodeActionState.Running;
-                        return;
-                    }
-                    _actionState.Value = NodeActionState.Idle;
+                .Pairwise()
+                .Where(pair => SequenceComparer<AsyncJobManager>.GetEquals(pair.Previous, pair.Current))
+                .Select(pair => {
+                    var previousJobs = pair.Previous;
+                    var currentJobs = pair.Current;
+                    if (previousJobs == null) return currentJobs?.LastOrDefault();
+                    if (currentJobs == null) return null;
+                    return currentJobs.Except(previousJobs).LastOrDefault();
                 })
-                .AddTo(_disposables);
-
-            MergeManagerReactive
-                .Select(mergeManager => {
-                    if (mergeManager == null) return Observable.Return<float?>(null);
-                    return mergeManager.Runtime;
-                })
-                .Switch()
-                .Select(runtime => runtime != null)
                 .DistinctUntilChanged()
-                .Subscribe(isMerging => {
-                    if (isMerging) {
-                        _actionState.Value = NodeActionState.Merging;
-                        return;
-                    }
-                    _actionState.Value = NodeActionState.Idle;
-                })
+                .ToReactiveProperty()
+                // TODO remove
+                .Subscribe(job => _currentAsyncJob.Value = job)
                 .AddTo(_disposables);
+            CurrentAsyncJob.Pairwise().Subscribe(pair => {
+                var previousJob = pair.Previous;
+                // cleanup
+                previousJob?.StopRun();
+            }).AddTo(_disposables);
+            #endregion AsyncJob
         }
 
         public void SetParent(Folder parent) {
