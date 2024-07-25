@@ -37,64 +37,41 @@ namespace Download {
             // runnable
             GameManager.Instance.SelectedNode
                 .Select(nodeGameObjects => {
-
-                    var runningMergeManager = nodeGameObjects
-                                    .Select(obj => obj.Node!.MergeManagerReactive)
-                                    .CombineLatestButEmitNullOnEmpty()
-                                    .Select(mergeManagers => {
-                                        if (mergeManagers == null) return Observable.Return<MergeManager?>(null);
-                                        bool allEqual = mergeManagers.Distinct().Count() == 1;
-                                        if (!allEqual) return Observable.Return<MergeManager?>(null);
-                                        var mergeManager = mergeManagers.First();
-                                        if (mergeManager == null) return Observable.Return<MergeManager?>(null);
-
-
-                                        return mergeManager.Runtime.Select(time => {
-                                            if (time == null) return null;
-                                            return mergeManager;
-                                        }).DistinctUntilChanged();
-                                    })
-                                    .Switch()
-                                    .ToReactiveProperty();
-
-                    var runningRunnable = new Func<IObservable<IRunnable?>>(() => {
-                        var returnNull = Observable.Return<IRunnable?>(null);
-                        if (nodeGameObjects.Count != 1) return returnNull;
-                        var node = nodeGameObjects[0];
-                        if (node.Node == null) return returnNull;
-                        if (node.Node is not IRunnable runnable) return returnNull;
-
-                        return runnable.Runtime.Select(time => {
-                            if (time == null) return null;
-                            return runnable;
-                        }).DistinctUntilChanged();
-                    })()
-                    .ToReactiveProperty();
-
-                    return Observable.CombineLatest(runningMergeManager, runningRunnable, (mergeManager, runnable) => {
-                        if (mergeManager != null) {
-                            return mergeManager.Runtime.Select((float? mergeTime) => {
-                                if (mergeTime == null) {
-                                    return "";
-                                }
-                                var resultNames = string.Join(", ", mergeManager.Recipe.To.Select(result => result.Name));
-
-                                return $"{resultNames}(으)로 병합 중 ({((int)mergeTime).ToString()}/{mergeManager.Recipe.MergeTime})";
-                            });
-                        }
-                        if (runnable != null) {
-                            return runnable.Runtime.Select((float? runtime) => {
-                                if (runtime == null) {
-                                    return "";
-                                }
-                                return $"실행 중 ({((int)runtime).ToString()}/{runnable.RunOption.RunDuration})";
-                            });
-                        };
-                        return Observable.Return("");
-                    }).Switch();
+                    return nodeGameObjects
+                        .Select(obj => obj.Node!.CurrentAsyncJob)
+                        .CombineLatestButEmitNullOnEmpty();
                 })
                 .Switch()
-                .DistinctUntilChanged()
+                .Select(asyncJobs => {
+                    if (asyncJobs == null) return null;
+                    bool allEqual = asyncJobs.Distinct().Count() == 1;
+                    if (!allEqual) return null;
+                    var currentAsyncJobToPrint = asyncJobs.First();
+                    if (currentAsyncJobToPrint == null) return null;
+                    return currentAsyncJobToPrint;
+                })
+                .Select(currentAsyncJobToPrint => {
+                    if (currentAsyncJobToPrint is RunManager runManager) {
+                        return runManager.Runtime.Select((float? runtime) => {
+                            if (runtime == null) {
+                                return "";
+                            }
+                            return $"실행 중 ({((int)runtime).ToString()}/{runManager.AsyncJobOption.RunDuration})";
+                        });
+                    }
+                    if (currentAsyncJobToPrint is MergeManager mergeManager) {
+                        return mergeManager.Runtime.Select((float? mergeTime) => {
+                            if (mergeTime == null) {
+                                return "";
+                            }
+                            var resultNames = string.Join(", ", mergeManager.Recipe.To.Select(result => result.Name));
+
+                            return $"{resultNames}(으)로 병합 중 ({((int)mergeTime).ToString()}/{mergeManager.Recipe.MergeTime})";
+                        });
+                    }
+                    return Observable.Return("");
+                })
+                .Switch()
                 .Subscribe((string str) => {
                     FileInfo.text = str;
                 })
