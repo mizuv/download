@@ -73,7 +73,7 @@ namespace Download {
                                         if (mergeManager == null) return Observable.Return<MergeManager?>(null);
 
 
-                                        return mergeManager.MergeTime.Select(time => {
+                                        return mergeManager.Runtime.Select(time => {
                                             if (time == null) return null;
                                             return mergeManager;
                                         }).DistinctUntilChanged();
@@ -97,7 +97,7 @@ namespace Download {
 
                     return Observable.CombineLatest(runningMergeManager, runningRunnable, (mergeManager, runnable) => {
                         if (mergeManager != null) {
-                            return mergeManager.MergeTime.Select((float? mergeTime) => {
+                            return mergeManager.Runtime.Select((float? mergeTime) => {
                                 if (mergeTime == null) {
                                     return "";
                                 }

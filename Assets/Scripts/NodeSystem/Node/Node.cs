@@ -35,6 +35,9 @@ namespace Download.NodeSystem {
         public Node(Folder parent, string name) : this(parent, name, parent.eventSubject) { }
         public Node(Subject<NodeExistenceEvent> eventSubject, string name) : this(null, name, eventSubject) { }
 
+
+        // merging, moving, running 중 상태 하나만 갖게 어떻게 할거야
+
         private Node(Folder? parent, string name, Subject<NodeExistenceEvent> eventSubject) {
             if (parent != null)
                 SetParent(parent);
@@ -64,7 +67,7 @@ namespace Download.NodeSystem {
             MergeManagerReactive
                 .Select(mergeManager => {
                     if (mergeManager == null) return Observable.Return<float?>(null);
-                    return mergeManager.MergeTime;
+                    return mergeManager.Runtime;
                 })
                 .Switch()
                 .Select(runtime => runtime != null)
@@ -100,7 +103,7 @@ namespace Download.NodeSystem {
             _mergeManagerReactive.Value = mergeManager;
             if (mergeManager == null) return;
             // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
-            mergeManager.MergeComplete.Subscribe(_ => {
+            mergeManager.RunComplete.Subscribe(_ => {
                 _mergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }

@@ -95,7 +95,7 @@ namespace Download {
                                     .Select(n => n.MergeManagerReactive)
                                     .CombineLatestButEmitNullOnEmpty()
                                     .Select(mergeManagers =>
-                                        mergeManagers?.All(mergeManager => mergeManager == null || mergeManager.MergeTime == null) ?? false
+                                        mergeManagers?.All(mergeManager => mergeManager == null || mergeManager.Runtime == null) ?? false
                                     )
                                     .ToReactiveProperty();
 

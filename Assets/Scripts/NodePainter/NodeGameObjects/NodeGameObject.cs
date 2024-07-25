@@ -45,7 +45,7 @@ namespace Download {
                 .AddTo(this);
 
             var mergeTime = node.MergeManagerReactive
-                .Select(mergeManager => mergeManager?.MergeTime.AsObservable() ?? Observable.Return<float?>(null))
+                .Select(mergeManager => mergeManager?.Runtime.AsObservable() ?? Observable.Return<float?>(null))
                 .Switch()
                 .DistinctUntilChanged();
             var recipe = node.MergeManagerReactive

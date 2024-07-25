@@ -30,8 +30,8 @@ namespace Download.NodeSystem {
             foreach (Node node in nodes) {
                 node.SetMergeManager(mergeManager);
             }
-            mergeManager.StartMerge();
-            mergeManager.MergeComplete
+            mergeManager.Run();
+            mergeManager.RunComplete
                 .Subscribe(_ => {
                     List<Node> createdNodes = new();
                     recipe.To.ForEach(staticNode => {
