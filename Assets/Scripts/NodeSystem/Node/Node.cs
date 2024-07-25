@@ -74,7 +74,7 @@ namespace Download.NodeSystem {
                 .StartWith((IEnumerable<AsyncJobManager>?)null)
                 .DistinctUntilChanged()
                 .Pairwise()
-                .Where(pair => SequenceComparer<AsyncJobManager>.GetEquals(pair.Previous, pair.Current))
+                .Where(pair => !SequenceComparer<AsyncJobManager>.GetEquals(pair.Previous, pair.Current))
                 .Select(pair => {
                     var previousJobs = pair.Previous;
                     var currentJobs = pair.Current;
