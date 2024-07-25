@@ -27,9 +27,6 @@ namespace Download.NodeSystem {
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
-        // private readonly ReactiveProperty<NodeActionState> _actionState = new(Download.NodeSystem.NodeActionState.Idle);
-        // protected IReadOnlyReactiveProperty<NodeActionState> ActionState => _actionState;
-
         private readonly IReadOnlyReactiveProperty<bool> _isMergeActive;
         public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
 

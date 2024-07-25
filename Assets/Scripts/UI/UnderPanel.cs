@@ -36,30 +36,6 @@ namespace Download {
 
             // runnable
             GameManager.Instance.SelectedNode
-                .Select(nodes => {
-                    var returnNull = Observable.Return<float?>(null);
-
-                    if (nodes.Count != 1) return returnNull;
-                    var node = nodes[0];
-                    if (node.Node == null) return returnNull;
-                    if (node.Node is not IRunnable runnable) return returnNull;
-
-                    return runnable.Runtime;
-                })
-                .Switch()
-                .DistinctUntilChanged()
-                .Subscribe((float? runningProgress) => {
-                    if (runningProgress == null) {
-                        FileInfo.text = "";
-                        return;
-                    }
-                    var runnable = (GameManager.Instance.SelectedNode.Value[0].Node as IRunnable)!;
-                    FileInfo.text = $"실행 중 ({((int)runningProgress).ToString()}/{runnable.RunOption.RunDuration})";
-                })
-                .AddTo(this);
-
-            // runnable
-            GameManager.Instance.SelectedNode
                 .Select(nodeGameObjects => {
 
                     var runningMergeManager = nodeGameObjects
