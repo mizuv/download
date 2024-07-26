@@ -57,8 +57,8 @@ namespace Download.NodeSystem {
 
             #region AsyncJob
             var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive }
-                .CombineLatestButEmitNullOnEmpty()
-                .Select(jobs => jobs == null ? new AsyncJobManager[] { RunManager } : jobs.Compact().Append(RunManager))
+                .CombineLatestEvenEmitOnEmpty()
+                .Select(jobs => jobs.Compact().Append(RunManager))
                 .ToReactiveProperty();
             var runningJobs = asyncJobs
                 .SelectMany(jobs =>

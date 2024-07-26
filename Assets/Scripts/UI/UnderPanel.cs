@@ -39,11 +39,10 @@ namespace Download {
                 .Select(nodeGameObjects => {
                     return nodeGameObjects
                         .Select(obj => obj.Node!.CurrentAsyncJob)
-                        .CombineLatestButEmitNullOnEmpty();
+                        .CombineLatestEvenEmitOnEmpty();
                 })
                 .Switch()
                 .Select(asyncJobs => {
-                    if (asyncJobs == null) return null;
                     bool allEqual = asyncJobs.Distinct().Count() == 1;
                     if (!allEqual) return null;
                     var currentAsyncJobToPrint = asyncJobs.First();

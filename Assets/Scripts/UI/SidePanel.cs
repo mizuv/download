@@ -73,8 +73,8 @@ namespace Download {
                                 var nodes = nodeObjects.Select(nodeObject => (IMergeable)nodeObject.Node!);
                                 var isMergeActive = nodes
                                     .Select(m => m.IsMergeActive)
-                                    .CombineLatestButEmitNullOnEmpty()
-                                    .Select(values => values?.All(active => active) ?? false);
+                                    .CombineLatestEvenEmitOnEmpty()
+                                    .Select(values => values.Count() == 0 ? false : values.All(active => active));
                                 return isMergeActive.Select(isActive => {
                                     if (!isActive) return empty;
                                     return nodes.ToImmutableOrderedSet()!;
@@ -93,9 +93,9 @@ namespace Download {
                                 if (nodes.Count == 0) return Observable.Return(empty);
                                 var isMergeStartable = nodes
                                     .Select(n => n.MergeManagerReactive)
-                                    .CombineLatestButEmitNullOnEmpty()
+                                    .CombineLatestEvenEmitOnEmpty()
                                     .Select(mergeManagers =>
-                                        mergeManagers?.All(mergeManager => mergeManager == null || mergeManager.Runtime == null) ?? false
+                                        mergeManagers.Count() == 0 ? false : mergeManagers.All(mergeManager => mergeManager == null || mergeManager.Runtime == null)
                                     )
                                     .ToReactiveProperty();
 

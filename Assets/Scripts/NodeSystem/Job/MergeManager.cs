@@ -14,8 +14,8 @@ namespace Download.NodeSystem {
             Recipe = recipe;
             IsActive = mergeables
                 .Select(m => m.IsMergeActive)
-                .CombineLatestButEmitNullOnEmpty()
-                .Select(values => values?.All(active => active) ?? false)
+                .CombineLatestEvenEmitOnEmpty()
+                .Select(values => values.Count == 0 ? false : values.All(active => active))
                 .ToReactiveProperty();
 
             var subscription = IsActive
