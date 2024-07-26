@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
+using UnityEngine;
 
 namespace Download.NodeSystem {
     public enum NodeActionState {
@@ -25,7 +26,7 @@ namespace Download.NodeSystem {
         public abstract float Volume { get; }
 
         protected readonly RunManager RunManager;
-        protected readonly MoveManager MoveManager;
+        protected readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
@@ -52,13 +53,13 @@ namespace Download.NodeSystem {
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
             RunManager = new(isRunActive, _disposables, RunJobOption);
-            MoveManager = new(_disposables, MoveJobOption);
             eventSubject.OnNext(new NodeExistenceEventCreate(this));
 
             #region AsyncJob
-            var asyncJobs = _mergeManagerReactive
-                    .Select(mergeManager => new AsyncJobManager?[] { mergeManager, RunManager, MoveManager }.Compact())
-                    .ToReactiveProperty();
+            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive }
+                .CombineLatestButEmitNullOnEmpty()
+                .Select(jobs => jobs == null ? new AsyncJobManager[] { RunManager } : jobs.Compact().Append(RunManager))
+                .ToReactiveProperty();
             var runningJobs = asyncJobs
                 .SelectMany(jobs =>
                     jobs.Select(job =>
