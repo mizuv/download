@@ -44,50 +44,44 @@ namespace Download {
                 })
                 .AddTo(this);
 
-            var mergeTime = node.MergeManagerReactive
-                .Select(mergeManager => mergeManager?.Runtime.AsObservable() ?? Observable.Return<float?>(null))
-                .Switch()
-                .DistinctUntilChanged();
-            var recipe = node.MergeManagerReactive
-                .Select(mergeManager => mergeManager?.Recipe);
-
-            mergeTime
-                .Select(mergeTime => mergeTime != null)
-                .DistinctUntilChanged()
-                .Subscribe(isMerging => {
-                    ProgressBar.SetVisible(isMerging);
-                    ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.Blue);
+            node.CurrentAsyncJob
+                .Subscribe(job => {
+                    ProgressBar.SetVisible(job != null);
+                    switch (job) {
+                        case MergeManager _:
+                            ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.Blue);
+                            break;
+                        case MoveManager _:
+                            ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.Blue);
+                            break;
+                        case RunManager _:
+                            ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.White);
+                            break;
+                    }
                 }).AddTo(this);
 
-            Observable.CombineLatest(mergeTime, recipe, (mergeTime, recipe) => new { mergeTime, recipe }).Subscribe(v => {
-                if (v.mergeTime == null || v.recipe == null) {
-                    ProgressBar.SetProgress(0);
-                    return;
-                }
-
-                ProgressBar.SetProgress(v.mergeTime.Value / v.recipe.MergeTime);
-            }).AddTo(this);
-
-            #region Runnable
-            if (node is IRunnable runnable) {
-                runnable.Runtime
-                    .Select(runtime => runtime != null)
-                    .DistinctUntilChanged()
-                    .Subscribe(isRunning => {
-                        ProgressBar.SetVisible(isRunning);
-                        ProgressBar.SetTheme(ProgressBar.ProgressBarTheme.White);
-                    }).AddTo(this);
-
-                runnable.Runtime.Subscribe(runtime => {
-                    if (runtime == null) {
+            node.CurrentAsyncJob
+                .Select(job => {
+                    if (job == null) return Observable.Return<(AsyncJobManager job, float? runtime)?>(null);
+                    return job.Runtime.Select(runtime => {
+                        (AsyncJobManager job, float? runtime)? value = (job, runtime);
+                        return value;
+                    });
+                })
+                .Switch()
+                .Subscribe(value => {
+                    if (value == null || value.Value.runtime == null) {
                         ProgressBar.SetProgress(0);
                         return;
                     }
-
-                    ProgressBar.SetProgress(runtime.Value / runnable.RunJobOption.RunDuration);
+                    var (job, runtime) = value.Value;
+                    var runDuration = job.AsyncJobOption.RunDuration;
+                    if (runDuration == 0) {
+                        ProgressBar.SetProgress(0);
+                        return;
+                    }
+                    ProgressBar.SetProgress(runtime.Value / runDuration);
                 }).AddTo(this);
-            }
-            #endregion Runnable
         }
 
         public void OnSelect() {
