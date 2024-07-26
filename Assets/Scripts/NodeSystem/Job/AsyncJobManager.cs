@@ -34,7 +34,7 @@ namespace Download.NodeSystem {
             _runCancelSubject.OnNext(Unit.Default);
         }
 
-        public void Run() {
+        protected void Run() {
             if (_runtime.Value != null) return;
 
             var subscription = Observable.Defer(() => {

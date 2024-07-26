@@ -35,7 +35,7 @@ namespace Download.NodeSystem {
                 var isPersonInChildren = children.Any(child => child is Person);
                 if (isPersonInChildren) {
                     RunManager.SetAuto(true);
-                    RunManager.Run();
+                    RunManager.StartRun();
                     return;
                 }
                 RunManager.SetAuto(false);

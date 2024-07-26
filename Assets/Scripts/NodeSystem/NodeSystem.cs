@@ -30,7 +30,7 @@ namespace Download.NodeSystem {
             foreach (Node node in nodes) {
                 node.SetMergeManager(mergeManager);
             }
-            mergeManager.Run();
+            mergeManager.StartRun();
             mergeManager.RunComplete
                 .Subscribe(_ => {
                     List<Node> createdNodes = new();

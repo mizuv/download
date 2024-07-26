@@ -25,7 +25,9 @@ namespace Download.NodeSystem {
                 });
             _disposablesList.ForEach(disposables => disposables.Add(subscription));
         }
-
+        public void StartRun() {
+            base.Run();
+        }
 
 
     }
