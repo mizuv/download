@@ -78,7 +78,7 @@ namespace Download {
                     if (nodeGameObject.Node is not Folder folder) return;
                     selectedNode.Value.ForEach((node) => {
                         if (node.Node == folder) return;
-                        node.Node?.SetParent(folder);
+                        node.Node?.StartMove(folder);
                     });
                     return;
                 }

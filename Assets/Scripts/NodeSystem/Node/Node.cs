@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mizuvt.Common;
 using UniRx;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Download.NodeSystem {
         public IObservable<Unit> DeleteStart => _deleteStart;
 
         public virtual RunOption RunJobOption => RunOption.GetEmptyRunOption();
-        public virtual AsyncJobOption MoveJobOption => new AsyncJobOption(this.Volume * 1000 * 0.5f);
+        public virtual float MoveDuration => this.Volume * 1000 * 0.5f;
 
         public abstract float Volume { get; }
 
@@ -89,10 +90,12 @@ namespace Download.NodeSystem {
                 .DistinctUntilChanged()
                 .ToReactiveProperty()
                 // TODO remove
-                .Subscribe(job => _currentAsyncJob.Value = job)
+                .Subscribe(job => { _currentAsyncJob.Value = job; })
                 .AddTo(_disposables);
             CurrentAsyncJob.Pairwise().Subscribe(pair => {
                 var previousJob = pair.Previous;
+                // 이런일이 왜 발생하는지는 나도 모름;
+                if (previousJob == pair.Current) return;
                 // cleanup
                 previousJob?.StopRun();
             }).AddTo(_disposables);
@@ -111,6 +114,55 @@ namespace Download.NodeSystem {
             parent.AddChild(this);
             if (previousParent != null && previousParent != parent)
                 this.eventSubject.OnNext(new NodeExistenceEventParentChange(this, previousParent));
+        }
+
+        public List<Folder> GetParentPath() {
+            var path = new List<Folder>();
+            var current = this.Parent;
+            while (current != null) {
+                path.Add(current);
+                current = current.Parent;
+            }
+            path.Reverse();
+            return path;
+        }
+
+        public void StartMove(Folder destination) {
+            if (Parent == null) {
+                UnityEngine.Debug.LogWarning("Cannot move root node");
+                return;
+            }
+            if (Parent == destination) return;
+            var moveOption = new MoveOption(MoveDuration, destination);
+            var moveManager = new MoveManager(_disposables, moveOption);
+            MoveManagerReactive.Value = moveManager;
+            moveManager.RunComplete.Subscribe(_ => {
+                if (MoveManagerReactive.Value != moveManager) return;
+                var parentPath = GetParentPath();
+                var destinationPath = new Func<List<Folder>>(() => {
+                    var list = destination.GetParentPath();
+                    list.Add(destination);
+                    return list;
+                })();
+                var commonSequence = Utils.GetCommonSequence(parentPath, destinationPath);
+                var deepestCommonParent = commonSequence.LastOrDefault();
+                if (deepestCommonParent == null) throw new Exception("Cannot find common parent");
+                Folder nextParent = new Func<Folder>(() => {
+                    if (deepestCommonParent == this.Parent) {
+                        // destinationPath에서 deepestCommonParent 다음 folder를 리턴
+                        return destinationPath[commonSequence.Count()];
+                    }
+                    return this.Parent.Parent!;
+                })();
+                if (nextParent == destination) {
+                    moveManager.StopRun();
+                }
+                SetParent(nextParent);
+            }).AddTo(_disposables);
+            moveManager.RunCancel.Subscribe(_ => {
+                if (MoveManagerReactive.Value != moveManager) return;
+                MoveManagerReactive.Value = null;
+            }).AddTo(_disposables);
         }
 
         public void SetMergeManager(MergeManager? mergeManager) {
