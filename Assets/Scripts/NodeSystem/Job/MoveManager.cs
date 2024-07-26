@@ -4,9 +4,9 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class MoveOption : AsyncJobOption {
-        public readonly Node DestinationParent;
+        public readonly Folder DestinationParent;
 
-        public MoveOption(float runDuration, Node destinationParent) : base(runDuration) {
+        public MoveOption(float runDuration, Folder destinationParent) : base(runDuration) {
             DestinationParent = destinationParent;
         }
     }
