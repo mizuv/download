@@ -12,15 +12,17 @@ namespace Download.NodeSystem {
         }
     }
     public class AsyncJobManager {
-        private readonly float JOB_UPDATE_SECOND = 0.0625f;
+        private static readonly float JOB_UPDATE_SECOND = 0.0625f;
 
         private ReactiveProperty<bool> autoRun = new ReactiveProperty<bool>(false);
         private readonly ReactiveProperty<float?> _runtime = new(null);
         private readonly Subject<Unit> _runCompleteSubject = new Subject<Unit>();
-        private readonly Subject<Unit> _runCancelSubject = new Subject<Unit>();
+        private readonly Subject<Unit> _runTerminateSubject = new Subject<Unit>();
+        private readonly Subject<Unit> _runCancelTriggerSubject = new Subject<Unit>();
 
         public IReadOnlyReactiveProperty<float?> Runtime => _runtime;
         public IObservable<Unit> RunComplete => _runCompleteSubject.AsObservable();
+        public IObservable<Unit> RunTerminate => _runTerminateSubject.AsObservable();
 
         protected readonly IEnumerable<CompositeDisposable> _disposablesList;
         public readonly AsyncJobOption AsyncJobOption;
@@ -31,7 +33,7 @@ namespace Download.NodeSystem {
         }
 
         public void StopRun() {
-            _runCancelSubject.OnNext(Unit.Default);
+            _runCancelTriggerSubject.OnNext(Unit.Default);
         }
 
         protected void Run() {
@@ -43,8 +45,8 @@ namespace Download.NodeSystem {
                         .Select(_ => (float)stopwatch.Elapsed.TotalMilliseconds);
 
             })
-                .TakeUntil(_runCancelSubject)
-                .DoOnTerminate(() => _runtime.Value = null)
+                .TakeUntil(_runCancelTriggerSubject)
+                .DoOnTerminate(() => { _runtime.Value = null; _runTerminateSubject.OnNext(Unit.Default); })
                 .Subscribe(timeElapsed => {
                     _runtime.Value = timeElapsed;
                     if (_runtime.Value >= AsyncJobOption.RunDuration) {

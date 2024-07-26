@@ -119,7 +119,7 @@ namespace Download.NodeSystem {
             _mergeManagerReactive.Value = mergeManager;
             if (mergeManager == null) return;
             // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
-            mergeManager.RunComplete.Subscribe(_ => {
+            mergeManager.RunTerminate.Subscribe(_ => {
                 _mergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
