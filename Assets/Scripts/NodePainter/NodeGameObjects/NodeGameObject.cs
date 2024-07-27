@@ -15,7 +15,8 @@ namespace Download {
 
         public Node? Node { get; private set; }
 
-        public void Awake() {
+        protected override void Awake() {
+            base.Awake();
             if (HoverArea == null) throw new System.Exception("Hover area not set");
             HoverArea.enabled = false;
             SelectedArea.enabled = false;
