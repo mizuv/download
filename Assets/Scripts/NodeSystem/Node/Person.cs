@@ -4,6 +4,7 @@ namespace Download.NodeSystem {
 
         public override float Volume => 0;
         public override float VolumeForChildren => 5;
+        public override float MoveDuration => 1200;
 
         public Person(Folder parent, string name) : base(parent, name) {
         }
