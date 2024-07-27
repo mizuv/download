@@ -24,6 +24,7 @@ namespace Download {
 
         virtual protected void Awake() {
             Click
+                .Where(context => context is ClickEnterContext)
                 .Timestamp() // 타임스탬프를 추가하여 클릭 시간 기록
                 .Pairwise()  // 연속된 두 개의 클릭을 쌍으로 묶음
                 .Where(pair => pair.Current.Timestamp - pair.Previous.Timestamp < System.TimeSpan.FromMilliseconds(DOUBLECLICK_INTERVAL))
