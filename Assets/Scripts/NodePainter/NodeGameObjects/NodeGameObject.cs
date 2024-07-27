@@ -22,7 +22,7 @@ namespace Download {
             SelectedArea.enabled = false;
         }
 
-        public void Start() {
+        public virtual void Start() {
             Hover.Subscribe(context => {
                 if (context is HoverEnterContext) {
                     HoverArea.enabled = true;
