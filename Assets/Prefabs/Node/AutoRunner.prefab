@@ -72,6 +72,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7326154692457714418, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: OpenSprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326154692457714418, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
+      propertyPath: ClosedSprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7924467234700525336, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
       propertyPath: m_Name
       value: AutoRunner

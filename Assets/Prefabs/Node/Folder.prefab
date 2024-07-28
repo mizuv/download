@@ -123,6 +123,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7326154692457714418}
   m_SourcePrefab: {fileID: 100100000, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+--- !u!212 &2443614701324639099 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 650321154437819504, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
+  m_PrefabInstance: {fileID: 2949595226996520715}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3216352387173973462 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 310139587331312349, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
@@ -166,6 +171,9 @@ MonoBehaviour:
   ProgressBar: {fileID: 7768840080616421552}
   SpriteGameObject: {fileID: 3534215554082892243}
   ChildrenContainer: {fileID: 8485831087871999180}
+  SpriteRenderer: {fileID: 2443614701324639099}
+  OpenSprite: {fileID: 8396969421473243195, guid: 3a49d01fc783d426c9045e89c710e5be, type: 3}
+  ClosedSprite: {fileID: -8465409565924014659, guid: bf3b31793cbae42ba8a47853ce4347ad, type: 3}
 --- !u!212 &7960913379574167498 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 5086193116323283137, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
