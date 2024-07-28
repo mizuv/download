@@ -34,6 +34,11 @@ namespace Download {
                 }
             })
             .AddTo(this);
+
+            DoubleClick.Subscribe(_ => {
+                if (Node is not IRunnable runnable) return;
+                runnable.StartRun();
+            });
         }
 
         public virtual void Initialize(Node node) {
