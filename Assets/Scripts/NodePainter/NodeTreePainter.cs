@@ -53,6 +53,7 @@ namespace Download {
                     // ROOM FOR OPTIMALIZATION
                     Destroy(copiedSelectedSpriteParent);
                     copiedSelectedSpriteParent = new GameObject("DragParent");
+                    copiedSelectedSpriteParent.transform.SetParent(transform);
                     copiedSelectedSpriteParent.SetActive(false);
 
                     selectedNode.ForEach((nodeGameObject) => {
@@ -107,7 +108,7 @@ namespace Download {
                                 if (node is not Folder folder) throw new Exception("only root folder can have null parent");
                             }
                             var prefab = NodeGameObjectsPrefab.GetPrefabByNode(node);
-                            var gameObject = Instantiate(prefab);
+                            var gameObject = Instantiate(prefab, transform);
                             var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
 
                             nodeGameObject.Initialize(node);
