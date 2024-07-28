@@ -7,18 +7,18 @@ using System.Linq;
 
 public class GameManager : PersistentSingleton<GameManager> {
     public NodeSystem nodeSystem;
-    private NodePainter nodePainter;
+    private NodeTreePainter nodeTreePainter;
 
     public ReactiveProperty<ImmutableOrderedSet<NodeGameObject>> SelectedNode = new(ImmutableOrderedSet<NodeGameObject>.Empty);
 
     protected override void Awake() {
         base.Awake();
         nodeSystem = new NodeSystem();
-        nodePainter = this.gameObject.AddComponent<NodePainter>();
+        nodeTreePainter = this.gameObject.AddComponent<NodeTreePainter>();
     }
 
     protected void Start() {
-        nodePainter.Initialize(nodeSystem);
+        nodeTreePainter.Initialize(nodeSystem);
 
         // 객체에 select 이벤트 전달하기
         SelectedNode.DistinctUntilChanged().Pairwise().Subscribe(pair => {

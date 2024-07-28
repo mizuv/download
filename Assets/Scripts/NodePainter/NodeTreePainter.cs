@@ -11,7 +11,7 @@ using UniRx;
 
 
 namespace Download {
-    public class NodePainter : MonoBehaviour {
+    public class NodeTreePainter : MonoBehaviour {
         const float VERTICAL_INTERVAL = 1.3f;
         const float HORIZONTAL_INTERVAL = 1.4f;
         const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
