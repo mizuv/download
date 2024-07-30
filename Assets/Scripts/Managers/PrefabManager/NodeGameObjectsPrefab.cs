@@ -35,11 +35,8 @@ namespace Download {
                 _ => throw new Exception("invalid node type")
             };
         }
-
         private static GameObject GetPrefab(string key) {
-            var prefab = PrefabManager.Instance.GetPrefab(key);
-            if (prefab == null) throw new System.Exception("Prefab not found");
-            return prefab;
+            return PrefabManager.Instance.GetPrefab(key);
         }
     }
 }

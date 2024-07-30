@@ -9,7 +9,7 @@ public struct PrefabEntry {
     public GameObject prefab;
 }
 
-public class PrefabManager : PersistentSingleton<PrefabManager> {
+public partial class PrefabManager : PersistentSingleton<PrefabManager> {
     [SerializeField]
     private List<PrefabEntry> prefabList = new List<PrefabEntry>();
 
@@ -31,12 +31,12 @@ public class PrefabManager : PersistentSingleton<PrefabManager> {
         }
     }
 
-    public GameObject? GetPrefab(string key) {
+    public GameObject GetPrefab(string key) {
         if (prefabMap.TryGetValue(key, out GameObject prefab)) {
             return prefab;
         } else {
             Debug.LogError($"Prefab with key {key} not found.");
-            return null;
+            throw new System.Exception("Prefab not found");
         }
     }
 }
