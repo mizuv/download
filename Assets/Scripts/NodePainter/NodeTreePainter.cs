@@ -15,6 +15,7 @@ namespace Download {
         const float VERTICAL_INTERVAL = 1.3f;
         const float HORIZONTAL_INTERVAL = 1.4f;
         const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
+        const float CHILDREN_GROUP_PADDING = 0.2f;
 
         public NodeSystem.NodeSystem NodeSystem;
         public Dictionary<Node, NodeGameObject> NodeObjectMap = new();
@@ -177,11 +178,20 @@ namespace Download {
                 }
             }
             void Reorder(Folder folder) {
-                var xPositions = Utils.GenerateZeroMeanArray(folder.Children.Count, HORIZONTAL_INTERVAL);
+                var gameObject = NodeObjectMap[folder];
+                if (gameObject is not FolderGameObject folderGameObject) throw new Exception("only folder can be reordered");
+                var childrenCount = folder.Children.Count;
+                var xPositions = Utils.GenerateZeroMeanArray(childrenCount, HORIZONTAL_INTERVAL);
                 folder.Children.ForEach((child, index) => {
                     var childGameObject = NodeObjectMap[child].gameObject;
                     childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
                 });
+                if (childrenCount == 0) {
+                    folderGameObject.ChildContainerSpriteRenderer.enabled = false;
+                    return;
+                }
+                folderGameObject.ChildContainerSpriteRenderer.enabled = true;
+                folderGameObject.ChildContainerSpriteRenderer.transform.localScale = new Vector3(-xPositions[0] * 2 + 1, 1, 1) + Vector3.one * CHILDREN_GROUP_PADDING;
             };
         }
 
