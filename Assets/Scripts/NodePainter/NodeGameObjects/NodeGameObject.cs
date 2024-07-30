@@ -4,6 +4,7 @@ using Mizuvt.Common;
 using UnityEngine;
 using UniRx;
 using System;
+using System.Linq;
 
 
 namespace Download {
@@ -16,6 +17,10 @@ namespace Download {
         public Node? Node { get; private set; }
         private INodePainter? _nodePainter { get; set; }
         protected INodePainter NodePainter { get { if (_nodePainter == null) throw new Exception("not initialized"); return _nodePainter; } }
+
+        // for NodeTreePainter
+        protected Bounds _bounds;
+        public Bounds Bounds => _bounds;
 
         protected override void Awake() {
             base.Awake();
@@ -46,6 +51,11 @@ namespace Download {
         public virtual void Initialize(Node node, INodePainter nodePainter) {
             Node = node;
             _nodePainter = nodePainter;
+            // spriteRenderer 다 가져와서 bounds 합치기
+            _bounds = SpriteGameObject.GetComponentsInChildren<SpriteRenderer>().Aggregate(new Bounds(), (bounds, spriteRenderer) => {
+                bounds.Encapsulate(spriteRenderer.bounds);
+                return bounds;
+            });
 
             node.DeleteStart
                 .Subscribe(_ => {

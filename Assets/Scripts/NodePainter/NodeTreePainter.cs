@@ -12,10 +12,11 @@ using UniRx;
 
 namespace Download {
     public class NodeTreePainter : MonoBehaviour, INodePainter {
-        const float VERTICAL_INTERVAL = 1.3f;
-        const float HORIZONTAL_INTERVAL = 1.4f;
-        const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
-        const float CHILDREN_GROUP_PADDING = 0.2f;
+        public const float VERTICAL_INTERVAL = 1.3f;
+        public const float HORIZONTAL_INTERVAL = 1.4f;
+        public const float HORIZONTAL_INTERVAL_ = 0.4f;
+        public const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
+        public const float CHILDREN_GROUP_PADDING = 0.2f;
 
         public NodeSystem.NodeSystem NodeSystem;
         private readonly Dictionary<Node, NodeGameObject> NodeObjectMap = new();
@@ -129,15 +130,20 @@ namespace Download {
                             var nodeObject = NodeObjectMap.GetValueOrDefault(node);
                             if (nodeObject == null) break;
                             Destroy(nodeObject.gameObject);
-                            Reorder(nodeEventDelete.ParentRightBeforeDelete);
+
+                            var parentGameObject = GetNodeGameObject(nodeEventDelete.ParentRightBeforeDelete);
+                            if (parentGameObject is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
+                            parentFolderGameObject.DrawChildren();
                             break;
                         }
                     case NodeExistenceEventParentChange nodeExistenceEventParentChange: {
                             var node = nodeExistenceEventParentChange.Node;
                             var nodeObject = NodeObjectMap[node];
                             SetTransform(nodeObject);
-                            var previousParent = nodeExistenceEventParentChange.ParentPrevious;
-                            Reorder(previousParent);
+
+                            var parentGameObject = GetNodeGameObject(nodeExistenceEventParentChange.ParentPrevious);
+                            if (parentGameObject is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
+                            parentFolderGameObject.DrawChildren();
                             break;
                         }
                     case NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted mergeToItemCreated: {
@@ -172,27 +178,9 @@ namespace Download {
                     if (parent is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
                     nodeGameObject.transform.SetParent(parentFolderGameObject.ChildrenContainer);
                     // reorder on sibilings
-                    var parentNode = parent.Node;
-                    if (parentNode is not Folder folder) throw new Exception("only folder can be a parent");
-                    Reorder(folder);
+                    parentFolderGameObject.DrawChildren();
                 }
             }
-            void Reorder(Folder folder) {
-                var gameObject = NodeObjectMap[folder];
-                if (gameObject is not FolderGameObject folderGameObject) throw new Exception("only folder can be reordered");
-                var childrenCount = folder.Children.Count;
-                var xPositions = Utils.GenerateZeroMeanArray(childrenCount, HORIZONTAL_INTERVAL);
-                folder.Children.ForEach((child, index) => {
-                    var childGameObject = NodeObjectMap[child].gameObject;
-                    childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
-                });
-                if (childrenCount == 0) {
-                    folderGameObject.ChildContainerSpriteRenderer.enabled = false;
-                    return;
-                }
-                folderGameObject.ChildContainerSpriteRenderer.enabled = true;
-                folderGameObject.ChildContainerSpriteRenderer.transform.localScale = new Vector3(-xPositions[0] * 2 + 1, 1, 1) + Vector3.one * CHILDREN_GROUP_PADDING;
-            };
         }
 
         void Select(NodeGameObject nodeGameObject) {
