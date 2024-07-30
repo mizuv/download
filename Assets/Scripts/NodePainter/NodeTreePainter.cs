@@ -13,10 +13,11 @@ using UniRx;
 namespace Download {
     public class NodeTreePainter : MonoBehaviour, INodePainter {
         public const float VERTICAL_INTERVAL = 1.3f;
-        public const float HORIZONTAL_INTERVAL = 1.4f;
-        public const float HORIZONTAL_INTERVAL_ = 0.4f;
+        public const float HORIZONTAL_INTERVAL = 0.4f;
         public const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
         public const float CHILDREN_GROUP_PADDING = 0.2f;
+        public const float CHILDREN_GROUP_WIDTH = 1;
+        public const float NODE_SIZE = 1;
 
         public NodeSystem.NodeSystem NodeSystem;
         private readonly Dictionary<Node, NodeGameObject> NodeObjectMap = new();

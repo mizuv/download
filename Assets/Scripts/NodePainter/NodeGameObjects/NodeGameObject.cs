@@ -19,8 +19,23 @@ namespace Download {
         protected INodePainter NodePainter { get { if (_nodePainter == null) throw new Exception("not initialized"); return _nodePainter; } }
 
         // for NodeTreePainter
-        protected Bounds _bounds;
+        private Bounds _bounds {
+            get {
+                var boundsList = SpriteRenderers.Select(spriteRenderer => spriteRenderer.bounds);
+                var bounds = Utils.GetEncapsulatingBounds(boundsList) ?? throw new Exception("SpriteRenderer not exist");
+                bounds.size = UnityEngine.Vector3.one * NodeTreePainter.NODE_SIZE;
+                return bounds;
+            }
+        }
         public Bounds Bounds => _bounds;
+
+        private SpriteRenderer[]? _spriteRenderers = null;
+        private SpriteRenderer[] SpriteRenderers {
+            get {
+                _spriteRenderers ??= SpriteGameObject.GetComponentsInChildren<SpriteRenderer>();
+                return _spriteRenderers;
+            }
+        }
 
         protected override void Awake() {
             base.Awake();
@@ -51,11 +66,6 @@ namespace Download {
         public virtual void Initialize(Node node, INodePainter nodePainter) {
             Node = node;
             _nodePainter = nodePainter;
-            // spriteRenderer 다 가져와서 bounds 합치기
-            _bounds = SpriteGameObject.GetComponentsInChildren<SpriteRenderer>().Aggregate(new Bounds(), (bounds, spriteRenderer) => {
-                bounds.Encapsulate(spriteRenderer.bounds);
-                return bounds;
-            });
 
             node.DeleteStart
                 .Subscribe(_ => {
