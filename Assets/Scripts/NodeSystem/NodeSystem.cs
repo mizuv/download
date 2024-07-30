@@ -13,12 +13,12 @@ namespace Download.NodeSystem {
 
         public void Initialize() {
             var root = Folder.CreateRoot(NodeExistenceEventSubject);
-            // new Zip(root, "기본 압축 패키지");
-            new Forest(root, "나무1");
-            new Forest(root, "나무2");
-            new Folder(root, "루트가 아닌 폴더");
-            new Person(root, "사람");
-            new AutoRunner(root, "자동 실행기");
+            new Zip(root, "기본 압축 패키지");
+            // new Forest(root, "나무1");
+            // new Forest(root, "나무2");
+            // new Folder(root, "루트가 아닌 폴더");
+            // new Person(root, "사람");
+            // new AutoRunner(root, "자동 실행기");
         }
 
         public void MergeNode(IEnumerable<IMergeable> nodes) {
