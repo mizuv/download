@@ -14,8 +14,8 @@ namespace Download {
         [NonSerialized]
         public ReactiveProperty<bool> IsOpen = new ReactiveProperty<bool>(true);
 
-        public override void Initialize(Node node) {
-            base.Initialize(node);
+        public override void Initialize(Node node, INodePainter nodePainter) {
+            base.Initialize(node, nodePainter);
 
             // 현재는 렌더를 전부 painter에서 담당하는데 일부 부분적으로 여기서도 담당하는 꼴이 되어서 아름다운 구조는 아님
             ChildContainerSpriteRenderer.enabled = false;

@@ -112,7 +112,7 @@ namespace Download {
                             var gameObject = Instantiate(prefab, transform);
                             var nodeGameObject = gameObject.GetComponent<NodeGameObject>();
 
-                            nodeGameObject.Initialize(node);
+                            nodeGameObject.Initialize(node, this);
                             nodeGameObject.Click.Subscribe(context => {
                                 if (context is ClickExitContext) {
                                     if (dragContextReactive.Value != null) return;

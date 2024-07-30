@@ -14,6 +14,8 @@ namespace Download {
         public GameObject SpriteGameObject;
 
         public Node? Node { get; private set; }
+        private INodePainter? _nodePainter { get; set; }
+        protected INodePainter NodePainter { get { if (_nodePainter == null) throw new Exception("not initialized"); return _nodePainter; } }
 
         protected override void Awake() {
             base.Awake();
@@ -41,8 +43,9 @@ namespace Download {
             });
         }
 
-        public virtual void Initialize(Node node) {
+        public virtual void Initialize(Node node, INodePainter nodePainter) {
             Node = node;
+            _nodePainter = nodePainter;
 
             node.DeleteStart
                 .Subscribe(_ => {
