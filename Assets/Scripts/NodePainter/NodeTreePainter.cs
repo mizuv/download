@@ -11,14 +11,14 @@ using UniRx;
 
 
 namespace Download {
-    public class NodeTreePainter : MonoBehaviour {
+    public class NodeTreePainter : MonoBehaviour, INodePainter {
         const float VERTICAL_INTERVAL = 1.3f;
         const float HORIZONTAL_INTERVAL = 1.4f;
         const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
         const float CHILDREN_GROUP_PADDING = 0.2f;
 
         public NodeSystem.NodeSystem NodeSystem;
-        public Dictionary<Node, NodeGameObject> NodeObjectMap = new();
+        private readonly Dictionary<Node, NodeGameObject> NodeObjectMap = new();
 
         private IReadOnlyReactiveProperty<ClickContext?> dragContextReactive;
 
@@ -201,6 +201,10 @@ namespace Download {
                 return;
             }
             GameManager.Instance.SelectedNode.Value = ImmutableOrderedSet<NodeGameObject>.Create(nodeGameObject);
+        }
+
+        public NodeGameObject GetNodeGameObject(Node node) {
+            return NodeObjectMap[node];
         }
     }
 }
