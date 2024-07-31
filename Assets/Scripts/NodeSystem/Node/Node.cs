@@ -12,6 +12,9 @@ namespace Download.NodeSystem {
         Running,
         Merging,
     }
+    public class NodeCreateOptions {
+        public int? Index { get; set; } = null;
+    }
     public abstract class Node : IMergeable {
         public Folder? Parent { get; private set; }
         public string Name { get; private set; }
@@ -34,16 +37,16 @@ namespace Download.NodeSystem {
         private readonly IReadOnlyReactiveProperty<bool> _isMergeActive;
         public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
 
-        public Node(Folder parent, string name) : this(parent, name, parent.eventSubject) { }
-        public Node(Subject<NodeEvent> eventSubject, string name) : this(null, name, eventSubject) { }
+        public Node(Folder parent, string name, NodeCreateOptions? options = null) : this(parent, name, parent.eventSubject, options) { }
+        public Node(Subject<NodeEvent> eventSubject, string name, NodeCreateOptions? options = null) : this(null, name, eventSubject, options) { }
 
         // TODO: remove
         private readonly ReactiveProperty<AsyncJobManager?> _currentAsyncJob = new(null);
         public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
-        private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject) {
+        private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject, NodeCreateOptions? options = null) {
             if (parent != null)
-                SetParent(parent);
+                SetParent(parent, options?.Index);
             this.eventSubject = eventSubject;
             Name = name;
 
@@ -102,7 +105,7 @@ namespace Download.NodeSystem {
             #endregion AsyncJob
         }
 
-        public void SetParent(Folder parent) {
+        public void SetParent(Folder parent, int? index = null) {
             if (parent == Parent) return;
             if (this == parent) {
                 UnityEngine.Debug.LogWarning("Cannot be parent of myself");
@@ -111,7 +114,7 @@ namespace Download.NodeSystem {
             var previousParent = this.Parent;
             Parent = parent;
             previousParent?.RemoveChild(this);
-            parent.AddChild(this);
+            parent.AddChild(this, index);
             if (previousParent != null && previousParent != parent)
                 this.eventSubject.OnNext(new NodeParentChange(this, previousParent));
         }

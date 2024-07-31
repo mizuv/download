@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class Stone : Node {
-        public Stone(Folder parent, string name) : base(parent, name) { }
+        public Stone(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) { }
 
         public override float Volume => 0.9f;
         public override string GetPrintString(string indent) {

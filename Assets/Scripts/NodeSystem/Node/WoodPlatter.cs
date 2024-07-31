@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class WoodPlatter : Node {
-        public WoodPlatter(Folder parent, string name) : base(parent, name) { }
+        public WoodPlatter(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) { }
 
         public override float Volume => 0.8f;
         public override string GetPrintString(string indent) {

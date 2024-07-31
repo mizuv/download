@@ -22,10 +22,10 @@ namespace Download.NodeSystem {
                     if (Parent == null) return;
                     float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
                     if (randomFloat < 0.8f) {
-                        new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
+                        new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재", new NodeCreateOptions { Index = Parent.IndexOf(this) + 1 });
                         return;
                     }
-                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이");
+                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이", new NodeCreateOptions { Index = Parent.IndexOf(this) + 1 });
                     return;
                 })
                 .AddTo(_disposables);

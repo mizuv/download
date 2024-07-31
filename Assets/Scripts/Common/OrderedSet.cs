@@ -26,6 +26,32 @@ namespace Mizuvt.Common {
                 dictionary[item] = node;
             }
         }
+        public void Add(T item, int? index = null) {
+            if (dictionary.ContainsKey(item)) {
+                throw new ArgumentException("The item already exists in the set.", nameof(item));
+            }
+
+            if (index.HasValue) {
+                if (index.Value < 0 || index.Value > list.Count) {
+                    throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the bounds of the list.");
+                }
+
+                var node = new LinkedListNode<T>(item);
+                if (index.Value == list.Count) {
+                    list.AddLast(node);
+                } else {
+                    var current = list.First;
+                    for (int i = 0; i < index.Value; i++) {
+                        current = current.Next;
+                    }
+                    list.AddBefore(current, node);
+                }
+                dictionary[item] = node;
+            } else {
+                // Default behavior: Add to the end
+                Add(item);
+            }
+        }
 
         public bool Remove(T item) {
             if (dictionary.ContainsKey(item)) {
@@ -126,6 +152,22 @@ namespace Mizuvt.Common {
             }
 
             Move(fromIndex, toIndex);
+        }
+
+        public int IndexOf(T item) {
+            if (dictionary.ContainsKey(item)) {
+                var currentNode = list.First;
+                int index = 0;
+
+                while (currentNode != null) {
+                    if (EqualityComparer<T>.Default.Equals(currentNode.Value, item)) {
+                        return index;
+                    }
+                    currentNode = currentNode.Next;
+                    index++;
+                }
+            }
+            return -1; // 아이템이 없는 경우 -1을 반환
         }
     }
 }

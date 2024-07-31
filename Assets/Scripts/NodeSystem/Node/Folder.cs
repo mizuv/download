@@ -12,8 +12,8 @@ namespace Download.NodeSystem {
         public override float Volume => 0;
         public virtual float VolumeForChildren => 20;
 
-        public Folder(Folder parent, string name) : base(parent, name) { }
-        private Folder(Subject<NodeEvent> eventSubject, string name) : base(eventSubject, name) { }
+        public Folder(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) { }
+        private Folder(Subject<NodeEvent> eventSubject, string name, NodeCreateOptions? options = null) : base(eventSubject, name, options) { }
 
         public virtual Folder ChildRunResultTarget => this;
 
@@ -30,14 +30,14 @@ namespace Download.NodeSystem {
             return new(eventSubject, "root");
         }
 
-        public virtual void AddChild(Node child) {
+        public virtual void AddChild(Node child, int? index = null) {
             if (Children.Contains(child)) return;
             if (this == child) {
                 UnityEngine.Debug.LogWarning("Cannot be child of myself");
                 return;
             }
-            children.Add(child);
-            child.SetParent(this);
+            children.Add(child, index);
+            child.SetParent(this, index);
             _childChanged.OnNext(Unit.Default);
         }
 
@@ -53,6 +53,9 @@ namespace Download.NodeSystem {
             children.Move(child, index);
             eventSubject.OnNext(new NodeIndexChange(this));
             _childChanged.OnNext(Unit.Default);
+        }
+        public int IndexOf(Node child) {
+            return children.IndexOf(child);
         }
 
         public override string GetPrintString(string indent) {

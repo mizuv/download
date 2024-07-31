@@ -18,7 +18,7 @@ namespace Download.NodeSystem {
 
         public override float Volume => 4;
 
-        public Zip(Folder parent, string name) : base(parent, name) {
+        public Zip(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
