@@ -34,9 +34,9 @@ namespace Download.NodeSystem {
                 .Subscribe(_ => {
                     List<Node> createdNodes = new();
 
-                    var first = nodes.First() as Node;
-                    var parent = first?.Parent ?? throw new Exception("root can't be merged");
-                    var index = first.GetIndex();
+                    var minIndexNode = nodes.MinBy(n => (n as Node)?.GetIndex()) as Node;
+                    var parent = minIndexNode?.Parent ?? throw new Exception("root can't be merged");
+                    var index = minIndexNode.GetIndex();
 
                     recipe.To.ForEach((staticNode, i) => {
                         // Select에서 상태 변경하면 아주 큰일난단다. 자체적 최적화 때문에 몇번 호출될지 알 수 없음.
