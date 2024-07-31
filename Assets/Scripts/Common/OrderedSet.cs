@@ -73,5 +73,59 @@ namespace Mizuvt.Common {
                 return node.Value;
             }
         }
+
+        public void Move(int fromIndex, int toIndex) {
+            if (fromIndex < 0 || fromIndex >= list.Count)
+                throw new ArgumentOutOfRangeException(nameof(fromIndex));
+
+            if (toIndex < 0 || toIndex >= list.Count)
+                throw new ArgumentOutOfRangeException(nameof(toIndex));
+
+            if (fromIndex == toIndex)
+                return;
+
+            var node = list.First;
+            for (int i = 0; i < fromIndex; i++) {
+                node = node.Next;
+            }
+
+            list.Remove(node);
+
+            var insertNode = list.First;
+            for (int i = 0; i < toIndex; i++) {
+                insertNode = insertNode.Next;
+            }
+
+            if (toIndex == 0) {
+                list.AddFirst(node);
+            } else if (insertNode == null) {
+                list.AddLast(node);
+            } else {
+                list.AddBefore(insertNode, node);
+            }
+
+            // Update the dictionary
+            dictionary[node.Value] = node;
+        }
+
+        public void Move(T item, int toIndex) {
+            if (!dictionary.ContainsKey(item)) {
+                throw new ArgumentException("The item does not exist in the set.", nameof(item));
+            }
+
+            var node = dictionary[item];
+            var fromIndex = 0;
+            var currentNode = list.First;
+
+            while (currentNode != null) {
+                if (EqualityComparer<T>.Default.Equals(currentNode.Value, item)) {
+                    break;
+                }
+                currentNode = currentNode.Next;
+                fromIndex++;
+            }
+
+            Move(fromIndex, toIndex);
+        }
     }
 }

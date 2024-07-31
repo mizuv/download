@@ -198,6 +198,11 @@ namespace Download.NodeSystem {
             eventSubject.OnNext(new NodeExistenceEventDelete(this, parentRightBeforeDelete));
         }
 
+        public void SetIndex(int index) {
+            Parent?.MoveChildIndex(this, index);
+
+        }
+
         public CompositeDisposable GetDisposable() {
             return this._disposables;
         }

@@ -48,6 +48,12 @@ namespace Download.NodeSystem {
             _childChanged.OnNext(Unit.Default);
         }
 
+        public void MoveChildIndex(Node child, int index) {
+            if (!Children.Contains(child)) return;
+            children.Move(child, index);
+            _childChanged.OnNext(Unit.Default);
+        }
+
         public override string GetPrintString(string indent) {
             string result = $"{indent}Folder: {Name}\n";
             foreach (var child in Children) {

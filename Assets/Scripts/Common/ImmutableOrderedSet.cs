@@ -74,6 +74,45 @@ namespace Mizuvt.Common {
             var set = ImmutableHashSet.CreateRange(items);
             return new ImmutableOrderedSet<T>(list, set);
         }
+
+        // Move method
+        public ImmutableOrderedSet<T> Move(int fromIndex, int toIndex) {
+            if (fromIndex < 0 || fromIndex >= list.Count) {
+                throw new ArgumentOutOfRangeException(nameof(fromIndex), "The fromIndex is out of range.");
+            }
+
+            if (toIndex < 0 || toIndex >= list.Count) {
+                throw new ArgumentOutOfRangeException(nameof(toIndex), "The toIndex is out of range.");
+            }
+
+            // Get the item at fromIndex
+            var item = list[fromIndex];
+
+            // Remove the item from the list
+            var newList = list.RemoveAt(fromIndex);
+
+            // Insert the item at the new position
+            newList = newList.Insert(toIndex, item);
+
+            // Return a new ImmutableOrderedSet with the updated list and the same set
+            return new ImmutableOrderedSet<T>(newList, set);
+        }
+
+        // Move(T, int) 메서드
+        public ImmutableOrderedSet<T> Move(T item, int toIndex) {
+            if (!set.Contains(item)) {
+                throw new ArgumentException("The item does not exist in the set.", nameof(item));
+            }
+
+            // 아이템의 현재 인덱스 가져오기
+            var fromIndex = list.IndexOf(item);
+            if (fromIndex == -1) {
+                throw new InvalidOperationException("The item does not exist in the list.");
+            }
+
+            // 기존의 Move 메서드 호출
+            return Move(fromIndex, toIndex);
+        }
     }
 
     public static class ImmutableOrderedSetExtensions {

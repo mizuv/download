@@ -21,7 +21,7 @@ namespace Download.NodeSystem {
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
-                    if (randomFloat < 0.7f) {
+                    if (randomFloat < 0.8f) {
                         new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재");
                         return;
                     }
