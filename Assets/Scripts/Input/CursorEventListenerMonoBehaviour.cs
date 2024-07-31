@@ -61,4 +61,15 @@ namespace Download {
     public abstract class SubbuttonClickContext { }
     public class SubbuttonClickEnterContext : SubbuttonClickContext { }
     public class SubbuttonClickExitContext : SubbuttonClickContext { }
+
+    // 현재 monobehaviour와 관계 없음
+    public class WheelContext {
+        public readonly Vector2 ScreenPosition;
+        public readonly Vector2 ScrollValue;
+
+        public WheelContext(Vector2 screenPosition, Vector2 scrollValue) {
+            this.ScreenPosition = screenPosition;
+            this.ScrollValue = scrollValue;
+        }
+    }
 }

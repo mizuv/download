@@ -1,13 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Download {
     public class CameraController : MonoBehaviour {
+        public const float ZOOM_SPEED = 0.0078125f;
+        public const float MIN_ZOOM = 2f;
+        public const float MAX_ZOOM = 20f;
+
         private Vector2 currentCursorPosition;
         private Camera mainCamera;
         private bool isDragging = false;
+        protected CompositeDisposable _disposables = new();
 
         private InputSystem_Actions inputActions;
 
@@ -21,6 +26,24 @@ namespace Download {
             inputActions.Cursor.SubButtonClick.started += OnSubbuttonClickStarted;
             inputActions.Cursor.SubButtonClick.canceled += OnSubbuttonClickCanceled;
             inputActions.Cursor.Move.performed += OnCursorMove;
+
+            CursorManager.Instance.Wheel.Subscribe(context => {
+                float scrollValue = context.ScrollValue.y;
+                float currentZoom = mainCamera.orthographicSize;
+                float newZoom = Mathf.Clamp(currentZoom - scrollValue * ZOOM_SPEED, MIN_ZOOM, MAX_ZOOM);
+
+                // 줌 비율 계산
+                float zoomRatio = newZoom / currentZoom;
+
+                // 카메라의 새로운 위치 계산
+                Vector3 cameraPosition = mainCamera.transform.position;
+                Vector3 zoomCenterWorld = mainCamera.ScreenToWorldPoint(context.ScreenPosition);
+                Vector3 offset = zoomCenterWorld - cameraPosition;
+                mainCamera.transform.position = cameraPosition + offset * (1 - zoomRatio);
+
+                // 새로운 줌 값 설정
+                mainCamera.orthographicSize = newZoom;
+            }).AddTo(_disposables);
         }
 
         private void OnDisable() {
@@ -28,6 +51,8 @@ namespace Download {
             inputActions.Cursor.SubButtonClick.canceled -= OnSubbuttonClickCanceled;
             inputActions.Cursor.Move.performed -= OnCursorMove;
             inputActions.Cursor.Disable();
+
+            _disposables.Clear();
         }
 
         private void OnCursorMove(InputAction.CallbackContext context) {

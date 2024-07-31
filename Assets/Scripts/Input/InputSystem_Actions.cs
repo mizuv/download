@@ -56,6 +56,15 @@ namespace Download
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Wheel"",
+                    ""type"": ""Value"",
+                    ""id"": ""2862de7f-a4a8-4581-be94-256b676db847"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -100,6 +109,17 @@ namespace Download
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f7c523b9-1d5a-4293-9fbd-87317ca0eec5"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Wheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -202,6 +222,7 @@ namespace Download
             m_Cursor_SubButtonClick = m_Cursor.FindAction("SubButtonClick", throwIfNotFound: true);
             m_Cursor_Move = m_Cursor.FindAction("Move", throwIfNotFound: true);
             m_Cursor_Click = m_Cursor.FindAction("Click", throwIfNotFound: true);
+            m_Cursor_Wheel = m_Cursor.FindAction("Wheel", throwIfNotFound: true);
             // Keyboard
             m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
             m_Keyboard_Shift = m_Keyboard.FindAction("Shift", throwIfNotFound: true);
@@ -275,6 +296,7 @@ namespace Download
         private readonly InputAction m_Cursor_SubButtonClick;
         private readonly InputAction m_Cursor_Move;
         private readonly InputAction m_Cursor_Click;
+        private readonly InputAction m_Cursor_Wheel;
         public struct CursorActions
         {
             private @InputSystem_Actions m_Wrapper;
@@ -282,6 +304,7 @@ namespace Download
             public InputAction @SubButtonClick => m_Wrapper.m_Cursor_SubButtonClick;
             public InputAction @Move => m_Wrapper.m_Cursor_Move;
             public InputAction @Click => m_Wrapper.m_Cursor_Click;
+            public InputAction @Wheel => m_Wrapper.m_Cursor_Wheel;
             public InputActionMap Get() { return m_Wrapper.m_Cursor; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -300,6 +323,9 @@ namespace Download
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Wheel.started += instance.OnWheel;
+                @Wheel.performed += instance.OnWheel;
+                @Wheel.canceled += instance.OnWheel;
             }
 
             private void UnregisterCallbacks(ICursorActions instance)
@@ -313,6 +339,9 @@ namespace Download
                 @Click.started -= instance.OnClick;
                 @Click.performed -= instance.OnClick;
                 @Click.canceled -= instance.OnClick;
+                @Wheel.started -= instance.OnWheel;
+                @Wheel.performed -= instance.OnWheel;
+                @Wheel.canceled -= instance.OnWheel;
             }
 
             public void RemoveCallbacks(ICursorActions instance)
@@ -426,6 +455,7 @@ namespace Download
             void OnSubButtonClick(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnClick(InputAction.CallbackContext context);
+            void OnWheel(InputAction.CallbackContext context);
         }
         public interface IKeyboardActions
         {

@@ -18,8 +18,11 @@ namespace Download {
         public System.IObservable<Unit> NullClick => nullClickSubject.AsObservable();
 
         // 초기화순서이슈로 직접할당 하지 않았음.
-        private Subject<ClickContext> _click = new();
+        private readonly Subject<ClickContext> _click = new();
         public IObservable<ClickContext> Click { get { return _click; } }
+
+        private readonly Subject<WheelContext> _wheel = new();
+        public IObservable<WheelContext> Wheel { get { return _wheel; } }
 
         protected override void Awake() {
             inputActions = new InputSystem_Actions();
@@ -98,6 +101,13 @@ namespace Download {
                 .AsObservable()
                 .Where(context => context.phase == InputActionPhase.Canceled)
                 .Subscribe(OnSubbuttonClickCanceled)
+                .AddTo(this);
+
+            inputActions.Cursor.Wheel
+                .AsObservable()
+                .Subscribe(context => {
+                    _wheel.OnNext(new WheelContext(currentCursorPosition.Value, context.ReadValue<Vector2>()));
+                })
                 .AddTo(this);
         }
 
