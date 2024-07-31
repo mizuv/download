@@ -4,33 +4,37 @@ using UniRx;
 using UnityEngine;
 
 namespace Download.NodeSystem {
-    public abstract class NodeExistenceEvent {
-        public NodeExistenceEvent() { }
+    public abstract class NodeEvent {
+        public NodeEvent() { }
     }
 
-    public class NodeExistenceEventCreate : NodeExistenceEvent {
+    public class NodeCreate : NodeEvent {
         public Node Node { get; }
-        public NodeExistenceEventCreate(Node node) { Node = node; }
+        public NodeCreate(Node node) { Node = node; }
     }
-    public class NodeExistenceEventDelete : NodeExistenceEvent {
+    public class NodeDelete : NodeEvent {
         public Folder ParentRightBeforeDelete { get; }
         public Node Node { get; }
 
-        public NodeExistenceEventDelete(Node node, Folder parentRightBeforeDelete) {
+        public NodeDelete(Node node, Folder parentRightBeforeDelete) {
             Node = node;
             ParentRightBeforeDelete = parentRightBeforeDelete;
         }
     }
-    public class NodeExistenceEventParentChange : NodeExistenceEvent {
+    public class NodeParentChange : NodeEvent {
         public Node Node { get; }
         public Folder ParentPrevious { get; }
-        public NodeExistenceEventParentChange(Node node, Folder parentPrevious) {
+        public NodeParentChange(Node node, Folder parentPrevious) {
             Node = node;
             ParentPrevious = parentPrevious;
         }
     }
+    public class NodeIndexChange : NodeEvent {
+        public Folder IndexChangedFolder { get; }
+        public NodeIndexChange(Folder indexChangedFolder) { IndexChangedFolder = indexChangedFolder; }
+    }
     // ExistenceEvent가 아닌 일반 이벤트이긴 해. 귀찮아서 일단 병합 이벤트로 넣어둠
-    public class NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted : NodeExistenceEvent {
+    public class NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted : NodeEvent {
         public IEnumerable<Node> MergedToItem { get; }
         public IEnumerable<IMergeable> Mergeables { get; }
         public NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted(IEnumerable<Node> mergedToItem, IEnumerable<IMergeable> mergeables) {

@@ -17,7 +17,7 @@ namespace Download.NodeSystem {
         public string Name { get; private set; }
 
         protected CompositeDisposable _disposables = new();
-        protected Subject<NodeExistenceEvent> eventSubject;
+        protected Subject<NodeEvent> eventSubject;
         private readonly Subject<Unit> _deleteStart = new();
         public IObservable<Unit> DeleteStart => _deleteStart;
 
@@ -35,13 +35,13 @@ namespace Download.NodeSystem {
         public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
 
         public Node(Folder parent, string name) : this(parent, name, parent.eventSubject) { }
-        public Node(Subject<NodeExistenceEvent> eventSubject, string name) : this(null, name, eventSubject) { }
+        public Node(Subject<NodeEvent> eventSubject, string name) : this(null, name, eventSubject) { }
 
         // TODO: remove
         private readonly ReactiveProperty<AsyncJobManager?> _currentAsyncJob = new(null);
         public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
-        private Node(Folder? parent, string name, Subject<NodeExistenceEvent> eventSubject) {
+        private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject) {
             if (parent != null)
                 SetParent(parent);
             this.eventSubject = eventSubject;
@@ -54,7 +54,7 @@ namespace Download.NodeSystem {
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
             RunManager = new(isRunActive, _disposables, RunJobOption);
-            eventSubject.OnNext(new NodeExistenceEventCreate(this));
+            eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
             var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive }
@@ -113,7 +113,7 @@ namespace Download.NodeSystem {
             previousParent?.RemoveChild(this);
             parent.AddChild(this);
             if (previousParent != null && previousParent != parent)
-                this.eventSubject.OnNext(new NodeExistenceEventParentChange(this, previousParent));
+                this.eventSubject.OnNext(new NodeParentChange(this, previousParent));
         }
 
         public List<Folder> GetParentPath() {
@@ -195,7 +195,7 @@ namespace Download.NodeSystem {
             _deleteStart.OnNext(Unit.Default);
             _disposables.Clear();
             this.FreeFromParent();
-            eventSubject.OnNext(new NodeExistenceEventDelete(this, parentRightBeforeDelete));
+            eventSubject.OnNext(new NodeDelete(this, parentRightBeforeDelete));
         }
 
         public void SetIndex(int index) {

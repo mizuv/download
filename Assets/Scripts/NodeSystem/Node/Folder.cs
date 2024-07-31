@@ -13,7 +13,7 @@ namespace Download.NodeSystem {
         public virtual float VolumeForChildren => 20;
 
         public Folder(Folder parent, string name) : base(parent, name) { }
-        private Folder(Subject<NodeExistenceEvent> eventSubject, string name) : base(eventSubject, name) { }
+        private Folder(Subject<NodeEvent> eventSubject, string name) : base(eventSubject, name) { }
 
         public virtual Folder ChildRunResultTarget => this;
 
@@ -26,7 +26,7 @@ namespace Download.NodeSystem {
             }
         }
 
-        public static Folder CreateRoot(Subject<NodeExistenceEvent> eventSubject) {
+        public static Folder CreateRoot(Subject<NodeEvent> eventSubject) {
             return new(eventSubject, "root");
         }
 
@@ -51,6 +51,7 @@ namespace Download.NodeSystem {
         public void MoveChildIndex(Node child, int index) {
             if (!Children.Contains(child)) return;
             children.Move(child, index);
+            eventSubject.OnNext(new NodeIndexChange(this));
             _childChanged.OnNext(Unit.Default);
         }
 

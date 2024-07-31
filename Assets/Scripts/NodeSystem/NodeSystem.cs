@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace Download.NodeSystem {
     public class NodeSystem {
-        private readonly Subject<NodeExistenceEvent> NodeExistenceEventSubject = new Subject<NodeExistenceEvent>();
-        public IObservable<NodeExistenceEvent> NodeExistenceEvent => NodeExistenceEventSubject.AsObservable();
+        private readonly Subject<NodeEvent> NodeExistenceEventSubject = new Subject<NodeEvent>();
+        public IObservable<NodeEvent> NodeExistenceEvent => NodeExistenceEventSubject.AsObservable();
 
         public void Initialize() {
             var root = Folder.CreateRoot(NodeExistenceEventSubject);

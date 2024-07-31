@@ -105,8 +105,8 @@ namespace Download {
 
             nodeSystem.NodeExistenceEvent.Subscribe(nodeEvent => {
                 switch (nodeEvent) {
-                    case NodeExistenceEventCreate nodeEventCreate: {
-                            var node = nodeEventCreate.Node;
+                    case NodeCreate nodeCreate: {
+                            var node = nodeCreate.Node;
                             if (node.Parent == null) {
                                 if (node is not Folder folder) throw new Exception("only root folder can have null parent");
                             }
@@ -126,25 +126,32 @@ namespace Download {
                             SetTransform(nodeGameObject);
                             break;
                         }
-                    case NodeExistenceEventDelete nodeEventDelete: {
-                            var node = nodeEventDelete.Node;
+                    case NodeDelete nodeDelete: {
+                            var node = nodeDelete.Node;
                             var nodeObject = NodeObjectMap.GetValueOrDefault(node);
                             if (nodeObject == null) break;
                             Destroy(nodeObject.gameObject);
 
-                            var parentGameObject = GetNodeGameObject(nodeEventDelete.ParentRightBeforeDelete);
+                            var parentGameObject = GetNodeGameObject(nodeDelete.ParentRightBeforeDelete);
                             if (parentGameObject is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
                             parentFolderGameObject.DrawChildren();
                             break;
                         }
-                    case NodeExistenceEventParentChange nodeExistenceEventParentChange: {
-                            var node = nodeExistenceEventParentChange.Node;
+                    case NodeParentChange nodeParentChange: {
+                            var node = nodeParentChange.Node;
                             var nodeObject = NodeObjectMap[node];
                             SetTransform(nodeObject);
 
-                            var parentGameObject = GetNodeGameObject(nodeExistenceEventParentChange.ParentPrevious);
+                            var parentGameObject = GetNodeGameObject(nodeParentChange.ParentPrevious);
                             if (parentGameObject is not FolderGameObject parentFolderGameObject) throw new Exception("only folder can be a parent");
                             parentFolderGameObject.DrawChildren();
+                            break;
+                        }
+                    case NodeIndexChange nodeIndexChange: {
+                            var folder = nodeIndexChange.IndexChangedFolder;
+                            var nodeGameObject = GetNodeGameObject(folder);
+                            if (nodeGameObject is not FolderGameObject folderGameObject) throw new Exception("only folder can be a parent");
+                            folderGameObject.DrawChildren();
                             break;
                         }
                     case NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted mergeToItemCreated: {
@@ -161,7 +168,6 @@ namespace Download {
                                                                         .ToImmutableOrderedSet();
                             break;
                         }
-
                 }
             }).AddTo(this);
 
