@@ -27,4 +27,30 @@ public static class EnumerableExtensions {
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
         source.ForEach((element, _) => action(element));
     }
+    public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+
+        using (var iterator = source.GetEnumerator()) {
+            if (!iterator.MoveNext()) {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            var minElement = iterator.Current;
+            var minKey = keySelector(minElement);
+            var comparer = Comparer<TKey>.Default;
+
+            while (iterator.MoveNext()) {
+                var currentElement = iterator.Current;
+                var currentKey = keySelector(currentElement);
+
+                if (comparer.Compare(currentKey, minKey) < 0) {
+                    minElement = currentElement;
+                    minKey = currentKey;
+                }
+            }
+
+            return minElement;
+        }
+    }
 }
