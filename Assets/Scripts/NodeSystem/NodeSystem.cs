@@ -25,7 +25,6 @@ namespace Download.NodeSystem {
             var staticNodes = nodes.Select(n => n.GetStaticNode());
             var recipe = Recipe.GetRecipe(staticNodes);
             if (recipe == null) return;
-            var parent = nodes.First().Parent ?? throw new Exception("root can't be merged");
             var mergeManager = new MergeManager(nodes, recipe);
             foreach (Node node in nodes) {
                 node.SetMergeManager(mergeManager);
@@ -34,9 +33,15 @@ namespace Download.NodeSystem {
             mergeManager.RunComplete
                 .Subscribe(_ => {
                     List<Node> createdNodes = new();
-                    recipe.To.ForEach(staticNode => {
+
+                    var first = nodes.First() as Node;
+                    var parent = first?.Parent ?? throw new Exception("root can't be merged");
+                    var index = first.GetIndex();
+
+                    recipe.To.ForEach((staticNode, i) => {
                         // Select에서 상태 변경하면 아주 큰일난단다. 자체적 최적화 때문에 몇번 호출될지 알 수 없음.
-                        var node = staticNode.CreateInstance(parent, staticNode.Name);
+                        var node = staticNode.CreateInstance(parent, staticNode.Name, new NodeCreateOptions { Index = index + i });
+
                         createdNodes.Add(node);
                     });
                     NodeExistenceEventSubject.OnNext(new NodeExistenceEventMergeToItemCreatedBeforeMergeFromItemDeleted(createdNodes, nodes));

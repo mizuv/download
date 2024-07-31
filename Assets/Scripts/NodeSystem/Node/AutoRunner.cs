@@ -8,7 +8,7 @@ namespace Download.NodeSystem {
         public override float Volume => 2;
         public override float VolumeForChildren => 5;
 
-        public AutoRunner(Folder parent, string name) : base(parent, name) {
+        public AutoRunner(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) {
             ChildChanged.Subscribe(_ => {
                 var children = this.Children;
                 var runnableChildren = children.Select(child => child as IRunnable).Where(child => child != null);

@@ -6,7 +6,7 @@ namespace Download.NodeSystem {
         public override float VolumeForChildren => 5;
         public override float MoveDuration => 1200;
 
-        public Person(Folder parent, string name) : base(parent, name) {
+        public Person(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) {
         }
 
         public override string GetPrintString(string indent) {

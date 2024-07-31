@@ -6,8 +6,8 @@ namespace Download.NodeSystem {
     public class PersonStatic : PureSingleton<PersonStatic>, IStaticNode {
         public string Name => "사람";
 
-        public Node CreateInstance(Folder parent, string name) {
-            return new Person(parent, name);
+        public Node CreateInstance(Folder parent, string name, NodeCreateOptions? options = null) {
+            return new Person(parent, name, options);
         }
     }
 }

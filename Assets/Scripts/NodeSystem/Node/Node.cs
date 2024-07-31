@@ -119,6 +119,11 @@ namespace Download.NodeSystem {
                 this.eventSubject.OnNext(new NodeParentChange(this, previousParent));
         }
 
+        public int GetIndex() {
+            if (Parent == null) return -1;
+            return Parent.IndexOf(this);
+        }
+
         public List<Folder> GetParentPath() {
             var path = new List<Folder>();
             var current = this.Parent;

@@ -6,8 +6,8 @@ namespace Download.NodeSystem {
     public class WoodStatic : PureSingleton<WoodStatic>, IStaticNode {
         public string Name => "목재";
 
-        public Node CreateInstance(Folder parent, string name) {
-            return new Wood(parent, name);
+        public Node CreateInstance(Folder parent, string name, NodeCreateOptions? options = null) {
+            return new Wood(parent, name, options);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace Download.NodeSystem {
     public class ForestStatic : PureSingleton<ForestStatic>, IStaticNode {
         public string Name => "나무";
 
-        public Node CreateInstance(Folder parent, string name) {
-            return new Forest(parent, name);
+        public Node CreateInstance(Folder parent, string name, NodeCreateOptions? options = null) {
+            return new Forest(parent, name, options);
         }
     }
 }

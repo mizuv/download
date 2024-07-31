@@ -16,7 +16,7 @@ namespace Download.NodeSystem {
         public override float Volume => 4;
         public override float VolumeForChildren => 0;
 
-        public Cave(Folder parent, string name) : base(parent, name) {
+        public Cave(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;

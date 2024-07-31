@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public static class EnumerableExtensions {
-    public static IEnumerable<T> Compact<T>(this IEnumerable<T?> source) where T : class {
+    public static IEnumerable<T> Compact<T>(this IEnumerable<T?> source) {
         if (source == null) throw new ArgumentNullException(nameof(source));
         return source.Where(item => item != null).Select(item => item!);
     }
