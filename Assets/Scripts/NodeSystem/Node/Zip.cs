@@ -22,12 +22,9 @@ namespace Download.NodeSystem {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
-                    var forestFolder = new Folder(this.Parent.ChildRunResultTarget, "숲");
-                    var CaveFolder = new Folder(this.Parent.ChildRunResultTarget, "동굴");
+                    new Forest(this.Parent.ChildRunResultTarget, "나무1");
+                    new Forest(this.Parent.ChildRunResultTarget, "나무2");
                     new Person(this.Parent.ChildRunResultTarget, "사람");
-                    new Forest(forestFolder, "나무1");
-                    new Forest(forestFolder, "나무2");
-                    new Cave(CaveFolder, "채석장");
                     this.Delete();
                 })
                 .AddTo(_disposables);
