@@ -25,8 +25,8 @@ namespace Download {
         }
 
         // for NodeTreePainter
-        private Bounds1D? _recursiveChildrenBoundsX = null;
-        public Bounds1D? RecursiveChildrenBoundsX => _recursiveChildrenBoundsX;
+        private Bounds1D? _mergedBoundsX = null;
+        public Bounds1D? MergedBoundsX => _mergedBoundsX;
 
         public override void Initialize(Node node, INodePainter nodePainter) {
             base.Initialize(node, nodePainter);
@@ -47,34 +47,34 @@ namespace Download {
             DrawChildren();
         }
 
-        public void UpdateRecursiveChildrenBoundsX() {
+        public void UpdateMergedBoundsX() {
             var childrenGameObjects = Folder.Children.Select(NodePainter.GetNodeGameObject);
-            var boundsList = childrenGameObjects.Select(nodeGameObject => {
+            var boundsXList = childrenGameObjects.Select(nodeGameObject => {
                 var boundsX = nodeGameObject.Bounds.ToBounds1D(Axis.X);
                 if (nodeGameObject is not FolderGameObject folderGameObject) return boundsX;
-                var recursiveChildrenBoundsX = folderGameObject.RecursiveChildrenBoundsX;
-                return recursiveChildrenBoundsX?.Encapsulate(boundsX) ?? boundsX;
+                var mergedBoundsX = folderGameObject.MergedBoundsX;
+                return mergedBoundsX?.Encapsulate(boundsX) ?? boundsX;
             });
-            if (boundsList.Count() == 0) {
-                _recursiveChildrenBoundsX = null;
+            if (boundsXList.Count() == 0) {
+                _mergedBoundsX = null;
                 return;
             }
-            _recursiveChildrenBoundsX = Bounds1D.Encapsulate(boundsList);
+            _mergedBoundsX = Bounds1D.Encapsulate(boundsXList);
         }
 
         public void DrawChildren() {
             var childrenGameObjects = Folder.Children.Select(NodePainter.GetNodeGameObject);
-            var childrensRecursiveChildrenBoundsXLength = childrenGameObjects.Select(nodeGameObject => {
+            var childrensMergedBoundsXLength = childrenGameObjects.Select(nodeGameObject => {
                 var boundsXLength = nodeGameObject.Bounds.ToBounds1D(Axis.X).Size();
                 if (nodeGameObject is not FolderGameObject folderGameObject) return boundsXLength;
-                return Math.Max(boundsXLength, folderGameObject.RecursiveChildrenBoundsX?.Size() ?? -1);
+                return Math.Max(boundsXLength, folderGameObject.MergedBoundsX?.Size() ?? -1);
             });
-            var xPositions = GetAdjustedCenters(childrensRecursiveChildrenBoundsXLength, NodeTreePainter.HORIZONTAL_INTERVAL);
+            var xPositions = GetAdjustedCenters(childrensMergedBoundsXLength, NodeTreePainter.HORIZONTAL_INTERVAL);
             childrenGameObjects.ForEach((childGameObject, index) => {
                 childGameObject.transform.localPosition = new Vector3(xPositions[index], 0, 0);
             });
-            var PrevRecursiveChildrenBoundsX = RecursiveChildrenBoundsX;
-            UpdateRecursiveChildrenBoundsX();
+            var PrevMergedBoundsX = MergedBoundsX;
+            UpdateMergedBoundsX();
             if (Folder.Children.Count == 0) {
                 ChildContainerSpriteRenderer.enabled = false;
                 return;
@@ -87,7 +87,7 @@ namespace Download {
             childrenBounds.size += Vector3.one * NodeTreePainter.CHILDREN_GROUP_PADDING;
             ChildContainerSpriteRenderer.transform.AlignTransformToBounds(ChildContainerSpriteRenderer.bounds, childrenBounds);
 
-            if (PrevRecursiveChildrenBoundsX == RecursiveChildrenBoundsX)
+            if (PrevMergedBoundsX == MergedBoundsX)
                 return;
             var parentFolder = this.Folder.Parent;
             if (parentFolder == null) return;
