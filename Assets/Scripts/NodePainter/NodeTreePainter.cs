@@ -19,6 +19,8 @@ namespace Download {
         public const float CHILDREN_GROUP_WIDTH = 1;
         public const float NODE_SIZE = 1;
 
+        private readonly int DRAG_LAYER_MASK = 1 << LayerMask.GetMask("Drag", "Drag+Cursor");
+
         public NodeSystem.NodeSystem NodeSystem;
         private readonly Dictionary<Node, NodeGameObject> NodeObjectMap = new();
 
@@ -75,7 +77,7 @@ namespace Download {
                     if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
 
                     Vector2 worldPosition = Camera.main.ScreenToWorldPoint(context.ScreenPosition);
-                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, DRAG_LAYER_MASK);
                     if (hit.collider == null) return;
                     hit.collider.gameObject.TryGetComponent<ICursorEventListener>(out var cursorEventListener);
                     if (cursorEventListener is not NodeGameObject nodeGameObject) return;

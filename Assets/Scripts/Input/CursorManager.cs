@@ -8,6 +8,8 @@ using System;
 
 namespace Download {
     public class CursorManager : PersistentSingleton<CursorManager> {
+        private int LAYER_MASK;
+
         private InputSystem_Actions inputActions;
         private IReadOnlyReactiveProperty<Vector2> currentCursorPosition;
 
@@ -25,6 +27,7 @@ namespace Download {
         public IObservable<WheelContext> Wheel { get { return _wheel; } }
 
         protected override void Awake() {
+            LAYER_MASK = 1 << LayerMask.NameToLayer("Drag+Cursor");
             inputActions = new InputSystem_Actions();
         }
 
@@ -51,7 +54,7 @@ namespace Download {
                     if (IsPointerOverUIElement()) return null;
 
                     Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition.Value);
-                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, LAYER_MASK);
 
                     var clickedObject = GetCursorEventListenerHelper(hit);
                     if (clickedObject == null) {
@@ -121,7 +124,7 @@ namespace Download {
 
         private void OnSubbuttonClickStarted(InputAction.CallbackContext context) {
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition.Value);
-            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, LAYER_MASK);
 
             subbuttonClickedObject = GetCursorEventListenerHelper(hit);
             if (subbuttonClickedObject != null) {
@@ -139,7 +142,7 @@ namespace Download {
 
         void CheckHoverEvent(Vector2 currentCursorPosition) {
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentCursorPosition);
-            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, LAYER_MASK);
 
             var prevHoveredObject = hoveredObject;
             hoveredObject = GetCursorEventListenerHelper(hit);
