@@ -34,7 +34,7 @@ namespace Download.NodeSystem {
             ));
             immutableHashSetBuilder.Add(new Recipe(
                 new IStaticNode[] { Wood.StaticNode, Wood.StaticNode, Wood.StaticNode, Wood.StaticNode },
-                new IStaticNode[] { Forest.StaticNode },
+                new IStaticNode[] { Tree.StaticNode },
                 3400
             ));
             immutableHashSetBuilder.Add(new Recipe(

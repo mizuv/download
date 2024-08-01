@@ -2186,24 +2186,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AutomaticallyUnparentOnAwake: 1
   prefabList:
+  - key: Node.Apple
+    prefab: {fileID: 4237210588733451161, guid: 183ec9f558e67417e847b7df1d976bda, type: 3}
+  - key: Node.AutoRunner
+    prefab: {fileID: 1955907880825239146, guid: 0e8a2ad4e0c75495ba4ae5958902a255, type: 3}
+  - key: Node.Cave
+    prefab: {fileID: 7376686307544598633, guid: f1f7bdab0b9864672b4f0faade6d30f7, type: 3}
   - key: Node.Folder
     prefab: {fileID: 7924467234700525336, guid: 0ffa481fa26c14ca5a0646ec306dd424, type: 3}
   - key: Node.Forest
     prefab: {fileID: 7376686307544598633, guid: 20dde5fe72b3c4eb29a775e76d623fb1, type: 3}
+  - key: Node.Person
+    prefab: {fileID: 8093986068929455350, guid: a131e5d7f3ee4457f8a1aca86b9c35e5, type: 3}
+  - key: Node.Stone
+    prefab: {fileID: 1587593244719988146, guid: 2c5a40ff262f04951afdb2bb90056af4, type: 3}
+  - key: Node.Tree
+    prefab: {fileID: 7376686307544598633, guid: 77ee6c8ed34ea433f9cdf4020f38f57b, type: 3}
   - key: Node.Wood
     prefab: {fileID: 260778427269028480, guid: a0c3faa0758684bde901b0dfcff766ac, type: 3}
   - key: Node.WoodPlatter
     prefab: {fileID: 260778427269028480, guid: a2fc1a4221dcb494f89cd78c8e71c656, type: 3}
-  - key: Node.AutoRunner
-    prefab: {fileID: 1955907880825239146, guid: 0e8a2ad4e0c75495ba4ae5958902a255, type: 3}
-  - key: Node.Person
-    prefab: {fileID: 8093986068929455350, guid: a131e5d7f3ee4457f8a1aca86b9c35e5, type: 3}
   - key: Node.Zip
     prefab: {fileID: 7589766052403746191, guid: 04e2019b92ac64950aa726ca89beb1b8, type: 3}
-  - key: Node.Stone
-    prefab: {fileID: 1587593244719988146, guid: 2c5a40ff262f04951afdb2bb90056af4, type: 3}
-  - key: Node.Cave
-    prefab: {fileID: 7376686307544598633, guid: f1f7bdab0b9864672b4f0faade6d30f7, type: 3}
 --- !u!1 &2022836523
 GameObject:
   m_ObjectHideFlags: 0
