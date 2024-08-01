@@ -22,8 +22,7 @@ namespace Download.NodeSystem {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
-                    new Forest(this.Parent.ChildRunResultTarget, "숲1");
-                    new Forest(this.Parent.ChildRunResultTarget, "숲2");
+                    new Forest(this.Parent.ChildRunResultTarget, "숲");
                     new Person(this.Parent.ChildRunResultTarget, "사람");
                     this.Delete();
                 })

@@ -5,7 +5,7 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Forest : Folder, IRunnable {
-        private RunOption _runOption = new RunOption(4300);
+        private RunOption _runOption = new RunOption(5200);
 
         public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
         public IObservable<Unit> RunComplete => RunManager.RunComplete;
@@ -30,7 +30,7 @@ namespace Download.NodeSystem {
                         return;
                     }
                     if (randomFloat < 0.99f) {
-                        new Apple(this.Parent.ChildRunResultTarget, $"{name}에서 나온 사람", new NodeCreateOptions { Index = GetIndex() + 1 });
+                        new Apple(this.Parent.ChildRunResultTarget, $"{name}에서 나온 사과", new NodeCreateOptions { Index = GetIndex() + 1 });
                         return;
                     }
                     new WoodPlatter(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목판", new NodeCreateOptions { Index = GetIndex() + 1 });
