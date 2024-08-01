@@ -41,7 +41,7 @@ namespace Download {
                 })
                 .AddTo(this);
 
-            var dragContext = click
+            IObservable<ClickContext?> dragContext = click
                 .Select(context => {
                     if (latestClickEnterScreenPosition == null) return null;
                     // if (!selectedNode.Value.Contains(context.CursorEventListener)) return null;
@@ -71,32 +71,37 @@ namespace Download {
                     });
                 }).AddTo(this);
 
+
             dragContext.Subscribe(context => {
-                if (context == null) {
-                    if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
-                    return;
+                switch (context) {
+                    case ClickExitContext: {
+                            if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
 
-                }
-                if (context is ClickExitContext) {
-                    if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
-
-                    Vector2 worldPosition = Camera.main.ScreenToWorldPoint(context.ScreenPosition);
-                    RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, DRAG_LAYER_MASK);
-                    if (hit.collider == null) return;
-                    hit.collider.gameObject.TryGetComponent<IDragEventListener>(out var cursorEventListener);
-                    if (cursorEventListener == null) return;
-                    cursorEventListener.OnDrop(new DragContext(selectedNode.Value.Select(nodeObject => nodeObject.Node)));
-                    return;
-                }
-                if (latestClickEnterScreenPosition == null) return;
-                // 아래 1줄은 맨 처음 드래그 시작시에만 호출하는게 맞지 않나. (귀찮아서 패스함)
-                if (!selectedNode.Value.Contains(context.CursorEventListener)) {
-                    if (context.CursorEventListener is NodeGameObject nodeGameObject) Select(nodeGameObject);
-                }
-                if (copiedSelectedSpriteParent != null) {
-                    copiedSelectedSpriteParent.transform.position =
-                        context.GetWorldPosition() - (Vector2)Camera.main.ScreenToWorldPoint(latestClickEnterScreenPosition.Value);
-                    copiedSelectedSpriteParent.SetActive(true);
+                            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(context.ScreenPosition);
+                            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, DRAG_LAYER_MASK);
+                            if (hit.collider == null) return;
+                            hit.collider.gameObject.TryGetComponent<IDragEventListener>(out var cursorEventListener);
+                            if (cursorEventListener == null) return;
+                            cursorEventListener.OnDrop(new DragContext(selectedNode.Value.Select(nodeObject => nodeObject.Node)));
+                            return;
+                        }
+                    case null: {
+                            if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
+                            return;
+                        }
+                    default: {
+                            if (latestClickEnterScreenPosition == null) return;
+                            // 아래 1줄은 맨 처음 드래그 시작시에만 호출하는게 맞지 않나. (귀찮아서 패스함)
+                            if (!selectedNode.Value.Contains(context.CursorEventListener)) {
+                                if (context.CursorEventListener is NodeGameObject nodeGameObject) Select(nodeGameObject);
+                            }
+                            if (copiedSelectedSpriteParent != null) {
+                                copiedSelectedSpriteParent.transform.position =
+                                    context.GetWorldPosition() - (Vector2)Camera.main.ScreenToWorldPoint(latestClickEnterScreenPosition.Value);
+                                copiedSelectedSpriteParent.SetActive(true);
+                            }
+                        }
+                        break;
                 }
             }).AddTo(this);
 
