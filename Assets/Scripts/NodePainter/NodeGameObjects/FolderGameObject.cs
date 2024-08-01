@@ -8,7 +8,7 @@ using UnityEngine;
 
 
 namespace Download {
-    public class FolderGameObject : NodeGameObject {
+    public class FolderGameObject : NodeGameObject, IDragEventListener {
         public Transform ChildrenContainer;
         public SpriteRenderer IconSpriteRenderer;
         public SpriteRenderer ChildContainerSpriteRenderer;
@@ -111,5 +111,14 @@ namespace Download {
                 return centers.Select(center => center - averageCenter).ToList();
             }
         }
+
+        public void OnDrop(DragContext context) {
+            context.SelectedNodes.ForEach((node) => {
+                if (node.Parent == this.Folder) return;
+                node.StartMove(this.Folder);
+            });
+        }
+
+        public void OnHoverAtDrag(DragContext context) { }
     }
 }

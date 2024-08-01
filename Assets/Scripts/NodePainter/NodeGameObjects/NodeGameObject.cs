@@ -14,7 +14,14 @@ namespace Download {
         public ProgressBar ProgressBar;
         public GameObject SpriteGameObject;
 
-        public Node? Node { get; private set; }
+
+        private Node? _node;
+        public Node Node {
+            get {
+                if (_node == null) throw new Exception("FolderGameObject is not initialized");
+                return _node;
+            }
+        }
         private INodePainter? _nodePainter { get; set; }
         protected INodePainter NodePainter { get { if (_nodePainter == null) throw new Exception("not initialized"); return _nodePainter; } }
 
@@ -64,7 +71,7 @@ namespace Download {
         }
 
         public virtual void Initialize(Node node, INodePainter nodePainter) {
-            Node = node;
+            _node = node;
             _nodePainter = nodePainter;
 
             node.DeleteStart

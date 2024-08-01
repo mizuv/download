@@ -19,12 +19,16 @@ namespace Download {
         public const float CHILDREN_GROUP_WIDTH = 1;
         public const float NODE_SIZE = 1;
 
-        private readonly int DRAG_LAYER_MASK = 1 << LayerMask.GetMask("Drag", "Drag+Cursor");
+        private int DRAG_LAYER_MASK;
 
         public NodeSystem.NodeSystem NodeSystem;
         private readonly Dictionary<Node, NodeGameObject> NodeObjectMap = new();
 
         private IReadOnlyReactiveProperty<ClickContext?> dragContextReactive;
+
+        public void Awake() {
+            DRAG_LAYER_MASK = LayerMask.GetMask("Drag", "Drag+Cursor");
+        }
 
         public void Start() {
             #region Drag
@@ -79,13 +83,9 @@ namespace Download {
                     Vector2 worldPosition = Camera.main.ScreenToWorldPoint(context.ScreenPosition);
                     RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, DRAG_LAYER_MASK);
                     if (hit.collider == null) return;
-                    hit.collider.gameObject.TryGetComponent<ICursorEventListener>(out var cursorEventListener);
-                    if (cursorEventListener is not NodeGameObject nodeGameObject) return;
-                    if (nodeGameObject.Node is not Folder folder) return;
-                    selectedNode.Value.ForEach((node) => {
-                        if (node.Node == folder) return;
-                        node.Node?.StartMove(folder);
-                    });
+                    hit.collider.gameObject.TryGetComponent<IDragEventListener>(out var cursorEventListener);
+                    if (cursorEventListener == null) return;
+                    cursorEventListener.OnDrop(new DragContext(selectedNode.Value.Select(nodeObject => nodeObject.Node)));
                     return;
                 }
                 if (latestClickEnterScreenPosition == null) return;
