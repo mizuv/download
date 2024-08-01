@@ -119,6 +119,7 @@ namespace Download {
             });
         }
 
-        public void OnHoverAtDrag(DragContext context) { }
+        public void OnHoverAtDragEnter(DragContext context) { }
+        public void OnHoverAtDragExit(DragContext context) { }
     }
 }

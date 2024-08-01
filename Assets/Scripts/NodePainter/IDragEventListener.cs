@@ -6,7 +6,8 @@ using UniRx;
 namespace Download {
     public interface IDragEventListener {
         public void OnDrop(DragContext context);
-        public void OnHoverAtDrag(DragContext context);
+        public void OnHoverAtDragEnter(DragContext context);
+        public void OnHoverAtDragExit(DragContext context);
 
         public bool IsDestoryed { get; }
     }

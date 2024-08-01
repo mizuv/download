@@ -16,4 +16,18 @@ public static class ObservableExtensions {
             return sourceList.CombineLatest();
         }
     }
+
+    public static IObservable<T> Compact<T>(this IObservable<T?> source) where T : struct {
+        return source
+            .Where(x => x.HasValue) // null 값 필터링
+            .Select(x => x!.Value);  // Nullable 타입에서 값 추출
+    }
+
+    // Nullable 참조 타입의 경우
+    public static IObservable<T> Compact<T>(this IObservable<T?> source) where T : class {
+        return source
+            .Where(x => x != null) // null 값 필터링
+            .Select(x => x!);      // Nullable 상태 제거
+    }
+
 }

@@ -33,7 +33,7 @@ namespace Download {
         public void Start() {
             #region Drag
             var click = CursorManager.Instance.Click;
-            var selectedNode = GameManager.Instance.SelectedNode;
+            var selectedNodeObject = GameManager.Instance.SelectedNode;
             Vector2? latestClickEnterScreenPosition = null;
             click.Where(context => context is ClickEnterContext)
                 .Subscribe(context => {
@@ -56,8 +56,8 @@ namespace Download {
             GameObject? copiedSelectedSpriteParent = null;
             var emitOnExit = dragContext.Select(context => context is ClickExitContext).DistinctUntilChanged();
             emitOnExit
-                .WithLatestFrom(selectedNode, (_, lastValue) => lastValue)
-                .Merge(selectedNode)
+                .WithLatestFrom(selectedNodeObject, (_, lastValue) => lastValue)
+                .Merge(selectedNodeObject)
                 .Subscribe((selectedNode) => {
                     // ROOM FOR OPTIMALIZATION
                     Destroy(copiedSelectedSpriteParent);
@@ -71,18 +71,30 @@ namespace Download {
                     });
                 }).AddTo(this);
 
+            var dragEventListener = dragContext
+                .Select(context => {
+                    if (context is not ClickHoldContext) return null;
+                    return Utils.GetComponentByRaycast<IDragEventListener>(context.ScreenPosition, DRAG_LAYER_MASK);
+                });
+            dragEventListener.StartWith((IDragEventListener?)null).Pairwise()
+                .Subscribe(pair => {
+                    var previous = pair.Previous;
+                    var current = pair.Current;
+                    if (previous == current) return;
+                    var selectedNode = selectedNodeObject.Value.Select(nodeObject => nodeObject.Node);
+                    previous?.OnHoverAtDragExit(new DragContext(selectedNode));
+                    current?.OnHoverAtDragEnter(new DragContext(selectedNode));
+                    return;
+                }).AddTo(this);
 
             dragContext.Subscribe(context => {
                 switch (context) {
                     case ClickExitContext: {
                             if (copiedSelectedSpriteParent != null) copiedSelectedSpriteParent.SetActive(false);
 
-                            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(context.ScreenPosition);
-                            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, DRAG_LAYER_MASK);
-                            if (hit.collider == null) return;
-                            hit.collider.gameObject.TryGetComponent<IDragEventListener>(out var cursorEventListener);
+                            var cursorEventListener = Utils.GetComponentByRaycast<IDragEventListener>(context.ScreenPosition, DRAG_LAYER_MASK);
                             if (cursorEventListener == null) return;
-                            cursorEventListener.OnDrop(new DragContext(selectedNode.Value.Select(nodeObject => nodeObject.Node)));
+                            cursorEventListener.OnDrop(new DragContext(selectedNodeObject.Value.Select(nodeObject => nodeObject.Node)));
                             return;
                         }
                     case null: {
@@ -91,8 +103,9 @@ namespace Download {
                         }
                     default: {
                             if (latestClickEnterScreenPosition == null) return;
+
                             // 아래 1줄은 맨 처음 드래그 시작시에만 호출하는게 맞지 않나. (귀찮아서 패스함)
-                            if (!selectedNode.Value.Contains(context.CursorEventListener)) {
+                            if (!selectedNodeObject.Value.Contains(context.CursorEventListener)) {
                                 if (context.CursorEventListener is NodeGameObject nodeGameObject) Select(nodeGameObject);
                             }
                             if (copiedSelectedSpriteParent != null) {
