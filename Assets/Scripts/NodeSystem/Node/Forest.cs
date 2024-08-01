@@ -21,11 +21,19 @@ namespace Download.NodeSystem {
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
-                    if (randomFloat < 0.8f) {
+                    if (randomFloat < 0.7f) {
                         new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재", new NodeCreateOptions { Index = GetIndex() + 1 });
                         return;
                     }
-                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이", new NodeCreateOptions { Index = GetIndex() + 1 });
+                    if (randomFloat < 0.92f) {
+                        new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이", new NodeCreateOptions { Index = GetIndex() + 1 });
+                        return;
+                    }
+                    if (randomFloat < 0.99f) {
+                        new Apple(this.Parent.ChildRunResultTarget, $"{name}에서 나온 사람", new NodeCreateOptions { Index = GetIndex() + 1 });
+                        return;
+                    }
+                    new WoodPlatter(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목판", new NodeCreateOptions { Index = GetIndex() + 1 });
                     return;
                 })
                 .AddTo(_disposables);

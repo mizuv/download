@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8cbff10c8cb4c449f8a51b3f7c32b8b7
+guid: e82ba140589034bb7acffe656a227db4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6391704373054279156
-    second: free-icon-forest-284471_0
+      213: -6831352122706992933
+    second: forest_24dp_5F6368_FILL0_wght400_GRAD0_opsz24_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: free-icon-forest-284471_0
+      name: forest_24dp_5F6368_FILL0_wght400_GRAD0_opsz24_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 512
-        height: 512
+        y: 7
+        width: 96
+        height: 82
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c02f9c6ccba1c47a0800000000000000
-      internalID: -6391704373054279156
+      spriteID: bd0607e30792231a0800000000000000
+      internalID: -6831352122706992933
       vertices: []
       indices: 
       edges: []
@@ -133,7 +133,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      free-icon-forest-284471_0: -6391704373054279156
+      forest_24dp_5F6368_FILL0_wght400_GRAD0_opsz24_0: -6831352122706992933
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
