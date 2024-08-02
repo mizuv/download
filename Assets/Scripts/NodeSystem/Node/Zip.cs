@@ -22,8 +22,8 @@ namespace Download.NodeSystem {
             RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
-                    new Forest(this.Parent.ChildRunResultTarget, "숲");
-                    new Person(this.Parent.ChildRunResultTarget, "사람");
+                    new Forest(this.Parent.ChildRunResultTarget, "숲", new NodeCreateOptions { Index = GetIndex() + 1 });
+                    new Person(this.Parent.ChildRunResultTarget, "사람", new NodeCreateOptions { Index = GetIndex() + 1 });
                     this.Delete();
                 })
                 .AddTo(_disposables);
