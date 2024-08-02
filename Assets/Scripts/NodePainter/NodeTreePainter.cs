@@ -223,5 +223,9 @@ namespace Download {
         public NodeGameObject GetNodeGameObject(Node node) {
             return NodeObjectMap[node];
         }
+
+        public void MergeNode(IEnumerable<IMergeable> nodes) {
+            NodeSystem.MergeNode(nodes);
+        }
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 
 namespace Download {
-    public partial class FolderGameObject : NodeGameObject, IDragEventListener {
+    public partial class FolderGameObject : NodeGameObject {
         public Transform ChildrenContainer;
         public SpriteRenderer IconSpriteRenderer;
         public SpriteRenderer ChildContainerSpriteRenderer;
@@ -129,7 +129,8 @@ namespace Download {
 
         }
 
-        public void OnDrop(DragContext context) {
+        public override void OnDrop(DragContext context) {
+            base.OnDrop(context);
             context.SelectedNodes.ForEach((node) => {
                 if (node.Parent == this.Folder) return;
                 if (node == this.Folder) return;
@@ -137,8 +138,6 @@ namespace Download {
             });
         }
 
-        public void OnHoverAtDragEnter(DragContext context) { }
-        public void OnHoverAtDragExit(DragContext context) { }
     }
 
     public partial class FolderGameObject {

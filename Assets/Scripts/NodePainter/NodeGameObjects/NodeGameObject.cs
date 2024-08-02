@@ -8,7 +8,7 @@ using System.Linq;
 
 
 namespace Download {
-    public class NodeGameObject : CursorEventListenerMonoBehaviour, ISelectEventListener {
+    public class NodeGameObject : CursorEventListenerMonoBehaviour, ISelectEventListener, IDragEventListener {
         public SpriteRenderer HoverArea;
         public SpriteRenderer SelectedArea;
         public ProgressBar ProgressBar;
@@ -127,5 +127,18 @@ namespace Download {
         public void OnUnselect() {
             SelectedArea.enabled = false;
         }
+
+        public virtual void OnDrop(DragContext context) {
+            var nodes = context.SelectedNodes.Append(Node);
+            var staticNodes = nodes.Select(node => node.GetStaticNode());
+
+            var recipe = Recipe.GetRecipe(staticNodes);
+            if (recipe == null) return;
+            NodePainter.MergeNode(nodes);
+        }
+
+        public virtual void OnHoverAtDragEnter(DragContext context) { }
+
+        public virtual void OnHoverAtDragExit(DragContext context) { }
     }
 }
