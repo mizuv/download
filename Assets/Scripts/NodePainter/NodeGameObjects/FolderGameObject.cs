@@ -90,12 +90,10 @@ namespace Download {
                     var droppableArea = ObjectPoolManager.Instance.GetDroppableArea();
                     droppableArea.SetBounds(bounds);
                     droppableArea.AddDropListener(context => {
-                        // TODO
-                        // var selectedNodes = context.SelectedNodes;
-                        // selectedNodes.ForEach(node => {
-                        //     if (node.Parent == Folder) return;
-                        //     node.StartMove(Folder);
-                        // });
+                        var selectedNodes = context.SelectedNodes;
+                        selectedNodes.ForEach((node, index) => {
+                            node.StartMove(Folder, index);
+                        });
                     });
                     return droppableArea;
                 }).ToList();

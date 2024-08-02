@@ -135,12 +135,17 @@ namespace Download.NodeSystem {
             return path;
         }
 
-        public void StartMove(Folder destination) {
+        public void StartMove(Folder destination, int? index = null) {
             if (Parent == null) {
                 UnityEngine.Debug.LogWarning("Cannot move root node");
                 return;
             }
-            if (Parent == destination) return;
+            if (Parent == destination) {
+                if (index == null)
+                    return;
+                SetIndex(index.Value);
+                return;
+            }
             var moveOption = new MoveOption(MoveDuration, destination);
             var moveManager = new MoveManager(_disposables, moveOption);
             MoveManagerReactive.Value = moveManager;
@@ -165,7 +170,8 @@ namespace Download.NodeSystem {
                 if (nextParent == destination) {
                     moveManager.StopRun();
                 }
-                SetParent(nextParent);
+                var newIndex = nextParent == destination ? index : null;
+                SetParent(nextParent, newIndex);
             }).AddTo(_disposables);
             moveManager.RunCancel.Subscribe(_ => {
                 if (MoveManagerReactive.Value != moveManager) return;
