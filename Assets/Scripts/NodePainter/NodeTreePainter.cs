@@ -69,6 +69,7 @@ namespace Download {
                     selectedNode.ForEach((nodeGameObject) => {
                         var clonedSprite = Instantiate(nodeGameObject.SpriteGameObject, copiedSelectedSpriteParent.transform);
                         clonedSprite.transform.position = nodeGameObject.SpriteGameObject.transform.position;
+                        clonedSprite.GetComponent<SpriteRenderer>().sortingLayerName = "Drag";
                     });
                 }).AddTo(this);
 

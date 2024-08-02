@@ -41,5 +41,8 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Drag
+    uniqueID: 3081081265
+    locked: 0
   m_RenderingLayers:
   - Default
