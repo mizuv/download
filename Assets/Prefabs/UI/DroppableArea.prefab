@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 299118165023392787}
   - component: {fileID: 756124528616645727}
   - component: {fileID: 2252743503012553504}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DroppableArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

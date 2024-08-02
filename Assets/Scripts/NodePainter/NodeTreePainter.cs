@@ -16,6 +16,7 @@ namespace Download {
         public const float HORIZONTAL_INTERVAL = 0.4f;
         public const float DRAG_THRESHOLD_SCREEN_DISTANCE_SQUARE = 10;
         public const float CHILDREN_GROUP_PADDING = 0.2f;
+        public const float DROPPABLE_AREA_PADDING = 0.0f;
         public const float CHILDREN_GROUP_WIDTH = 1;
         public const float NODE_SIZE = 1;
 

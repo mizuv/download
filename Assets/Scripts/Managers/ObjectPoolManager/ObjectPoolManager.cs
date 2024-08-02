@@ -14,8 +14,8 @@ public class ObjectPoolManager : PersistentSingleton<ObjectPoolManager> {
         base.Awake();
         DroppableAreaPool = new ObjectPool<DroppableArea>(
             createFunc: () => Instantiate(UIPrefab.DroppableAreaPrefab).GetComponent<DroppableArea>(),
-            actionOnGet: (droppableArea) => droppableArea.gameObject.SetActive(true),
-            actionOnRelease: (droppableArea) => droppableArea.gameObject.SetActive(false),
+            actionOnGet: (droppableArea) => droppableArea.OnGetFromPool(),
+            actionOnRelease: (droppableArea) => droppableArea.OnReturnToPool(),
             actionOnDestroy: (droppableArea) => Destroy(droppableArea.gameObject),
             collectionCheck: true,
             defaultCapacity: 200
