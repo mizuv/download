@@ -5,7 +5,7 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Forest : Folder, IRunnable {
-        private RunOption _runOption = new RunOption(5200);
+        private RunOption _runOption = new RunOption(3200);
 
         public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
         public IObservable<Unit> RunComplete => RunManager.RunComplete;
