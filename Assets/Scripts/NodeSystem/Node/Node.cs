@@ -146,6 +146,10 @@ namespace Download.NodeSystem {
                 SetIndex(index.Value);
                 return;
             }
+            if (this == destination) {
+                UnityEngine.Debug.LogWarning("Cannot move to myself");
+                return;
+            }
             var moveOption = new MoveOption(MoveDuration, destination);
             var moveManager = new MoveManager(_disposables, moveOption);
             MoveManagerReactive.Value = moveManager;

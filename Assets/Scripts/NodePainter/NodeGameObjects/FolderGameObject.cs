@@ -126,6 +126,7 @@ namespace Download {
         public void OnDrop(DragContext context) {
             context.SelectedNodes.ForEach((node) => {
                 if (node.Parent == this.Folder) return;
+                if (node == this.Folder) return;
                 node.StartMove(this.Folder);
             });
         }
