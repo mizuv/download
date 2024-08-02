@@ -86,13 +86,19 @@ namespace Download {
                 droppableAreaBounds.Add(leftAdjacentBounds);
                 droppableAreaBounds.AddRange(intermediateBounds);
                 droppableAreaBounds.Add(rightAdjacentBounds);
-                renderedDroppableAreas = droppableAreaBounds.Select(bounds => {
+                renderedDroppableAreas = droppableAreaBounds.Select((bounds, droppableAreaIndex) => {
                     var droppableArea = ObjectPoolManager.Instance.GetDroppableArea();
                     droppableArea.SetBounds(bounds);
                     droppableArea.AddDropListener(context => {
                         var selectedNodes = context.SelectedNodes;
-                        selectedNodes.ForEach((node, index) => {
-                            node.StartMove(Folder, index);
+                        selectedNodes.ForEach((node) => {
+                            if (node.Parent == Folder) {
+                                var nodeIndex = node.GetIndex();
+                                var targetIndex = droppableAreaIndex <= nodeIndex ? droppableAreaIndex : droppableAreaIndex - 1;
+                                node.SetIndex(targetIndex);
+                                return;
+                            }
+                            node.StartMove(Folder, droppableAreaIndex);
                         });
                     });
                     return droppableArea;
