@@ -687,7 +687,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 00000000b191a5b7
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -2245,6 +2245,8 @@ MonoBehaviour:
     prefab: {fileID: 7376686307544598633, guid: 20dde5fe72b3c4eb29a775e76d623fb1, type: 3}
   - key: Node.Person
     prefab: {fileID: 8093986068929455350, guid: a131e5d7f3ee4457f8a1aca86b9c35e5, type: 3}
+  - key: Node.Stick
+    prefab: {fileID: 260778427269028480, guid: fc717d2a646b645a48a189e07ef6d8f1, type: 3}
   - key: Node.Stone
     prefab: {fileID: 1587593244719988146, guid: 2c5a40ff262f04951afdb2bb90056af4, type: 3}
   - key: Node.Tree
