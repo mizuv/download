@@ -23,7 +23,7 @@ namespace Download.NodeSystem {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
             immutableHashSetBuilder.Add(new Recipe(
-                new IStaticNode[] { Wood.StaticNode, WoodPlatter.StaticNode, Forest.StaticNode },
+                new IStaticNode[] { Stone.StaticNode, WoodPlatter.StaticNode },
                 new IStaticNode[] { Folder.StaticNode },
                 2400
             ));

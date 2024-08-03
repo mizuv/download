@@ -30,7 +30,7 @@ namespace Download.NodeSystem {
         }
 
         public override string GetPrintString(string indent) {
-            return $"{indent}Forest: {Name}\n";
+            return $"{indent}Zip: {Name}\n";
         }
 
         public void StartRun() {
