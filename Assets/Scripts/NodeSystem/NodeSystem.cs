@@ -23,7 +23,7 @@ namespace Download.NodeSystem {
         }
 
         public void MergeNode(IEnumerable<IMergeable> nodes) {
-            var staticNodes = nodes.Select(n => n.GetStaticNode());
+            var staticNodes = nodes.Distinct().Select(n => n.GetStaticNode());
             var recipe = Recipe.GetRecipe(staticNodes);
             if (recipe == null) return;
             var mergeManager = new MergeManager(nodes, recipe);

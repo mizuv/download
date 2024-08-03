@@ -129,7 +129,7 @@ namespace Download {
         }
 
         public virtual void OnDrop(DragContext context) {
-            var nodes = context.SelectedNodes.Append(Node);
+            var nodes = context.SelectedNodes.Append(Node).Distinct();
             var staticNodes = nodes.Select(node => node.GetStaticNode());
 
             var recipe = Recipe.GetRecipe(staticNodes);
