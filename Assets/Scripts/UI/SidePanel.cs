@@ -58,7 +58,7 @@ namespace Download {
                                 if (nodeObjects.Count < 1) return returnNull;
                                 var nodes = nodeObjects.Select(nodeObject => (IMergeable)nodeObject.Node!);
                                 var isMergeActive = nodes
-                                    .Select(m => m.IsMergeActive)
+                                    .Select(m => m.IsMergeStartable)
                                     .CombineLatestEvenEmitOnEmpty()
                                     .Select(values => values.Count() == 0 ? false : values.All(active => active));
                                 return isMergeActive.Select(isActive => {

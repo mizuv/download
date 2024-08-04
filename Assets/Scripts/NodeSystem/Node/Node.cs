@@ -38,8 +38,6 @@ namespace Download.NodeSystem {
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
 
-        private readonly IReadOnlyReactiveProperty<bool> _isMergeActive;
-        public IReadOnlyReactiveProperty<bool> IsMergeActive => _isMergeActive;
 
         public Node(Folder parent, string name, NodeCreateOptions? options = null) : this(parent, name, parent.eventSubject, options) { }
         public Node(Subject<NodeEvent> eventSubject, string name, NodeCreateOptions? options = null) : this(null, name, eventSubject, options) { }
@@ -49,6 +47,7 @@ namespace Download.NodeSystem {
         public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
         protected readonly IReadOnlyReactiveProperty<bool> IsAsyncJobEmpty;
+        public IReadOnlyReactiveProperty<bool> IsMergeStartable { get; private set; }
 
         private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject, NodeCreateOptions? options = null) {
             if (parent != null)
@@ -57,13 +56,11 @@ namespace Download.NodeSystem {
             Name = name;
 
             IsAsyncJobEmpty = CurrentAsyncJob.Select(job => job == null).ToReactiveProperty();
+            IsMergeStartable = Parent == null ? Observable.Return(false).ToReactiveProperty() : IsAsyncJobEmpty;
 
-            _isMergeActive = CurrentAsyncJob.Select(job => {
-                var isProperState = job == null || job is MergeManager;
-                return isProperState && Parent != null;
-            }).DistinctUntilChanged().ToReactiveProperty();
             // TODO: remove
             RunManager = new(_disposables, RunJobOption);
+
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
