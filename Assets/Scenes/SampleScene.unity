@@ -2237,6 +2237,8 @@ MonoBehaviour:
     prefab: {fileID: 4237210588733451161, guid: 183ec9f558e67417e847b7df1d976bda, type: 3}
   - key: Node.AutoRunner
     prefab: {fileID: 1955907880825239146, guid: 0e8a2ad4e0c75495ba4ae5958902a255, type: 3}
+  - key: Node.AxeStone
+    prefab: {fileID: 260778427269028480, guid: 3d1a236d26bc941779fe2e9110a2246e, type: 3}
   - key: Node.Cave
     prefab: {fileID: 7376686307544598633, guid: f1f7bdab0b9864672b4f0faade6d30f7, type: 3}
   - key: Node.Folder
