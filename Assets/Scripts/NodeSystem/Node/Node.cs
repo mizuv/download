@@ -34,9 +34,8 @@ namespace Download.NodeSystem {
 
         private readonly ReactiveProperty<RunManager?> _runManagerReactive = new(null);
         protected IReadOnlyReactiveProperty<RunManager?> RunManagerReactive => _runManagerReactive;
-        protected readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
-        private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
-        public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
+        private readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
+        private readonly ReactiveProperty<MergeManager?> MergeManagerReactive = new(null);
 
 
         public Node(Folder parent, string name, NodeCreateOptions? options = null) : this(parent, name, parent.eventSubject, options) { }
@@ -64,7 +63,7 @@ namespace Download.NodeSystem {
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
-            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive, _runManagerReactive }
+            var asyncJobs = new IObservable<AsyncJobManager?>[] { MergeManagerReactive, MoveManagerReactive, _runManagerReactive }
                 .CombineLatestEvenEmitOnEmpty()
                 .Select(jobs => jobs.Compact())
                 .ToReactiveProperty();
@@ -188,13 +187,13 @@ namespace Download.NodeSystem {
         }
 
         public void SetMergeManager(MergeManager? mergeManager) {
-            if (mergeManager != null && _mergeManagerReactive.Value != null) {
+            if (mergeManager != null && MergeManagerReactive.Value != null) {
                 return;
             }
-            _mergeManagerReactive.Value = mergeManager;
+            MergeManagerReactive.Value = mergeManager;
             if (mergeManager == null) return;
             mergeManager.RunTerminate.Subscribe(_ => {
-                _mergeManagerReactive.Value = null;
+                MergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
 
@@ -205,7 +204,7 @@ namespace Download.NodeSystem {
             _runManagerReactive.Value = runManager;
             if (runManager == null) return;
             runManager.RunTerminate.Subscribe(_ => {
-                _mergeManagerReactive.Value = null;
+                MergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
 

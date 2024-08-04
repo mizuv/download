@@ -69,28 +69,12 @@ namespace Download {
                             .Switch()
                             .Select(nodes => {
                                 var empty = ImmutableOrderedSet<IMergeable>.Empty;
+                                if (nodes.Count == 0) return empty;
                                 var staticNodes = nodes.Select(node => node.GetStaticNode());
                                 var recipe = Recipe.GetRecipe(staticNodes);
                                 if (recipe == null) return empty;
                                 return nodes;
                             })
-                            .Select(nodes => {
-                                var empty = ImmutableOrderedSet<IMergeable>.Empty;
-                                if (nodes.Count == 0) return Observable.Return(empty);
-                                var isMergeStartable = nodes
-                                    .Select(n => n.MergeManagerReactive)
-                                    .CombineLatestEvenEmitOnEmpty()
-                                    .Select(mergeManagers =>
-                                        mergeManagers.Count() == 0 ? false : mergeManagers.All(mergeManager => mergeManager == null || mergeManager.Runtime == null)
-                                    )
-                                    .ToReactiveProperty();
-
-                                return isMergeStartable.Select(isMergeStartable => {
-                                    if (!isMergeStartable) return empty;
-                                    return nodes;
-                                });
-                            })
-                            .Switch()
                             .DistinctUntilChanged()
                             .Subscribe(mergeables => { this.mergeables.Value = mergeables; })
                             .AddTo(this);
