@@ -7,17 +7,14 @@ namespace Download.NodeSystem {
     public class Tree : Folder, IRunnable {
         private RunOption _runOption = new RunOption(4300);
 
-        public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
-        public IObservable<Unit> RunComplete => RunManager.RunComplete;
-        public IReadOnlyReactiveProperty<bool> IsRunActive => RunManager.IsActive;
+        public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
         public override RunOption RunJobOption => _runOption;
-        public bool RunByPanel => true;
 
         public override float Volume => 4;
         public override float VolumeForChildren => 0;
 
         public Tree(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) {
-            RunComplete
+            RunManager.RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);

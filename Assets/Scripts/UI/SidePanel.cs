@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Download.NodeSystem;
 using Mizuvt.Common;
@@ -32,20 +30,8 @@ namespace Download {
                                 var node = nodes[0];
                                 if (node?.Node is not IRunnable runnable)
                                     return returnNull;
-                                if (!runnable.RunByPanel) return returnNull;
-                                return runnable.IsRunActive.Select(isActive => {
+                                return runnable.IsRunStartable.Select(isActive => {
                                     if (!isActive) return null;
-                                    return runnable;
-                                });
-                            })
-                            .Switch()
-                            .Select(runnable => {
-                                // 아직 runActive말고 runStartable은 UI에서 감지함
-                                var returnNull = Observable.Return<IRunnable?>(null);
-                                if (runnable == null) return returnNull;
-
-                                return runnable.Runtime.Select(runtime => {
-                                    if (runtime != null) return null;
                                     return runnable;
                                 });
                             })

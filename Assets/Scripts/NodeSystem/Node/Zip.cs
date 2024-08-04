@@ -10,16 +10,13 @@ namespace Download.NodeSystem {
     public class Zip : Node, IRunnable {
         private RunOption _runOption = new RunOption(2500);
 
-        public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
-        public IObservable<Unit> RunComplete => RunManager.RunComplete;
-        public IReadOnlyReactiveProperty<bool> IsRunActive => RunManager.IsActive;
+        public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
         public override RunOption RunJobOption => _runOption;
-        public bool RunByPanel => true;
 
         public override float Volume => 4;
 
         public Zip(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
-            RunComplete
+            RunManager.RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     new Forest(this.Parent.ChildRunResultTarget, "숲", new NodeCreateOptions { Index = GetIndex() + 1 });

@@ -47,11 +47,15 @@ namespace Download.NodeSystem {
         private readonly ReactiveProperty<AsyncJobManager?> _currentAsyncJob = new(null);
         public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
+        protected readonly IReadOnlyReactiveProperty<bool> IsAsyncJobEmpty;
+
         private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject, NodeCreateOptions? options = null) {
             if (parent != null)
                 SetParent(parent, options?.Index);
             this.eventSubject = eventSubject;
             Name = name;
+
+            IsAsyncJobEmpty = CurrentAsyncJob.Select(job => job == null).ToReactiveProperty();
 
             // TODO: remove **Active state
             var isRunActive = CurrentAsyncJob.Select(job => job == null || job is RunManager).DistinctUntilChanged().ToReactiveProperty();

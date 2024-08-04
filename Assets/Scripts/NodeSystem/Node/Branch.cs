@@ -4,15 +4,12 @@ using UniRx;
 namespace Download.NodeSystem {
     public class Branch : Node, IRunnable {
         private RunOption _runOption = new RunOption(4000);
-        public bool RunByPanel => true;
-        public IReadOnlyReactiveProperty<float?> Runtime => RunManager.Runtime;
-        public IObservable<Unit> RunComplete => RunManager.RunComplete;
-        public IReadOnlyReactiveProperty<bool> IsRunActive => RunManager.IsActive;
+        public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
         public override RunOption RunJobOption => _runOption;
 
         public Branch(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
 
-            RunComplete
+            RunManager.RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     new Stick(this.Parent.ChildRunResultTarget, "막대기", new NodeCreateOptions { Index = GetIndex() + 1 });
