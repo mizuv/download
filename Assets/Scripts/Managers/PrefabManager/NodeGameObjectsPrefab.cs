@@ -9,6 +9,7 @@ namespace Download {
         public static GameObject ApplePrefab { get; } = GetPrefab("Node.Apple");
         public static GameObject AutoRunnerPrefab { get; } = GetPrefab("Node.AutoRunner");
         public static GameObject AxeStonePrefab { get; } = GetPrefab("Node.AxeStone");
+        public static GameObject BranchPrefab { get; } = GetPrefab("Node.Branch");
         public static GameObject CavePrefab { get; } = GetPrefab("Node.Cave");
         public static GameObject FolderPrefab { get; } = GetPrefab("Node.Folder");
         public static GameObject ForestPrefab { get; } = GetPrefab("Node.Forest");
@@ -30,6 +31,7 @@ namespace Download {
                 Apple => ApplePrefab,
                 AutoRunner => NodeGameObjectsPrefab.AutoRunnerPrefab,
                 AxeStone => AxeStonePrefab,
+                Branch => BranchPrefab,
                 Cave => CavePrefab,
                 Forest => NodeGameObjectsPrefab.ForestPrefab,
                 Person => PersonPrefab,

@@ -21,8 +21,12 @@ namespace Download.NodeSystem {
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
-                    if (randomFloat < 0.7f) {
+                    if (randomFloat < 0.6f) {
                         new Wood(this.Parent.ChildRunResultTarget, $"{name}에서 나온 목재", new NodeCreateOptions { Index = GetIndex() + 1 });
+                        return;
+                    }
+                    if (randomFloat < 0.8f) {
+                        new Branch(this.Parent.ChildRunResultTarget, $"{name}에서 나온 나뭇가지", new NodeCreateOptions { Index = GetIndex() + 1 });
                         return;
                     }
                     if (randomFloat < 0.92f) {
