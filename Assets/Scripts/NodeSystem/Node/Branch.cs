@@ -3,12 +3,14 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Branch : Node, IRunnable {
-        private RunOption _runOption = new RunOption(4000);
+        private static RunOption RUN_OPTION = new RunOption(4000);
         public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
-        public override RunOption RunJobOption => _runOption;
+
+        private readonly RunManager RunManager;
 
         public Branch(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
-
+            // 당연히 매번 생성하는게 깔끔하지만, AutoRun 때문에 이렇게 했습니다.
+            RunManager = new RunManager(_disposables, RUN_OPTION);
             RunManager.RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
@@ -16,6 +18,7 @@ namespace Download.NodeSystem {
                     this.Delete();
                 })
                 .AddTo(_disposables);
+
         }
 
         public override float Volume => 0.8f;
@@ -29,10 +32,7 @@ namespace Download.NodeSystem {
 
         public void StartRun() {
             RunManager.StartRun();
-        }
-
-        public void StopRun() {
-            RunManager.StopRun();
+            this.SetRunManager(RunManager);
         }
 
         public void SetAutoRun(bool enable) {

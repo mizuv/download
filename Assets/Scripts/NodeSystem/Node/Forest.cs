@@ -5,15 +5,17 @@ using UniRx;
 
 namespace Download.NodeSystem {
     public class Forest : Folder, IRunnable {
-        private RunOption _runOption = new RunOption(3200);
+        private static RunOption RUN_OPTION = new RunOption(3200);
 
         public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
-        public override RunOption RunJobOption => _runOption;
+
+        private readonly RunManager RunManager;
 
         public override float Volume => 4;
         public override float VolumeForChildren => 0;
 
         public Forest(Folder parent, string name, NodeCreateOptions? options = null) : base(parent, name, options) {
+            RunManager = new RunManager(_disposables, RUN_OPTION);
             RunManager.RunComplete
                 .Subscribe(_ => {
                     if (Parent == null) return;
@@ -43,11 +45,11 @@ namespace Download.NodeSystem {
                 var children = this.Children;
                 var isPersonInChildren = children.Any(child => child is Person);
                 if (isPersonInChildren) {
-                    RunManager.SetAuto(true);
-                    RunManager.StartRun();
+                    SetAutoRun(true);
+                    StartRun();
                     return;
                 }
-                RunManager.SetAuto(false);
+                SetAutoRun(false);
             })
             .AddTo(this._disposables);
         }
@@ -58,11 +60,9 @@ namespace Download.NodeSystem {
 
         public void StartRun() {
             RunManager.StartRun();
+            this.SetRunManager(RunManager);
         }
 
-        public void StopRun() {
-            RunManager.StopRun();
-        }
         public void SetAutoRun(bool active) {
             RunManager.SetAuto(active);
         }

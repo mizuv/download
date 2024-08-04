@@ -24,16 +24,11 @@ namespace Download.NodeSystem {
         private readonly Subject<Unit> _deleteStart = new();
         public IObservable<Unit> DeleteStart => _deleteStart;
 
-        public virtual RunOption RunJobOption => RunOption.GetEmptyRunOption();
         public virtual float MoveDuration => this.Volume * 1000 * 0.5f;
 
         public abstract float Volume { get; }
 
-        // TODO:remove
-        protected readonly RunManager RunManager;
-
-        private readonly ReactiveProperty<RunManager?> _runManagerReactive = new(null);
-        protected IReadOnlyReactiveProperty<RunManager?> RunManagerReactive => _runManagerReactive;
+        private readonly ReactiveProperty<RunManager?> RunManagerReactive = new(null);
         private readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
         private readonly ReactiveProperty<MergeManager?> MergeManagerReactive = new(null);
 
@@ -57,13 +52,10 @@ namespace Download.NodeSystem {
             IsAsyncJobEmpty = CurrentAsyncJob.Select(job => job == null).ToReactiveProperty();
             IsMergeStartable = Parent == null ? Observable.Return(false).ToReactiveProperty() : IsAsyncJobEmpty;
 
-            // TODO: remove
-            RunManager = new(_disposables, RunJobOption);
-
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
-            var asyncJobs = new IObservable<AsyncJobManager?>[] { MergeManagerReactive, MoveManagerReactive, _runManagerReactive }
+            var asyncJobs = new IObservable<AsyncJobManager?>[] { MergeManagerReactive, MoveManagerReactive, RunManagerReactive }
                 .CombineLatestEvenEmitOnEmpty()
                 .Select(jobs => jobs.Compact())
                 .ToReactiveProperty();
@@ -198,10 +190,10 @@ namespace Download.NodeSystem {
         }
 
         public void SetRunManager(RunManager? runManager) {
-            if (runManager != null && _runManagerReactive.Value != null) {
+            if (runManager != null && RunManagerReactive.Value != null) {
                 return;
             }
-            _runManagerReactive.Value = runManager;
+            RunManagerReactive.Value = runManager;
             if (runManager == null) return;
             runManager.RunTerminate.Subscribe(_ => {
                 MergeManagerReactive.Value = null;
