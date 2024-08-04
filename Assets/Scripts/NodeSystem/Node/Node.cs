@@ -29,7 +29,10 @@ namespace Download.NodeSystem {
 
         public abstract float Volume { get; }
 
+        // TODO:remove
         protected readonly RunManager RunManager;
+
+        protected readonly ReactiveProperty<RunManager?> RunManagerReactive = new(null);
         protected readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
@@ -56,13 +59,14 @@ namespace Download.NodeSystem {
                 var isProperState = job == null || job is MergeManager;
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
+            // TODO: remove
             RunManager = new(isRunActive, _disposables, RunJobOption);
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
-            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive }
+            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive, RunManagerReactive }
                 .CombineLatestEvenEmitOnEmpty()
-                .Select(jobs => jobs.Compact().Append(RunManager))
+                .Select(jobs => jobs.Compact())
                 .ToReactiveProperty();
             var runningJobs = asyncJobs
                 .SelectMany(jobs =>
@@ -189,8 +193,18 @@ namespace Download.NodeSystem {
             }
             _mergeManagerReactive.Value = mergeManager;
             if (mergeManager == null) return;
-            // TODO: 사실은 MergeCoplete가 아니라 MergeTerminate 시점에 null로 바꿔줘야 하지요
             mergeManager.RunTerminate.Subscribe(_ => {
+                _mergeManagerReactive.Value = null;
+            }).AddTo(_disposables);
+        }
+
+        public void SetRunManager(RunManager? runManager) {
+            if (runManager != null && RunManagerReactive.Value != null) {
+                return;
+            }
+            RunManagerReactive.Value = runManager;
+            if (runManager == null) return;
+            runManager.RunTerminate.Subscribe(_ => {
                 _mergeManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
