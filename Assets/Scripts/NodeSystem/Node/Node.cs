@@ -32,7 +32,8 @@ namespace Download.NodeSystem {
         // TODO:remove
         protected readonly RunManager RunManager;
 
-        protected readonly ReactiveProperty<RunManager?> RunManagerReactive = new(null);
+        private readonly ReactiveProperty<RunManager?> _runManagerReactive = new(null);
+        protected IReadOnlyReactiveProperty<RunManager?> RunManagerReactive => _runManagerReactive;
         protected readonly ReactiveProperty<MoveManager?> MoveManagerReactive = new(null);
         private readonly ReactiveProperty<MergeManager?> _mergeManagerReactive = new(null);
         public IReadOnlyReactiveProperty<MergeManager?> MergeManagerReactive => _mergeManagerReactive;
@@ -68,7 +69,7 @@ namespace Download.NodeSystem {
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
-            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive, RunManagerReactive }
+            var asyncJobs = new IObservable<AsyncJobManager?>[] { _mergeManagerReactive, MoveManagerReactive, _runManagerReactive }
                 .CombineLatestEvenEmitOnEmpty()
                 .Select(jobs => jobs.Compact())
                 .ToReactiveProperty();
@@ -203,10 +204,10 @@ namespace Download.NodeSystem {
         }
 
         public void SetRunManager(RunManager? runManager) {
-            if (runManager != null && RunManagerReactive.Value != null) {
+            if (runManager != null && _runManagerReactive.Value != null) {
                 return;
             }
-            RunManagerReactive.Value = runManager;
+            _runManagerReactive.Value = runManager;
             if (runManager == null) return;
             runManager.RunTerminate.Subscribe(_ => {
                 _mergeManagerReactive.Value = null;
