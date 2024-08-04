@@ -16,17 +16,8 @@ namespace Download.NodeSystem {
         }
     }
     public class RunManager : AsyncJobManager {
-        public readonly IReadOnlyReactiveProperty<bool> IsActive;
 
-        public RunManager(IReadOnlyReactiveProperty<bool> isActive, CompositeDisposable disposables, RunOption runOption) : base(new List<CompositeDisposable> { disposables }, runOption) {
-            IsActive = isActive;
-
-            IsActive
-                .Subscribe(isActive => {
-                    if (isActive) return;
-                    StopRun();
-                })
-                .AddTo(disposables);
+        public RunManager(CompositeDisposable disposables, RunOption runOption) : base(new List<CompositeDisposable> { disposables }, runOption) {
         }
 
         public void StartRun() {

@@ -58,14 +58,12 @@ namespace Download.NodeSystem {
 
             IsAsyncJobEmpty = CurrentAsyncJob.Select(job => job == null).ToReactiveProperty();
 
-            // TODO: remove **Active state
-            var isRunActive = CurrentAsyncJob.Select(job => job == null || job is RunManager).DistinctUntilChanged().ToReactiveProperty();
             _isMergeActive = CurrentAsyncJob.Select(job => {
                 var isProperState = job == null || job is MergeManager;
                 return isProperState && Parent != null;
             }).DistinctUntilChanged().ToReactiveProperty();
             // TODO: remove
-            RunManager = new(isRunActive, _disposables, RunJobOption);
+            RunManager = new(_disposables, RunJobOption);
             eventSubject.OnNext(new NodeCreate(this));
 
             #region AsyncJob
