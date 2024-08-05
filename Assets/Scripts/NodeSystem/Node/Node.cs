@@ -196,7 +196,7 @@ namespace Download.NodeSystem {
             RunManagerReactive.Value = runManager;
             if (runManager == null) return;
             runManager.RunTerminate.Subscribe(_ => {
-                MergeManagerReactive.Value = null;
+                RunManagerReactive.Value = null;
             }).AddTo(_disposables);
         }
 
