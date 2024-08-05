@@ -86,7 +86,7 @@ namespace Download.NodeSystem {
             var runManager = new RunManager(_disposables, RUN_OPTION_DROP_PERSON);
             runManager.RunComplete
                 .Subscribe(_ => {
-                    new Zip(this.Parent!, Zip.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
+                    new ZipStart(this.Parent!, ZipStart.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
                 })
                 .AddTo(_disposables);
             SetRunManager(runManager);
