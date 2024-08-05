@@ -23,7 +23,13 @@ namespace Download.NodeSystem {
 
         protected override ZipOption GetZipOption() {
             return new ZipOption(
-                new RunOption(2500), new List<IStaticNode> { PersonStatic.Instance, ForestStatic.Instance, });
+                new RunOption(2500), new List<IStaticNode> {
+                    PersonStatic.Instance,
+                    ForestStatic.Instance,
+                    CoalOreStatic.Instance,
+                    CopperOreStatic.Instance,
+                    IronOreStatic.Instance
+                });
         }
     }
 }
