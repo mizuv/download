@@ -128,15 +128,21 @@ namespace Download {
             SelectedArea.enabled = false;
         }
 
-        public virtual void OnDrop(DragContext context) {
-            Node.OnDrop(context);
+        protected virtual bool _onDrop(DragContext context) {
+            var result = Node.OnDrop(context);
+            if (result) return true;
 
             // merge
             var nodes = context.SelectedNodes.Append(Node).Distinct();
             var staticNodes = nodes.Select(node => node.GetStaticNode());
             var recipe = Recipe.GetRecipe(staticNodes);
-            if (recipe == null) return;
+            if (recipe == null) return false;
             NodePainter.MergeNode(nodes);
+            return true;
+        }
+
+        public void OnDrop(DragContext context) {
+            _onDrop(context);
         }
 
         public virtual void OnHoverAtDragEnter(DragContext context) { }

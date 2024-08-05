@@ -131,13 +131,16 @@ namespace Download {
 
         }
 
-        public override void OnDrop(DragContext context) {
-            base.OnDrop(context);
+        protected override bool _onDrop(DragContext context) {
+            var result = base._onDrop(context);
+            if (result) return true;
+
             context.SelectedNodes.ForEach((node) => {
                 if (node.Parent == this.Folder) return;
                 if (node == this.Folder) return;
                 node.StartMove(this.Folder);
             });
+            return true;
         }
 
     }

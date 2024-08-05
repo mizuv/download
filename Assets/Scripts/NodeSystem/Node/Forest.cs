@@ -1,11 +1,13 @@
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using UniRx;
 
 namespace Download.NodeSystem {
     public class Forest : Folder, IRunnable {
         private static RunOption RUN_OPTION = new RunOption(3200);
+        private static RunOption RUN_OPTION_DROP_PERSON = new RunOption(4300);
 
         public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
 
@@ -71,6 +73,26 @@ namespace Download.NodeSystem {
 
         public override IStaticNode GetStaticNode() {
             return StaticNode;
+        }
+
+        public override bool OnDrop(DragContext context) {
+            if (this.IsAsyncJobEmpty.Value == false) return false;
+
+            if (context.SelectedNodes.Count() != 1) return false;
+            var selectedNode = context.SelectedNodes.First();
+            if (selectedNode is not Person person) return false;
+            if (person.IsAsyncJobEmpty.Value == false) return false;
+
+            var runManager = new RunManager(_disposables, RUN_OPTION_DROP_PERSON);
+            runManager.RunComplete
+                .Subscribe(_ => {
+                    new Zip(this.Parent!, Zip.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
+                })
+                .AddTo(_disposables);
+            SetRunManager(runManager);
+            person.SetRunManager(runManager);
+            runManager.StartRun();
+            return true;
         }
     }
 }

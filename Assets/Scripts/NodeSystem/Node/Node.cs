@@ -231,7 +231,7 @@ namespace Download.NodeSystem {
         }
         public abstract IStaticNode GetStaticNode();
 
-        public virtual void OnDrop(DragContext context) { }
+        public virtual bool OnDrop(DragContext context) { return false; }
 
     }
 }
