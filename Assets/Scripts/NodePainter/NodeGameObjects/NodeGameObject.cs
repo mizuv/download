@@ -129,9 +129,11 @@ namespace Download {
         }
 
         public virtual void OnDrop(DragContext context) {
+            Node.OnDrop(context);
+
+            // merge
             var nodes = context.SelectedNodes.Append(Node).Distinct();
             var staticNodes = nodes.Select(node => node.GetStaticNode());
-
             var recipe = Recipe.GetRecipe(staticNodes);
             if (recipe == null) return;
             NodePainter.MergeNode(nodes);

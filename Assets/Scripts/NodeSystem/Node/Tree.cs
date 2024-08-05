@@ -6,6 +6,7 @@ using UniRx;
 namespace Download.NodeSystem {
     public class Tree : Folder, IRunnable {
         private static RunOption RUN_OPTION = new RunOption(4300);
+        private static RunOption RUN_OPTION_AXE_DROP = new RunOption(8200);
 
         public IReadOnlyReactiveProperty<bool> IsRunStartable => IsAsyncJobEmpty;
         private readonly RunManager RunManager;
@@ -52,9 +53,34 @@ namespace Download.NodeSystem {
         }
         public static new IStaticNode StaticNode => TreeStatic.Instance;
 
-
         public override IStaticNode GetStaticNode() {
             return StaticNode;
         }
+
+        public override void OnDrop(DragContext context) {
+            if (this.IsAsyncJobEmpty.Value == false) return;
+
+            if (context.SelectedNodes.Count() != 1) return;
+            var selectedNode = context.SelectedNodes.First();
+            if (selectedNode is not AxeStone axeStone) return;
+            if (axeStone.IsAsyncJobEmpty.Value == false) return;
+
+            var runManager = new RunManager(_disposables, RUN_OPTION_AXE_DROP);
+            // 완료시 wood 10개 생성
+            runManager.RunComplete
+                .Subscribe(_ => {
+                    for (int i = 0; i < 10; i++) {
+                        new Wood(this.Parent!, Wood.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() });
+                    }
+                    this.Delete();
+                })
+                .AddTo(_disposables);
+            SetRunManager(runManager);
+            axeStone.SetRunManager(runManager);
+            runManager.StartRun();
+        }
+
+        public void OnHoverAtDragEnter(DragContext context) { }
+        public void OnHoverAtDragExit(DragContext context) { }
     }
 }

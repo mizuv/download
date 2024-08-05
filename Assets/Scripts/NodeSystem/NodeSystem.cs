@@ -16,6 +16,10 @@ namespace Download.NodeSystem {
             new Zip(root, "기본 압축 패키지");
             // new Forest(root, "나무1");
             // new Forest(root, "나무2");
+            // new Tree(root, Tree.StaticNode.Name);
+            // new Tree(root, Tree.StaticNode.Name);
+            // new Wood(root, Wood.StaticNode.Name);
+            // new AxeStone(root, "운영자의도끼");
             // var folder = new Folder(root, "루트가 아닌 폴더");
             // new Folder(folder, "폴더2");
             // new Person(root, "사람");

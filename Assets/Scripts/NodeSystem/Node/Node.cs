@@ -40,7 +40,7 @@ namespace Download.NodeSystem {
         private readonly ReactiveProperty<AsyncJobManager?> _currentAsyncJob = new(null);
         public IReadOnlyReactiveProperty<AsyncJobManager?> CurrentAsyncJob => _currentAsyncJob;
 
-        protected readonly IReadOnlyReactiveProperty<bool> IsAsyncJobEmpty;
+        public readonly IReadOnlyReactiveProperty<bool> IsAsyncJobEmpty;
         public IReadOnlyReactiveProperty<bool> IsMergeStartable { get; private set; }
 
         private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject, NodeCreateOptions? options = null) {
@@ -230,5 +230,8 @@ namespace Download.NodeSystem {
             return this._disposables;
         }
         public abstract IStaticNode GetStaticNode();
+
+        public virtual void OnDrop(DragContext context) { }
+
     }
 }
