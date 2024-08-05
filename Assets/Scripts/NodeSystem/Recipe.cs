@@ -22,14 +22,14 @@ namespace Download.NodeSystem {
         static Recipe() {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
-            immutableHashSetBuilder.Add(new Recipe(
-                new IStaticNode[] { Stone.StaticNode, WoodPlatter.StaticNode },
-                new IStaticNode[] { Folder.StaticNode },
-                2400
-            ));
+            // immutableHashSetBuilder.Add(new Recipe(
+            //     new IStaticNode[] { Stone.StaticNode, WoodPlatter.StaticNode },
+            //     new IStaticNode[] { Folder.StaticNode },
+            //     2400
+            // ));
             immutableHashSetBuilder.Add(new Recipe(
                 new IStaticNode[] { Wood.StaticNode, Wood.StaticNode },
-                new IStaticNode[] { WoodPlatter.StaticNode },
+                new IStaticNode[] { Folder.StaticNode },
                 1000
             ));
             immutableHashSetBuilder.Add(new Recipe(
@@ -45,12 +45,17 @@ namespace Download.NodeSystem {
             immutableHashSetBuilder.Add(new Recipe(
                 new IStaticNode[] { Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode },
                 new IStaticNode[] { Cave.StaticNode },
-                6300
+                4300
             ));
             immutableHashSetBuilder.Add(new Recipe(
                 new IStaticNode[] { Stone.StaticNode, Stick.StaticNode },
                 new IStaticNode[] { AxeStone.StaticNode },
-                6300
+                4300
+            ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new IStaticNode[] { Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, },
+                new IStaticNode[] { FurnaceStone.StaticNode },
+                4300
             ));
 
             Recipes = immutableHashSetBuilder.ToImmutable();

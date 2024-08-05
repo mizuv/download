@@ -20,7 +20,7 @@ namespace Download.NodeSystem {
                 .Subscribe(_ => {
                     if (Parent == null) return;
                     // float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
-                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이");
+                    new Stone(this.Parent.ChildRunResultTarget, $"{name}에서 나온 돌맹이", new NodeCreateOptions { Index = GetIndex() + 1 });
                 })
                 .AddTo(_disposables);
 

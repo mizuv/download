@@ -51,14 +51,14 @@ PrefabInstance:
     - target: {fileID: 650321154437819504, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1549342681561552222, guid: 0b385acc1e1f6469fa14d658b5f166e5, type: 3}
+      objectReference: {fileID: -7566865442909625572, guid: 54277dad468f144ed8529e876bd165fe, type: 3}
     - target: {fileID: 3794837776618741633, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.2
+      value: 0.32
       objectReference: {fileID: 0}
     - target: {fileID: 3794837776618741633, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.2
+      value: 0.32
       objectReference: {fileID: 0}
     - target: {fileID: 4978251984841426963, guid: d1b5fe1e77aec433e852c82c95c711f8, type: 3}
       propertyPath: m_Name

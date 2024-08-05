@@ -2277,6 +2277,8 @@ MonoBehaviour:
     prefab: {fileID: 7376686307544598633, guid: 6e4d5204373894989bfe02004a884a05, type: 3}
   - key: Node.IronRaw
     prefab: {fileID: 260778427269028480, guid: 8bc0d27aef3924e1ba11ddf46b5074ea, type: 3}
+  - key: Node.FurnaceStone
+    prefab: {fileID: 7376686307544598633, guid: eaa4dfc5612c24275adcd53febdce921, type: 3}
 --- !u!1 &2022836523
 GameObject:
   m_ObjectHideFlags: 0

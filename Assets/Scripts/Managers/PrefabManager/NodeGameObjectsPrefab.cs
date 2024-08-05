@@ -18,6 +18,7 @@ namespace Download {
         public static GameObject CopperRawPrefab { get; } = GetPrefab("Node.CopperRaw");
         public static GameObject FolderPrefab { get; } = GetPrefab("Node.Folder");
         public static GameObject ForestPrefab { get; } = GetPrefab("Node.Forest");
+        public static GameObject FurnaceStonePrefab { get; } = GetPrefab("Node.FurnaceStone");
         public static GameObject IronIngotPrefab { get; } = GetPrefab("Node.IronIngot");
         public static GameObject IronOrePrefab { get; } = GetPrefab("Node.IronOre");
         public static GameObject IronRawPrefab { get; } = GetPrefab("Node.IronRaw");
@@ -47,6 +48,7 @@ namespace Download {
                 CopperOre => CopperOrePrefab,
                 CopperRaw => CopperRawPrefab,
                 Forest => NodeGameObjectsPrefab.ForestPrefab,
+                FurnaceStone => FurnaceStonePrefab,
                 IronIngot => IronIngotPrefab,
                 IronOre => IronOrePrefab,
                 IronRaw => IronRawPrefab,
