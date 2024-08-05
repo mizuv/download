@@ -21,8 +21,9 @@ namespace Download.NodeSystem {
 
         private readonly RunManager RunManager;
 
-        public Zip(Folder parent, string name, ZipOption zipOption, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
+        public Zip(Folder parent, string name, NodeCreateOptions? nodeCreateOptions = null) : base(parent, name, nodeCreateOptions) {
             // 당연히 매번 생성하는게 깔끔하지만, AutoRun 때문에 이렇게 했습니다.
+            var zipOption = GetZipOption();
             RunManager = new RunManager(_disposables, zipOption.RunOption);
             RunManager.RunComplete
                 .Subscribe(_ => {
@@ -34,6 +35,8 @@ namespace Download.NodeSystem {
                 })
                 .AddTo(_disposables);
         }
+
+        protected abstract ZipOption GetZipOption();
 
         public void StartRun() {
             RunManager.StartRun();
