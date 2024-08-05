@@ -11,8 +11,13 @@ namespace Download {
         public static GameObject AxeStonePrefab { get; } = GetPrefab("Node.AxeStone");
         public static GameObject BranchPrefab { get; } = GetPrefab("Node.Branch");
         public static GameObject CavePrefab { get; } = GetPrefab("Node.Cave");
+        public static GameObject CoalPrefab { get; } = GetPrefab("Node.Coal");
+        public static GameObject CopperIngotPrefab { get; } = GetPrefab("Node.CopperIngot");
+        public static GameObject CopperRawPrefab { get; } = GetPrefab("Node.CopperRaw");
         public static GameObject FolderPrefab { get; } = GetPrefab("Node.Folder");
         public static GameObject ForestPrefab { get; } = GetPrefab("Node.Forest");
+        public static GameObject IronIngotPrefab { get; } = GetPrefab("Node.IronIngot");
+        public static GameObject IronRawPrefab { get; } = GetPrefab("Node.IronRaw");
         public static GameObject PersonPrefab { get; } = GetPrefab("Node.Person");
         public static GameObject StickPrefab { get; } = GetPrefab("Node.Stick");
         public static GameObject StonePrefab { get; } = GetPrefab("Node.Stone");
@@ -33,6 +38,9 @@ namespace Download {
                 AxeStone => AxeStonePrefab,
                 Branch => BranchPrefab,
                 Cave => CavePrefab,
+                Coal => CoalPrefab,
+                CopperIngot => CopperIngotPrefab,
+                CopperRaw => CopperRawPrefab,
                 Forest => NodeGameObjectsPrefab.ForestPrefab,
                 Person => PersonPrefab,
                 Stick => StickPrefab,

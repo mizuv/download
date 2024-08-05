@@ -2261,6 +2261,22 @@ MonoBehaviour:
     prefab: {fileID: 260778427269028480, guid: a2fc1a4221dcb494f89cd78c8e71c656, type: 3}
   - key: Node.Zip
     prefab: {fileID: 7589766052403746191, guid: 04e2019b92ac64950aa726ca89beb1b8, type: 3}
+  - key: Node.Coal
+    prefab: {fileID: 260778427269028480, guid: aca889f609b9649e68e2e4f9afbb943b, type: 3}
+  - key: Node.CoalOre
+    prefab: {fileID: 7376686307544598633, guid: 4bcc4f2061324495aaa8db2691cfea67, type: 3}
+  - key: Node.CopperIngot
+    prefab: {fileID: 260778427269028480, guid: d642a4370c3934df0a8aac72fe0d0eee, type: 3}
+  - key: Node.CopperOre
+    prefab: {fileID: 7376686307544598633, guid: 18e73e5c39a5d4735ad099e9ca8d670e, type: 3}
+  - key: Node.CopperRaw
+    prefab: {fileID: 260778427269028480, guid: 45390abbb26354c5cb850cd1c42660f4, type: 3}
+  - key: Node.IronIngot
+    prefab: {fileID: 260778427269028480, guid: 89b640d3512cb443daed933fae44da65, type: 3}
+  - key: Node.IronOre
+    prefab: {fileID: 7376686307544598633, guid: 6e4d5204373894989bfe02004a884a05, type: 3}
+  - key: Node.IronRaw
+    prefab: {fileID: 260778427269028480, guid: 8bc0d27aef3924e1ba11ddf46b5074ea, type: 3}
 --- !u!1 &2022836523
 GameObject:
   m_ObjectHideFlags: 0
