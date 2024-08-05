@@ -58,23 +58,24 @@ namespace Download.NodeSystem {
         }
 
         public override bool OnDrop(DragContext context) {
-            if (this.IsAsyncJobEmpty.Value == false) return false;
+            return false;
+            // if (this.IsAsyncJobEmpty.Value == false) return false;
 
-            if (context.SelectedNodes.Count() != 1) return false;
-            var selectedNode = context.SelectedNodes.First();
-            if (selectedNode is not Person person) return false;
-            if (person.IsAsyncJobEmpty.Value == false) return false;
+            // if (context.SelectedNodes.Count() != 1) return false;
+            // var selectedNode = context.SelectedNodes.First();
+            // if (selectedNode is not Person person) return false;
+            // if (person.IsAsyncJobEmpty.Value == false) return false;
 
-            var runManager = new RunManager(_disposables, RUN_OPTION_DROP_PERSON);
-            runManager.RunComplete
-                .Subscribe(_ => {
-                    new IronRaw(this.Parent!, IronRaw.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
-                })
-                .AddTo(_disposables);
-            SetRunManager(runManager);
-            person.SetRunManager(runManager);
-            runManager.StartRun();
-            return true;
+            // var runManager = new RunManager(_disposables, RUN_OPTION_DROP_PERSON);
+            // runManager.RunComplete
+            //     .Subscribe(_ => {
+            //         new IronRaw(this.Parent!, IronRaw.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
+            //     })
+            //     .AddTo(_disposables);
+            // SetRunManager(runManager);
+            // person.SetRunManager(runManager);
+            // runManager.StartRun();
+            // return true;
         }
     }
 }
