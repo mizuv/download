@@ -14,6 +14,7 @@ namespace Download {
         public SpriteRenderer ChildContainerSpriteRenderer;
         public Sprite OpenSprite;
         public Sprite ClosedSprite;
+        public bool IsFoldable => OpenSprite != null && ClosedSprite != null;
         [NonSerialized]
         public ReactiveProperty<bool> IsOpen = new ReactiveProperty<bool>(true);
         private Folder? _folder;
@@ -42,6 +43,7 @@ namespace Download {
             }).AddTo(this);
 
             DoubleClick.Subscribe(_ => {
+                if (!IsFoldable) return;
                 IsOpen.Value = !IsOpen.Value;
             }).AddTo(this);
 
