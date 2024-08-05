@@ -14,6 +14,7 @@ namespace Download.NodeSystem {
     }
     public class NodeCreateOptions {
         public int? Index { get; set; } = null;
+        public bool IsFixed { get; set; } = false;
     }
     public abstract class Node : IMergeable {
         public Folder? Parent { get; private set; }
@@ -43,11 +44,14 @@ namespace Download.NodeSystem {
         public readonly IReadOnlyReactiveProperty<bool> IsAsyncJobEmpty;
         public IReadOnlyReactiveProperty<bool> IsMergeStartable { get; private set; }
 
+        private bool IsFixed { get; set; }
+
         private Node(Folder? parent, string name, Subject<NodeEvent> eventSubject, NodeCreateOptions? options = null) {
             if (parent != null)
                 SetParent(parent, options?.Index);
             this.eventSubject = eventSubject;
             Name = name;
+            IsFixed = options?.IsFixed ?? false;
 
             IsAsyncJobEmpty = CurrentAsyncJob.Select(job => job == null).ToReactiveProperty();
             IsMergeStartable = Parent == null ? Observable.Return(false).ToReactiveProperty() : IsAsyncJobEmpty;
@@ -131,6 +135,7 @@ namespace Download.NodeSystem {
         }
 
         public void StartMove(Folder destination, int? index = null) {
+            if (IsFixed == true) return;
             if (Parent == null) {
                 UnityEngine.Debug.LogWarning("Cannot move root node");
                 return;
