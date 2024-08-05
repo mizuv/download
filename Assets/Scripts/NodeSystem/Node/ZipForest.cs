@@ -12,7 +12,7 @@ namespace Download.NodeSystem {
 
         protected override ZipOption GetZipOption() {
             return new ZipOption(
-                new RunOption(2500), new List<IStaticNode> { GetNodeComponent(), GetNodeComponent(), GetNodeComponent() });
+                new RunOption(400), new List<IStaticNode> { GetNodeComponent(), GetNodeComponent(), GetNodeComponent() });
         }
 
 

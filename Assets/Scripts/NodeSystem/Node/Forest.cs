@@ -86,7 +86,7 @@ namespace Download.NodeSystem {
             var runManager = new RunManager(_disposables, RUN_OPTION_DROP_PERSON);
             runManager.RunComplete
                 .Subscribe(_ => {
-                    new ZipForest(this.Parent!, ZipStart.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
+                    new ZipForest(this.Parent!, ZipForest.StaticNode.Name, new NodeCreateOptions { Index = GetIndex() + 1 });
                 })
                 .AddTo(_disposables);
             SetRunManager(runManager);
