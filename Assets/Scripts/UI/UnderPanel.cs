@@ -34,7 +34,6 @@ namespace Download {
                 })
                 .AddTo(this);
 
-            // runnable
             GameManager.Instance.SelectedNode
                 .Select(nodeGameObjects => {
                     return nodeGameObjects
@@ -66,6 +65,15 @@ namespace Download {
                             var resultNames = string.Join(", ", mergeManager.Recipe.To.Select(result => result.Name));
 
                             return $"{resultNames}(으)로 병합 중 ({((int)mergeTime).ToString()}/{mergeManager.Recipe.MergeTime})";
+                        });
+                    }
+                    if (currentAsyncJobToPrint is MoveManager moveManager) {
+                        return moveManager.Runtime.Select((float? moveTime) => {
+                            if (moveTime == null) {
+                                return "";
+                            }
+
+                            return $"이동 중 ({((int)moveTime).ToString()}/{moveManager.AsyncJobOption.RunDuration})";
                         });
                     }
                     return Observable.Return("");
