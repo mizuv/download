@@ -35,7 +35,6 @@ namespace Download {
             if (node is not Folder folder) throw new Exception("only folder can be FolderGameObject");
             _folder = folder;
 
-
             IsOpen.Subscribe(isOpen => {
                 ChildrenContainer.gameObject.SetActive(isOpen);
                 if (OpenSprite != null && ClosedSprite != null)

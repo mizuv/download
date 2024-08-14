@@ -30,10 +30,10 @@ namespace Download.NodeSystem {
         public static IStaticNode GetNodeComponent() {
             float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
             if (randomFloat < 0.3f) {
-                return IronOreStatic.Instance;
+                return IronRawStatic.Instance;
             }
             if (randomFloat < 0.6f) {
-                return CopperOreStatic.Instance;
+                return CopperRawStatic.Instance;
             }
             if (randomFloat < 0.82f) {
                 return BranchStatic.Instance;
