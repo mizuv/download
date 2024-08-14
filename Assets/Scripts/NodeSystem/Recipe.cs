@@ -22,13 +22,13 @@ namespace Download.NodeSystem {
         static Recipe() {
             var immutableHashSetBuilder = ImmutableHashSet.CreateBuilder<Recipe>();
 
-            // immutableHashSetBuilder.Add(new Recipe(
-            //     new IStaticNode[] { Stone.StaticNode, WoodPlatter.StaticNode },
-            //     new IStaticNode[] { Folder.StaticNode },
-            //     2400
-            // ));
             immutableHashSetBuilder.Add(new Recipe(
                 new IStaticNode[] { Wood.StaticNode, Wood.StaticNode },
+                new IStaticNode[] { WoodPlatter.StaticNode },
+                2400
+            ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new IStaticNode[] { Wood.StaticNode, WoodPlatter.StaticNode },
                 new IStaticNode[] { Folder.StaticNode },
                 1000
             ));
