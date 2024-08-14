@@ -29,14 +29,20 @@ namespace Download.NodeSystem {
 
         public static IStaticNode GetNodeComponent() {
             float randomFloat = UnityEngine.Random.Range(0.0f, 1.0f);
-            if (randomFloat < 0.6f) {
+            if (randomFloat < 0.3f) {
                 return WoodStatic.Instance;
             }
-            if (randomFloat < 0.8f) {
+            if (randomFloat < 0.5f) {
                 return BranchStatic.Instance;
             }
             if (randomFloat < 0.92f) {
                 return StoneStatic.Instance;
+            }
+            if (randomFloat < 0.95f) {
+                return IronOreStatic.Instance;
+            }
+            if (randomFloat < 0.98f) {
+                return CopperOreStatic.Instance;
             }
             if (randomFloat < 0.99f) {
                 return AppleStatic.Instance;
