@@ -48,8 +48,13 @@ namespace Download.NodeSystem {
                 4300
             ));
             immutableHashSetBuilder.Add(new Recipe(
-                new IStaticNode[] { Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, Stone.StaticNode, },
-                new IStaticNode[] { FurnaceStone.StaticNode },
+                new IStaticNode[] { Cave.StaticNode, IronOre.StaticNode, },
+                new IStaticNode[] { IronIngot.StaticNode },
+                4300
+            ));
+            immutableHashSetBuilder.Add(new Recipe(
+                new IStaticNode[] { Cave.StaticNode, CopperOre.StaticNode, },
+                new IStaticNode[] { CopperIngot.StaticNode },
                 4300
             ));
 
