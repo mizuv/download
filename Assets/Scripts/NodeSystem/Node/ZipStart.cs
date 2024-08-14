@@ -24,13 +24,10 @@ namespace Download.NodeSystem {
         protected override ZipOption GetZipOption() {
             return new ZipOption(
                 new RunOption(1200), new List<IStaticNode> {
-                    PersonStatic.Instance,
                     TreeStatic.Instance,
                     ForestStatic.Instance,
                     CaveStatic.Instance,
-                    CoalOreStatic.Instance,
-                    CopperOreStatic.Instance,
-                    IronOreStatic.Instance
+                    PersonStatic.Instance,
                 });
         }
     }
